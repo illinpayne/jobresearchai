@@ -1,0 +1,42 @@
+import globals from "globals";
+import { config as baseConfig } from "./base.js";
+
+/**
+ * A custom ESLint configuration for Nest.js.
+ *
+ * @type {import("eslint").Linter.Config[]}
+ * */
+export const nestJsConfig = [
+  ...baseConfig,
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+      sourceType: "commonjs",
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
+    rules: {
+			'@typescript-eslint/no-explicit-any': 'off',
+			'@typescript-eslint/no-floating-promises': 'warn',
+			'@typescript-eslint/no-unsafe-argument': 'off',
+			'@typescript-eslint/interface-name-prefix': 'off',
+			'@typescript-eslint/explicit-function-return-type': 'off',
+			'@typescript-eslint/explicit-module-boundary-types': 'off',
+			'@typescript-eslint/no-unsafe-call': 'off',
+			'@typescript-eslint/no-unsafe-member-access': 'off',
+			'@typescript-eslint/no-unsafe-assignment': 'off',
+			'@typescript-eslint/no-unnecessary-type-assertion': 'off',
+			'@typescript-eslint/no-unsafe-return': 'off',
+			'no-console': 'warn',
+			'prettier/prettier': 'off',
+      'turbo/no-undeclared-env-vars': 'off'
+		},
+  },
+];

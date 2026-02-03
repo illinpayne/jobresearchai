@@ -1,0 +1,35 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "./generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AccountRole {
+  CUSTOMER
+  ADMIN
+
+  @@map("account_roles")
+}
+
+model Account {
+  id             String  @id @default(nanoid())
+  email          String  @unique
+  passwordHash   String  @map("password_hash")
+  firstName      String  @map("first_name")
+  secondName     String  @map("second_name")
+  avatar         String? @map("avatar")
+  isAuthVerified Boolean @default(false) @map("is_auth_verified")
+
+  role AccountRole @default(CUSTOMER)
+
+  isEmailVerified Boolean @default(false) @map("is_email_verified")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("accounts")
+}

@@ -1,0 +1,42 @@
+import { type DynamicModule, Module } from "@nestjs/common";
+import { GRPC_CLIENT } from "./registry/grpc.registry";
+import { GrpcClientFactory } from "./factory/grpc-client.factory";
+import { GRPC_CLIENT_PREFIX } from "./constants/grpc.constants";
+import { ConfigService } from "@nestjs/config";
+
+@Module({})
+export class GrpcModule {
+  public static register(
+    clients: Array<keyof typeof GRPC_CLIENT>,
+  ): DynamicModule {
+    return {
+      module: GrpcModule,
+      providers: [
+        GrpcClientFactory,
+        ...clients.map((token) => {
+          const cfg = GRPC_CLIENT[token];
+
+          return {
+            provide: `${GRPC_CLIENT_PREFIX}_${token}`,
+            useFactory: (factory: GrpcClientFactory, config: ConfigService) => {
+              const url = config.getOrThrow(cfg.env);
+              const client = factory.createClient({
+                package: cfg.package,
+                protoPath: cfg.protoPath,
+                url,
+              });
+
+              factory.register(token, client);
+              return client;
+            },
+            inject: [GrpcClientFactory, ConfigService],
+          };
+        }),
+      ],
+      exports: [
+        GrpcClientFactory,
+        ...clients.map((token) => `${GRPC_CLIENT_PREFIX}_${token}`),
+      ],
+    };
+  }
+}

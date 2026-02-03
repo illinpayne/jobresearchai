@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package auth.v1;
+
+service AuthService {
+	rpc SendRegisterOtp(RegisterSendOtpRequest) returns (RegisterSendOtpResponse);
+	rpc VerifyRegisterOtp(RegisterVerifyOtpRequest) returns (AuthResponse);
+	rpc Login(LoginRequest) returns (AuthResponse);
+}
+
+message RegisterSendOtpRequest {
+	string email = 1;
+	string password = 2;
+	string first_name = 3;
+	string second_name = 4;
+}
+
+message RegisterSendOtpResponse {
+	bool status = 1;
+	string message = 2;
+}
+
+message RegisterVerifyOtpRequest {
+	string email = 1;
+	string code = 2;
+}
+
+message LoginRequest {
+	string email = 1;
+	string password = 2;
+}
+
+message Account {
+	string email = 1;
+	string first_name = 2;
+	string second_name = 3;
+	string avatar = 4;
+	bool is_email_verified = 5;
+}
+
+message AuthResponse {
+	string access_token = 1;
+	string refresh_token = 2;
+	Account account = 3;
+}

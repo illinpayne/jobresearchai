@@ -1,0 +1,25 @@
+{
+  "name": "@jrai/linters",
+  "version": "1.0.0",
+  "description": "Linters for APIs",
+  "type": "module",
+  "sideEffects": false,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    "./prettier": "./src/prettier.config.mjs",
+    "./nestjs": "./src/nest.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-turbo": "^2.7.6",
+    "globals": "^16.0.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.20.0"
+  }
+}

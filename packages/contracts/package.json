@@ -1,0 +1,38 @@
+{
+  "name": "@jrai/contracts",
+  "version": "1.0.0",
+  "description": "gRPC contracts for APIs",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "generate": "protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=nestJs=true,package=omit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./grpc": {
+      "types": "./dist/src/grpc/index.d.ts",
+      "default": "./dist/src/grpc/index.js"
+    },
+    "./gen/*": {
+      "types": "./dist/gen/*.d.ts",
+      "default": "./dist/gen/*.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/microservices": "^11.1.12",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "ts-proto": "^2.11.1",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,54 @@
+import { AllConfigs } from '@/config/interfaces'
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config'
+import Redis from 'ioredis'
+@Injectable()
+export class RedisService extends Redis implements OnModuleInit, OnModuleDestroy {
+	private readonly logger = new Logger(RedisService.name)
+
+	public constructor(private readonly configService: ConfigService<AllConfigs>) {
+		super({
+			username: configService.get('redis.user', {infer: true}),
+			password: configService.get('redis.password', {infer: true}),
+			host: configService.get('redis.host', {infer: true}),
+			port: configService.get('redis.port', {infer: true}),
+			maxRetriesPerRequest: 5,
+			enableOfflineQueue: true
+		})
+	}
+
+	public async onModuleInit() {
+		const start = Date.now();
+
+		this.logger.log('Initializing Redis connection...');
+
+		this.on('connect', () => {
+			this.logger.log('Redis connecting...');
+		})
+		this.on('ready', () => {
+			const ms = Date.now() - start;
+			this.logger.log(`Redis successfully connected (time=${ms}ms)`)
+		})
+		this.on('error', err => {
+			this.logger.error('Redis error', {error: err.message ?? err})
+		})
+		this.on('close', () => {
+			this.logger.warn('Redis connection closed');
+		})
+		this.on('reconnecting', () => {
+			this.logger.log('Redis reconnecting...');
+		})
+	}
+
+	public async onModuleDestroy() {
+		this.logger.log('Closing Redis connection...');
+
+		try {
+			await this.quit();
+
+			this.logger.log('Redis connection closed');
+		} catch (err) {
+			this.logger.error('Error closing Redis connection', err)
+		}
+	}
+}
