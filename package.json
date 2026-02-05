@@ -1,5 +1,6 @@
 {
   "name": "jobresearchai",
+  "description": "An AI-powered platform that analyzes your resume to provide personalized compatibility scoring and matches you with the most relevant job vacancies.",
   "private": true,
   "scripts": {
     "build": "turbo run build",
