@@ -1,5 +1,5 @@
 import { AllConfigs } from '@/config/interfaces'
-import { JwtPayload, JwtTokens } from '@/shared/jwt.types'
+import { JwtRefreshTokenPayload, JwtPayload, JwtTokens } from '@/shared/jwt.types'
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config'
 import { JwtService, TokenExpiredError } from '@nestjs/jwt'
@@ -14,8 +14,11 @@ export class TokenService {
 			expiresIn: this.config.get('jwt.accessTokenTTL', {infer: true}),
 		})
 
+		const refreshTokenPayload: JwtRefreshTokenPayload = {
+			sub: payload.id
+		}
 		const refreshToken = this.jwtService.sign(
-			Object.assign({sub: payload.id}),
+			Object.assign(refreshTokenPayload),
 			{
 				expiresIn: this.config.get('jwt.refreshTokenTTL', {infer: true})
 			}
@@ -39,7 +42,7 @@ export class TokenService {
 			return false;
 		}
 	}
-	public decodeToken(refreshToken: string) {
+	public decodeToken(refreshToken: string) : JwtRefreshTokenPayload {
 		return this.jwtService.decode(refreshToken);
 	}
 }

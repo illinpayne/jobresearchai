@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AccountRepository } from '../account/account.repository'
 import { OtpService } from '../otp/otp.service'
-import type { RegisterSendOtpRequest, RegisterSendOtpResponse, RegisterVerifyOtpRequest, AuthResponse, LoginRequest, Account as GrpcAccount } from '@jrai/contracts/gen/auth'
-import { RpcException } from '@nestjs/microservices'
+import type { RegisterSendOtpRequest, RegisterSendOtpResponse, RegisterVerifyOtpRequest, AuthResponse, LoginRequest, Account as GrpcAccount, RevalidateSessionRequest } from '@jrai/contracts/gen/auth'
 import { hash, verify } from 'argon2';
 import { Account } from '@prisma/generated/client'
 import { TokenService } from '@/infrastructure/token-service/token-service.service'
@@ -75,12 +74,32 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.ABORTED, 'Password is not valid');
 		}
 
+		//TODO: refactor return immediately
 		const getTokens = this.generateJwt(findAccount);
 		return getTokens;
 	}
 
+	public async revalidateSession(request: RevalidateSessionRequest) : Promise<AuthResponse> {
+		const {refreshToken} = request;
+
+		const isValid = this.tokenService.verifyToken(refreshToken);
+		if (!isValid) {
+		throw new GrpcException(RpcStatus.UNAUTHENTICATED ,'Session expired. Please login again');
+		}
+
+		const decodedToken = this.tokenService.decodeToken(refreshToken);
+		const userId = decodedToken?.sub;
+
+		const findAccount = await this.accountRepository.getById(userId);
+		if (!findAccount) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found');
+		}
+
+		return this.generateJwt(findAccount);
+	}
+
 	private generateJwt(account: Account) : AuthResponse {
-		const tokens = this.tokenService.generateTokens({email: account.email, id: account.id});
+		const tokens = this.tokenService.generateTokens({email: account.email, id: account.id, roles: [account.role]});
 
 		return {
 			...tokens,

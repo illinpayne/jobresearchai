@@ -1,11 +1,18 @@
+
 syntax = "proto3";
 
 package auth.v1;
 
+// Auth rpc
 service AuthService {
+	// Sends register request
 	rpc SendRegisterOtp(RegisterSendOtpRequest) returns (RegisterSendOtpResponse);
+	// Verifies register process by OTP code
 	rpc VerifyRegisterOtp(RegisterVerifyOtpRequest) returns (AuthResponse);
+	// Sign the session to log in
 	rpc Login(LoginRequest) returns (AuthResponse);
+	// Revalidate account session
+	rpc RevalidateSession(RevalidateSessionRequest) returns (AuthResponse);
 }
 
 message RegisterSendOtpRequest {
@@ -42,4 +49,8 @@ message AuthResponse {
 	string access_token = 1;
 	string refresh_token = 2;
 	Account account = 3;
+}
+
+message RevalidateSessionRequest {
+	string refresh_token = 1;
 }

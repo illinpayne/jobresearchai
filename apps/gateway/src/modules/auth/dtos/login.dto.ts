@@ -7,7 +7,7 @@ export class LoginDto {
 	@IsNotEmpty({message: 'Email address should notbe empty'})
 	email: string
 
-	@ApiProperty({type: String, default: 'Qwerty-1'})
+	@ApiProperty({type: String, default: 'TuneBonFire78!'})
 	@IsString({message: 'Password should be string'})
 	@IsNotEmpty({message: 'Password should not be empty'})
 	password: string

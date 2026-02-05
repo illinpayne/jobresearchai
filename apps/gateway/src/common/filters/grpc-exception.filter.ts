@@ -21,7 +21,7 @@ export class GrpcExceptionFilter implements ExceptionFilter {
 			//TODO: Typize this stuff
 			return response.status(status).json({statusCode: status, message: exception.message});
 		}
-
+		console.log(exception.message)
 		//TODO: Typize this stuff
 		return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
 			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

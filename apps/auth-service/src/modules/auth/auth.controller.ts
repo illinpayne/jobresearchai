@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GrpcMethod } from '@nestjs/microservices'
-import type { RegisterVerifyOtpRequest, RegisterSendOtpRequest, AuthResponse, RegisterSendOtpResponse, LoginRequest } from "@jrai/contracts/gen/auth" 
+import type { RegisterVerifyOtpRequest, RegisterSendOtpRequest, AuthResponse, RegisterSendOtpResponse, LoginRequest, RevalidateSessionRequest } from "@jrai/contracts/gen/auth" 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -19,5 +19,10 @@ export class AuthController {
   @GrpcMethod('AuthService', 'Login')
   public async login(request: LoginRequest) : Promise<AuthResponse> {
     return await this.authService.login(request);
+  }
+
+  @GrpcMethod('AuthService', 'RevalidateSession')
+  public async revalidate(request: RevalidateSessionRequest) : Promise<AuthResponse> {
+    return await this.authService.revalidateSession(request);
   }
 }

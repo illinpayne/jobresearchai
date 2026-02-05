@@ -1,16 +1,17 @@
-import { Body, Controller, HttpCode, HttpStatus, Logger, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Logger, NotFoundException, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { AuthClientGrpc } from './auth.grpc'
-import { ApiBearerAuth, ApiConflictResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiConflictResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger'
 import { SendOtpRegisterResponse } from './responses/send-otp-register.response'
 import { SendOtpRegisterDto } from './dtos/send-otp-register.dto'
-import { LoginRequest, RegisterSendOtpRequest, RegisterVerifyOtpRequest } from '@jrai/contracts/gen/auth'
+import { LoginRequest, RegisterSendOtpRequest, RegisterVerifyOtpRequest, RevalidateSessionRequest } from '@jrai/contracts/gen/auth'
 import { VerifyOTPRegister } from './dtos/verify-otp-register.dto'
 import { AuthResponse } from './responses/auth.response'
 import { LoginDto } from './dtos/login.dto'
 import { CookieService } from '@/infrastructure/cookie-service/cookie-service.service'
 import { LogoutResponse } from './responses/logout.response'
 import { CookieType } from '@/common/enums/cookie.enum'
-import type { Response } from 'express'
+import type { Response, Request } from 'express'
+import { Protected } from '@/common/decorators'
 
 
 @Controller('auth')
@@ -39,7 +40,7 @@ export class AuthController {
     description: 'Verifies OTP code and log into account',
   })
   @ApiOkResponse({
-    description: 'Returns log data',
+    description: 'Returns authentication response',
     type: AuthResponse
   })
   @ApiConflictResponse({description: 'Code is not valid'})
@@ -59,7 +60,7 @@ export class AuthController {
     description: 'Login into existing account with defined credentials',
   })
   @ApiOkResponse({
-    description: 'Returns log data',
+    description: 'Returns authentication response',
     type: AuthResponse
   })
   @ApiNotFoundResponse({description: 'Account not found'})
@@ -72,6 +73,33 @@ export class AuthController {
   }
 
   @ApiOperation({
+    summary: 'Revalidate session',
+    description: 'Revalidates the session for the expired one',
+  })
+  @ApiOkResponse({
+    description: 'Returns authentication response',
+    type: AuthResponse
+  })
+  @ApiUnauthorizedResponse({description: 'Session expired. Please login again, Session not found, please login first'})
+  @ApiNotFoundResponse({description: 'Account not found'})
+  @Post('revalidate')
+  async revalidateSession(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const cookieRefreshToken = req.cookies[CookieType.REFRESH_TOKEN];
+    if (!cookieRefreshToken) {
+      throw new UnauthorizedException('Session not found, please login first');
+    }
+
+    const {accessToken, account, refreshToken} = await this.client.call('revalidateSession', {refreshToken: cookieRefreshToken} as RevalidateSessionRequest);
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    this.passTokenViaCookies(res, refreshToken, account.email);
+    return {accessToken, account};
+  }
+
+  //TODO: Make endpoint authorized
+  @ApiOperation({
     summary: 'Logout session',
     description: 'Logout from the account',
   })
@@ -81,7 +109,7 @@ export class AuthController {
   })
   @ApiBearerAuth()
   @Post('logout')
-  // @Protected()
+  @Protected()
   @HttpCode(HttpStatus.OK)
   public logout(@Res({ passthrough: true }) res: Response) {
     this.cookieService.removeCookie(res, CookieType.REFRESH_TOKEN);

@@ -46,29 +46,57 @@ export interface AuthResponse {
   account: Account | undefined;
 }
 
+export interface RevalidateSessionRequest {
+  refreshToken: string;
+}
+
 export const AUTH_V1_PACKAGE_NAME = "auth.v1";
 
+/** Auth rpc */
+
 export interface AuthServiceClient {
+  /** Sends register request */
+
   sendRegisterOtp(request: RegisterSendOtpRequest): Observable<RegisterSendOtpResponse>;
+
+  /** Verifies register process by OTP code */
 
   verifyRegisterOtp(request: RegisterVerifyOtpRequest): Observable<AuthResponse>;
 
+  /** Sign the session to log in */
+
   login(request: LoginRequest): Observable<AuthResponse>;
+
+  /** Revalidate account session */
+
+  revalidateSession(request: RevalidateSessionRequest): Observable<AuthResponse>;
 }
 
+/** Auth rpc */
+
 export interface AuthServiceController {
+  /** Sends register request */
+
   sendRegisterOtp(
     request: RegisterSendOtpRequest,
   ): Promise<RegisterSendOtpResponse> | Observable<RegisterSendOtpResponse> | RegisterSendOtpResponse;
 
+  /** Verifies register process by OTP code */
+
   verifyRegisterOtp(request: RegisterVerifyOtpRequest): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
 
+  /** Sign the session to log in */
+
   login(request: LoginRequest): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
+
+  /** Revalidate account session */
+
+  revalidateSession(request: RevalidateSessionRequest): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["sendRegisterOtp", "verifyRegisterOtp", "login"];
+    const grpcMethods: string[] = ["sendRegisterOtp", "verifyRegisterOtp", "login", "revalidateSession"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
