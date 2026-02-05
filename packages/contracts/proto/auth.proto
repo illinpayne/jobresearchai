@@ -6,13 +6,15 @@ package auth.v1;
 // Auth rpc
 service AuthService {
 	// Sends register request
-	rpc SendRegisterOtp(RegisterSendOtpRequest) returns (RegisterSendOtpResponse);
+	rpc SendRegisterOtp(RegisterSendOtpRequest) returns (SendOtpResponse);
 	// Verifies register process by OTP code
 	rpc VerifyRegisterOtp(RegisterVerifyOtpRequest) returns (AuthResponse);
 	// Sign the session to log in
 	rpc Login(LoginRequest) returns (AuthResponse);
 	// Revalidate account session
 	rpc RevalidateSession(RevalidateSessionRequest) returns (AuthResponse);
+	// Resend OTP code for registration
+	rpc ResendRegisterOtp(ResendOTPRegisterRequest) returns (SendOtpResponse);
 }
 
 message RegisterSendOtpRequest {
@@ -22,7 +24,11 @@ message RegisterSendOtpRequest {
 	string second_name = 4;
 }
 
-message RegisterSendOtpResponse {
+message ResendOTPRegisterRequest {
+  string email = 1;
+}
+
+message SendOtpResponse {
 	bool status = 1;
 	string message = 2;
 }
@@ -54,3 +60,5 @@ message AuthResponse {
 message RevalidateSessionRequest {
 	string refresh_token = 1;
 }
+
+

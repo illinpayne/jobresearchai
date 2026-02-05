@@ -3,9 +3,10 @@ import type {
 	Account as GrpcAccount,
 	LoginRequest,
 	RegisterSendOtpRequest,
-	RegisterSendOtpResponse,
 	RegisterVerifyOtpRequest,
-	RevalidateSessionRequest
+	ResendOTPRegisterRequest,
+	RevalidateSessionRequest,
+	SendOtpResponse
 } from '@jrai/contracts/gen/auth'
 import { GrpcException, RpcStatus } from '@jrai/contracts/grpc'
 import { Injectable } from '@nestjs/common'
@@ -27,7 +28,7 @@ export class AuthService {
 
 	public async sendOTPRegister(
 		request: RegisterSendOtpRequest
-	): Promise<RegisterSendOtpResponse> {
+	): Promise<SendOtpResponse> {
 		const { email, password, firstName, secondName } = request
 		const findAccount = await this.accountRepository.getByEmail(email)
 		if (findAccount) {
@@ -52,6 +53,34 @@ export class AuthService {
 		}
 
 		const codes = await this.otpService.send(email, 'register')
+
+		//TODO: make send code via notification microservice
+		// eslint-disable-next-line no-console
+		console.log(codes.code)
+
+		return {
+			status: true,
+			message: `OTP code was sent on the ${email}`
+		}
+	}
+
+	public async resendOTPRegister(
+		request: ResendOTPRegisterRequest
+	): Promise<SendOtpResponse> {
+		const { email } = request
+
+		const findAccount = await this.accountRepository.getByEmail(email)
+		if (!findAccount) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
+		}
+		if (findAccount.isAuthVerified) {
+			throw new GrpcException(
+				RpcStatus.ALREADY_EXISTS,
+				'Account already created'
+			)
+		}
+
+		const codes = await this.otpService.resend(email, 'register')
 
 		//TODO: make send code via notification microservice
 		// eslint-disable-next-line no-console

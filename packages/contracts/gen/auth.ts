@@ -17,7 +17,11 @@ export interface RegisterSendOtpRequest {
   secondName: string;
 }
 
-export interface RegisterSendOtpResponse {
+export interface ResendOTPRegisterRequest {
+  email: string;
+}
+
+export interface SendOtpResponse {
   status: boolean;
   message: string;
 }
@@ -57,7 +61,7 @@ export const AUTH_V1_PACKAGE_NAME = "auth.v1";
 export interface AuthServiceClient {
   /** Sends register request */
 
-  sendRegisterOtp(request: RegisterSendOtpRequest): Observable<RegisterSendOtpResponse>;
+  sendRegisterOtp(request: RegisterSendOtpRequest): Observable<SendOtpResponse>;
 
   /** Verifies register process by OTP code */
 
@@ -70,6 +74,10 @@ export interface AuthServiceClient {
   /** Revalidate account session */
 
   revalidateSession(request: RevalidateSessionRequest): Observable<AuthResponse>;
+
+  /** Resend OTP code for registration */
+
+  resendRegisterOtp(request: ResendOTPRegisterRequest): Observable<SendOtpResponse>;
 }
 
 /** Auth rpc */
@@ -79,7 +87,7 @@ export interface AuthServiceController {
 
   sendRegisterOtp(
     request: RegisterSendOtpRequest,
-  ): Promise<RegisterSendOtpResponse> | Observable<RegisterSendOtpResponse> | RegisterSendOtpResponse;
+  ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
 
   /** Verifies register process by OTP code */
 
@@ -92,11 +100,23 @@ export interface AuthServiceController {
   /** Revalidate account session */
 
   revalidateSession(request: RevalidateSessionRequest): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
+
+  /** Resend OTP code for registration */
+
+  resendRegisterOtp(
+    request: ResendOTPRegisterRequest,
+  ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["sendRegisterOtp", "verifyRegisterOtp", "login", "revalidateSession"];
+    const grpcMethods: string[] = [
+      "sendRegisterOtp",
+      "verifyRegisterOtp",
+      "login",
+      "revalidateSession",
+      "resendRegisterOtp",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

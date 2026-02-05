@@ -2,9 +2,10 @@ import type {
 	AuthResponse,
 	LoginRequest,
 	RegisterSendOtpRequest,
-	RegisterSendOtpResponse,
 	RegisterVerifyOtpRequest,
-	RevalidateSessionRequest
+	ResendOTPRegisterRequest,
+	RevalidateSessionRequest,
+	SendOtpResponse
 } from '@jrai/contracts/gen/auth'
 import { Controller } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
@@ -18,8 +19,15 @@ export class AuthController {
 	@GrpcMethod('AuthService', 'SendRegisterOtp')
 	public async sendRegisterOtp(
 		request: RegisterSendOtpRequest
-	): Promise<RegisterSendOtpResponse> {
+	): Promise<SendOtpResponse> {
 		return await this.authService.sendOTPRegister(request)
+	}
+
+	@GrpcMethod('AuthService', 'ResendRegisterOtp')
+	public async resendRegisterOtp(
+		request: ResendOTPRegisterRequest
+	): Promise<SendOtpResponse> {
+		return await this.authService.resendOTPRegister(request)
 	}
 
 	@GrpcMethod('AuthService', 'VerifyRegisterOtp')

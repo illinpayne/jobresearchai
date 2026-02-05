@@ -21,6 +21,21 @@ export class OtpService {
 		}
 	}
 
+	public async resend(key: string, type: string): Promise<OTPGeneratedCode> {
+		const storedCode = await this.redis.get(`otp:${type}:${key}`)
+		if (storedCode) {
+			throw new GrpcException(RpcStatus.ABORTED, 'Resend not allowed yet')
+		}
+
+		const { code, hash } = this.generateCode()
+		await this.redis.set(`otp:${type}:${key}`, hash, 'EX', 300)
+
+		return {
+			code,
+			hash
+		}
+	}
+
 	public async verify(
 		key: string,
 		type: string,

@@ -33,6 +33,7 @@ import { CookieService } from '@/infrastructure/cookie-service/cookie-service.se
 
 import { AuthClientGrpc } from './auth.grpc'
 import { LoginDto } from './dtos/login.dto'
+import { ResendOtpDto } from './dtos/resend-otp.dto'
 import { SendOtpRegisterDto } from './dtos/send-otp-register.dto'
 import { VerifyOTPRegister } from './dtos/verify-otp-register.dto'
 import { AuthResponse } from './responses/auth.response'
@@ -64,6 +65,28 @@ export class AuthController {
 	async sendRegisterOTP(@Body() dto: SendOtpRegisterDto) {
 		return await this.client.call(
 			'sendRegisterOtp',
+			dto as RegisterSendOtpRequest
+		)
+	}
+
+	@ApiOperation({
+		summary: 'Resend otp code for register',
+		description: 'Sends OTP code to the email for verify'
+	})
+	@ApiOkResponse({
+		description: 'Returns status and message',
+		type: SendOtpRegisterResponse
+	})
+	@ApiNotFoundResponse({ description: 'Account not found' })
+	@ApiConflictResponse({
+		description: 'Resend not allowed yet, Account already created'
+	})
+	@ApiInternalServerErrorResponse({ description: 'Failed to send OTP' })
+	@Post('resend-otp-register')
+	@HttpCode(HttpStatus.OK)
+	async resendRegisterOTP(@Body() dto: ResendOtpDto) {
+		return await this.client.call(
+			'resendRegisterOtp',
 			dto as RegisterSendOtpRequest
 		)
 	}
