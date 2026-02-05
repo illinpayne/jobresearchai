@@ -1,1 +1,1 @@
-export * from './jwt.config-loader';
+export * from './jwt.config-loader'

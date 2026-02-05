@@ -4,6 +4,6 @@ import { nestJsConfig } from '@jrai/linters/nestjs';
 export default [
   ...nestJsConfig,
   {
-    ignores: ['.prettierrc.mjs', 'eslint.config.mjs'],
+    ignores: ['prettier.config.mjs', 'eslint.config.mjs'],
   },
 ];

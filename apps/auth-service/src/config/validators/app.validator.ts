@@ -5,12 +5,12 @@ import {
 	IsOptional,
 	IsString,
 	Max,
-	Min,
-} from 'class-validator';
+	Min
+} from 'class-validator'
 
 export enum Environment {
 	Development = 'development',
-	Production = 'production',
+	Production = 'production'
 }
 
 export class AppValidator {
@@ -18,12 +18,12 @@ export class AppValidator {
 	@Min(0)
 	@Max(65535)
 	@IsOptional()
-	public GRPC_PORT: number;
+	public GRPC_PORT: number
 
 	@IsString()
 	@IsNotEmpty()
-	public GRPC_HOST: string;
+	public GRPC_HOST: string
 
 	@IsEnum(Environment)
-	public NODE_ENV: string;
+	public NODE_ENV: string
 }

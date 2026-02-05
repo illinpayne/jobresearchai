@@ -1,5 +1,4 @@
-
 export interface OTPGeneratedCode {
-	code: string,
+	code: string
 	hash: string
 }

@@ -1,3 +1,3 @@
-export interface JwtConfig { 
+export interface JwtConfig {
 	secret: string
 }

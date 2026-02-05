@@ -1,7 +1,7 @@
 export interface JwtPayload {
-  	id: string
-  	email: string;
-	roles: string[];
+	id: string
+	email: string
+	roles: string[]
 }
 
 export interface JwtRefreshTokenPayload {
@@ -9,6 +9,6 @@ export interface JwtRefreshTokenPayload {
 }
 
 export interface JwtTokens {
-	accessToken: string;
-	refreshToken: string;
+	accessToken: string
+	refreshToken: string
 }

@@ -1,10 +1,18 @@
-import { Module } from '@nestjs/common';
-import { ServiceModule } from './modules/serivice.module'
-import { InfrastructureModule } from './infrastructure/infrastructure.module';
+import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+
 import { appEnv, jwtEnv, redisEnv } from './config/env'
+import { InfrastructureModule } from './infrastructure/infrastructure.module'
+import { ServiceModule } from './modules/serivice.module'
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true, load: [appEnv, jwtEnv, redisEnv] }), ServiceModule, InfrastructureModule],
+	imports: [
+		ConfigModule.forRoot({
+			isGlobal: true,
+			load: [appEnv, jwtEnv, redisEnv]
+		}),
+		ServiceModule,
+		InfrastructureModule
+	]
 })
 export class AppModule {}

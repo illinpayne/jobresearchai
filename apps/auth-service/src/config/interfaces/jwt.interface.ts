@@ -1,5 +1,5 @@
 export interface JwtConfig {
-	jwtSecret: string;
-	accessTokenTTL: string;
-	refreshTokenTTL: string;
+	jwtSecret: string
+	accessTokenTTL: string
+	refreshTokenTTL: string
 }

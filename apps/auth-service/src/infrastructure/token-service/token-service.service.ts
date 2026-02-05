@@ -1,17 +1,25 @@
-import { AllConfigs } from '@/config/interfaces'
-import { JwtRefreshTokenPayload, JwtPayload, JwtTokens } from '@/shared/jwt.types'
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService, TokenExpiredError } from '@nestjs/jwt'
+
+import { AllConfigs } from '@/config/interfaces'
+import {
+	JwtPayload,
+	JwtRefreshTokenPayload,
+	JwtTokens
+} from '@/shared/jwt.types'
 
 @Injectable()
 export class TokenService {
 	private readonly logger = new Logger(TokenService.name)
-	constructor(private readonly jwtService: JwtService, private readonly config: ConfigService<AllConfigs>) {}
+	constructor(
+		private readonly jwtService: JwtService,
+		private readonly config: ConfigService<AllConfigs>
+	) {}
 
 	public generateTokens(payload: JwtPayload): JwtTokens {
 		const accessToken = this.jwtService.sign(payload, {
-			expiresIn: this.config.get('jwt.accessTokenTTL', {infer: true}),
+			expiresIn: this.config.get('jwt.accessTokenTTL', { infer: true })
 		})
 
 		const refreshTokenPayload: JwtRefreshTokenPayload = {
@@ -20,7 +28,9 @@ export class TokenService {
 		const refreshToken = this.jwtService.sign(
 			Object.assign(refreshTokenPayload),
 			{
-				expiresIn: this.config.get('jwt.refreshTokenTTL', {infer: true})
+				expiresIn: this.config.get('jwt.refreshTokenTTL', {
+					infer: true
+				})
 			}
 		)
 
@@ -32,17 +42,16 @@ export class TokenService {
 
 	public verifyToken(refreshToken: string) {
 		try {
-			this.jwtService.verify(refreshToken);
-			return true;
-		 
+			this.jwtService.verify(refreshToken)
+			return true
 		} catch (error: any) {
 			if (error instanceof TokenExpiredError) {
 				this.logger.error(`Expired token [${refreshToken}]`)
 			}
-			return false;
+			return false
 		}
 	}
-	public decodeToken(refreshToken: string) : JwtRefreshTokenPayload {
-		return this.jwtService.decode(refreshToken);
+	public decodeToken(refreshToken: string): JwtRefreshTokenPayload {
+		return this.jwtService.decode(refreshToken)
 	}
 }
