@@ -18,12 +18,10 @@ export class GrpcExceptionFilter implements ExceptionFilter {
 			const status = grpcToHttpStatus[exception.code] || 500
 
 			//TODO: Typize this stuff
-			return response
-				.status(status)
-				.json({
-					statusCode: status,
-					message: exception.details || 'Service unavailable'
-				})
+			return response.status(status).json({
+				statusCode: status,
+				message: exception.details || 'Service unavailable'
+			})
 		}
 
 		if (exception instanceof HttpException) {
