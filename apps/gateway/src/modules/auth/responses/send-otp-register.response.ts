@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-export class SendOtpRegisterResponse {
+export class SendOtpResponse {
 	@ApiProperty({ type: Boolean, default: true })
 	status: boolean
 

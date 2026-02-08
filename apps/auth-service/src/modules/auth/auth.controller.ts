@@ -1,9 +1,11 @@
 import type {
 	AuthResponse,
+	ForgotPasswordRequest,
 	LoginRequest,
 	RegisterSendOtpRequest,
 	RegisterVerifyOtpRequest,
 	ResendOTPRegisterRequest,
+	ResetPasswordRequest,
 	RevalidateSessionRequest,
 	SendOtpResponse
 } from '@jrai/contracts/gen/auth'
@@ -47,5 +49,19 @@ export class AuthController {
 		request: RevalidateSessionRequest
 	): Promise<AuthResponse> {
 		return await this.authService.revalidateSession(request)
+	}
+
+	@GrpcMethod('AuthService', 'ForgotPassword')
+	public async forgotPassword(
+		request: ForgotPasswordRequest
+	): Promise<SendOtpResponse> {
+		return await this.authService.forgotPassword(request)
+	}
+
+	@GrpcMethod('AuthService', 'ResetPassword')
+	public async resetPassword(
+		request: ResetPasswordRequest
+	): Promise<SendOtpResponse> {
+		return await this.authService.resetPassword(request)
 	}
 }

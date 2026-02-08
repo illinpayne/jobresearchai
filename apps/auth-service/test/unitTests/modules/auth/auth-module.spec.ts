@@ -64,6 +64,8 @@ describe('Otp Module', () => {
 	}
 
 	beforeEach(async () => {
+		jest.spyOn(console, 'log').mockImplementation(() => {})
+
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				ConfigService,
@@ -351,6 +353,103 @@ describe('Otp Module', () => {
 			})
 		} catch (error) {
 			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should send otp for forgot password', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'send').mockResolvedValue({
+			hash: 'somehash',
+			code: '1234'
+		})
+
+		const response = await service.forgotPassword({
+			email: account.email
+		})
+		expect(response).toEqual({
+			status: true,
+			message: `OTP code was sent on the ${account.email}`
+		})
+	})
+
+	it('Should throw not found while sending otp for forgot password', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+
+		try {
+			await service.forgotPassword({
+				email: account.email
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should reset password', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		;(argon2.hash as jest.Mock).mockResolvedValue('newhashpassword')
+		jest.spyOn(accountRepository, 'updateAccount').mockResolvedValue({
+			...account,
+			passwordHash: 'newhashpassword'
+		})
+
+		const response = await service.resetPassword({
+			email: account.email,
+			code: '123456',
+			newPassword: 'newplaintextpassword'
+		})
+		expect(response).toEqual({
+			status: true,
+			message: `Password was successfully reset`
+		})
+	})
+
+	it('Should throw not valid code while resetting password', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(false)
+
+		try {
+			await service.resetPassword({
+				email: account.email,
+				code: '123456',
+				newPassword: 'newplaintextpassword'
+			})
+		} catch (error) {
+			expectInvalidArgument(error, 'Code is not valid')
+		}
+	})
+
+	it('Should throw not found account while resetting password', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+
+		try {
+			await service.resetPassword({
+				email: account.email,
+				code: '123456',
+				newPassword: 'newplaintextpassword'
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should throw cannot reset password while resetting password', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		;(argon2.hash as jest.Mock).mockResolvedValue('newhashpassword')
+		jest.spyOn(accountRepository, 'updateAccount').mockRejectedValue(
+			new Error('Update error')
+		)
+
+		try {
+			await service.resetPassword({
+				email: account.email,
+				code: '123456',
+				newPassword: 'newplaintextpassword'
+			})
+		} catch (error) {
+			expectAborted(error, 'Cannot reset password')
 		}
 	})
 })

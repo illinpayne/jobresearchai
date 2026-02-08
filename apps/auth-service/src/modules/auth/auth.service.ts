@@ -1,10 +1,12 @@
 import type {
 	AuthResponse,
+	ForgotPasswordRequest,
 	Account as GrpcAccount,
 	LoginRequest,
 	RegisterSendOtpRequest,
 	RegisterVerifyOtpRequest,
 	ResendOTPRegisterRequest,
+	ResetPasswordRequest,
 	RevalidateSessionRequest,
 	SendOtpResponse
 } from '@jrai/contracts/gen/auth'
@@ -172,6 +174,66 @@ export class AuthService {
 		}
 
 		return this.generateJwt(findAccount)
+	}
+
+	public async forgotPassword(
+		request: ForgotPasswordRequest
+	): Promise<SendOtpResponse> {
+		const { email } = request
+
+		const findAccount = await this.accountRepository.getByEmail(email)
+		if (!findAccount) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
+		}
+
+		const codes = await this.otpService.send(email, 'forgot-password')
+
+		//TODO: make send code via notification microservice
+		// eslint-disable-next-line no-console
+		console.log(codes.code)
+
+		return {
+			status: true,
+			message: `OTP code was sent on the ${email}`
+		}
+	}
+
+	public async resetPassword(
+		request: ResetPasswordRequest
+	): Promise<SendOtpResponse> {
+		const { email, code, newPassword } = request
+		const isCodeValid = await this.otpService.verify(
+			email,
+			'forgot-password',
+			code
+		)
+		if (!isCodeValid) {
+			throw new GrpcException(
+				RpcStatus.INVALID_ARGUMENT,
+				'Code is not valid'
+			)
+		}
+
+		const findAccount = await this.accountRepository.getByEmail(email)
+		if (!findAccount) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
+		}
+
+		const newPasswordHash = await hash(newPassword)
+
+		try {
+			await this.accountRepository.updateAccount(
+				{ email },
+				{ passwordHash: newPasswordHash }
+			)
+		} catch (error) {
+			throw new GrpcException(RpcStatus.ABORTED, 'Cannot reset password')
+		}
+
+		return {
+			status: true,
+			message: 'Password was successfully reset'
+		}
 	}
 
 	private generateJwt(account: Account): AuthResponse {

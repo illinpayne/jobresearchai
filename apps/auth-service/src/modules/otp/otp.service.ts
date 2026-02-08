@@ -56,7 +56,7 @@ export class OtpService {
 			)
 		}
 
-		await this.redis.del(`otp"${type}:${key}`)
+		await this.redis.del(`otp:${type}:${key}`)
 
 		return true
 	}

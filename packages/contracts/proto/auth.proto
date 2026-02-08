@@ -15,6 +15,10 @@ service AuthService {
 	rpc RevalidateSession(RevalidateSessionRequest) returns (AuthResponse);
 	// Resend OTP code for registration
 	rpc ResendRegisterOtp(ResendOTPRegisterRequest) returns (SendOtpResponse);
+	// Sends OTP code for reset password
+	rpc ForgotPassword(ForgotPasswordRequest) returns (SendOtpResponse);
+	// Reset password by OTP code
+	rpc ResetPassword(ResetPasswordRequest) returns (SendOtpResponse);
 }
 
 message RegisterSendOtpRequest {
@@ -61,4 +65,12 @@ message RevalidateSessionRequest {
 	string refresh_token = 1;
 }
 
+message ForgotPasswordRequest {
+	string email = 1;
+}
 
+message ResetPasswordRequest {
+	string email = 1;
+	string code = 2;
+	string new_password = 3;
+}

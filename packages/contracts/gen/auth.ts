@@ -54,6 +54,16 @@ export interface RevalidateSessionRequest {
   refreshToken: string;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  code: string;
+  newPassword: string;
+}
+
 export const AUTH_V1_PACKAGE_NAME = "auth.v1";
 
 /** Auth rpc */
@@ -78,6 +88,14 @@ export interface AuthServiceClient {
   /** Resend OTP code for registration */
 
   resendRegisterOtp(request: ResendOTPRegisterRequest): Observable<SendOtpResponse>;
+
+  /** Sends OTP code for reset password */
+
+  forgotPassword(request: ForgotPasswordRequest): Observable<SendOtpResponse>;
+
+  /** Reset password by OTP code */
+
+  resetPassword(request: ResetPasswordRequest): Observable<SendOtpResponse>;
 }
 
 /** Auth rpc */
@@ -106,6 +124,18 @@ export interface AuthServiceController {
   resendRegisterOtp(
     request: ResendOTPRegisterRequest,
   ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
+
+  /** Sends OTP code for reset password */
+
+  forgotPassword(
+    request: ForgotPasswordRequest,
+  ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
+
+  /** Reset password by OTP code */
+
+  resetPassword(
+    request: ResetPasswordRequest,
+  ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
 }
 
 export function AuthServiceControllerMethods() {
@@ -116,6 +146,8 @@ export function AuthServiceControllerMethods() {
       "login",
       "revalidateSession",
       "resendRegisterOtp",
+      "forgotPassword",
+      "resetPassword",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

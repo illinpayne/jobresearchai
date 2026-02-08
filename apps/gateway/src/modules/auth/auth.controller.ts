@@ -1,7 +1,9 @@
 import {
+	ForgotPasswordRequest,
 	LoginRequest,
 	RegisterSendOtpRequest,
 	RegisterVerifyOtpRequest,
+	ResetPasswordRequest,
 	RevalidateSessionRequest
 } from '@jrai/contracts/gen/auth'
 import {
@@ -33,13 +35,17 @@ import { CookieType } from '@/common/enums/cookie.enum'
 import { CookieService } from '@/infrastructure/cookie-service/cookie-service.service'
 
 import { AuthClientGrpc } from './auth.grpc'
-import { LoginDto } from './dtos/login.dto'
-import { ResendOtpDto } from './dtos/resend-otp.dto'
-import { SendOtpRegisterDto } from './dtos/send-otp-register.dto'
-import { VerifyOTPRegister } from './dtos/verify-otp-register.dto'
+import {
+	ForgotPasswordDto,
+	LoginDto,
+	ResendOtpDto,
+	ResetPasswordDto,
+	SendOtpRegisterDto,
+	VerifyOTPRegister
+} from './dtos'
 import { AuthResponse } from './responses/auth.response'
 import { LogoutResponse } from './responses/logout.response'
-import { SendOtpRegisterResponse } from './responses/send-otp-register.response'
+import { SendOtpResponse } from './responses/send-otp-register.response'
 
 @Controller('auth')
 export class AuthController {
@@ -55,7 +61,7 @@ export class AuthController {
 	})
 	@ApiOkResponse({
 		description: 'Returns status and message',
-		type: SendOtpRegisterResponse
+		type: SendOtpResponse
 	})
 	@ApiConflictResponse({
 		description: 'Account already exist, Cannot create account'
@@ -76,7 +82,7 @@ export class AuthController {
 	})
 	@ApiOkResponse({
 		description: 'Returns status and message',
-		type: SendOtpRegisterResponse
+		type: SendOtpResponse
 	})
 	@ApiNotFoundResponse({ description: 'Account not found' })
 	@ApiConflictResponse({
@@ -198,6 +204,48 @@ export class AuthController {
 	public logout(@Res({ passthrough: true }) res: Response) {
 		this.cookieService.removeCookie(res, CookieType.REFRESH_TOKEN)
 		return { status: HttpStatus.OK }
+	}
+
+	@ApiOperation({
+		summary: 'Forgot password',
+		description: 'Sends an OTP code to the user email for password reset'
+	})
+	@ApiOkResponse({
+		description: 'Successfully sent forgot password OTP code',
+		type: SendOtpResponse
+	})
+	@ApiNotFoundResponse({ description: 'Account not found' })
+	@Post('forgot-password')
+	@HttpCode(HttpStatus.OK)
+	public async forgotPassword(@Body() dto: ForgotPasswordDto) {
+		return await this.client.call(
+			'forgotPassword',
+			dto as ForgotPasswordRequest
+		)
+	}
+
+	@ApiOperation({
+		summary: 'Reset password',
+		description:
+			'Resets the password for the account with provided email, code and new password'
+	})
+	@ApiOkResponse({
+		description: 'Successfully reset password',
+		type: SendOtpResponse
+	})
+	@ApiBadRequestResponse({ description: 'Code is not valid' })
+	@ApiNotFoundResponse({ description: 'Account not found' })
+	@ApiConflictResponse({
+		description:
+			'Cannot reset password, Expired code, Invalid or expired code'
+	})
+	@Post('reset-password')
+	@HttpCode(HttpStatus.OK)
+	public async resetPassword(@Body() dto: ResetPasswordDto) {
+		return await this.client.call(
+			'resetPassword',
+			dto as ResetPasswordRequest
+		)
 	}
 
 	private passTokenViaCookies(
