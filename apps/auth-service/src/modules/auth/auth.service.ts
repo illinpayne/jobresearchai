@@ -103,7 +103,10 @@ export class AuthService {
 			code
 		)
 		if (!isCodeValid) {
-			throw new GrpcException(RpcStatus.ABORTED, 'Code is not valid')
+			throw new GrpcException(
+				RpcStatus.INVALID_ARGUMENT,
+				'Code is not valid'
+			)
 		}
 
 		const findAccount = await this.accountRepository.getByEmail(email)
@@ -111,13 +114,16 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
 		}
 
-		const verifiedAccount = await this.accountRepository.updateAccount(
-			{ email },
-			{ isAuthVerified: true, isEmailVerified: true }
-		)
-
-		const getTokens = this.generateJwt(verifiedAccount)
-		return getTokens
+		try {
+			const verifiedAccount = await this.accountRepository.updateAccount(
+				{ email },
+				{ isAuthVerified: true, isEmailVerified: true }
+			)
+			const getTokens = this.generateJwt(verifiedAccount)
+			return getTokens
+		} catch (error) {
+			throw new GrpcException(RpcStatus.ABORTED, 'Cannot verify account')
+		}
 	}
 
 	public async login(request: LoginRequest): Promise<AuthResponse> {

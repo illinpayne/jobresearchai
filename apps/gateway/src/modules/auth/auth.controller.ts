@@ -17,6 +17,7 @@ import {
 	UnauthorizedException
 } from '@nestjs/common'
 import {
+	ApiBadRequestResponse,
 	ApiBearerAuth,
 	ApiConflictResponse,
 	ApiInternalServerErrorResponse,
@@ -99,7 +100,8 @@ export class AuthController {
 		description: 'Returns authentication response',
 		type: AuthResponse
 	})
-	@ApiConflictResponse({ description: 'Code is not valid' })
+	@ApiConflictResponse({ description: 'Cannot verify account' })
+	@ApiBadRequestResponse({ description: 'Code is not valid' })
 	@ApiNotFoundResponse({
 		description: 'Account not found'
 	})

@@ -1,0 +1,356 @@
+import { RpcStatus } from '@jrai/contracts/grpc'
+import { ConfigService } from '@nestjs/config'
+import { JwtService } from '@nestjs/jwt'
+import { RpcException } from '@nestjs/microservices'
+import { Test, TestingModule } from '@nestjs/testing'
+import type { Account } from '@prisma/generated/client'
+import * as argon2 from 'argon2'
+
+import { PrismaService } from '@/infrastructure/prisma/prisma.service'
+import { RedisService } from '@/infrastructure/redis/redis.service'
+import { TokenService } from '@/infrastructure/token-service/token-service.service'
+import { AccountRepository } from '@/modules/account/account.repository'
+import { AuthService } from '@/modules/auth/auth.service'
+import { OtpService } from '@/modules/otp/otp.service'
+
+import {
+	expectAborted,
+	expectAlreadyExist,
+	expectInvalidArgument,
+	expectNotFound,
+	expectUnauthenticated
+} from '../../../shared'
+
+jest.mock('argon2', () => ({
+	verify: jest.fn(),
+	hash: jest.fn()
+}))
+jest.mock('@/infrastructure/prisma/prisma.service', () => {
+	return {
+		PrismaService: jest.fn().mockImplementation(() => mockPrisma)
+	}
+})
+const mockPrisma = {
+	account: {
+		findUnique: jest.fn(),
+		create: jest.fn(),
+		updateAccount: jest.fn()
+	}
+}
+const mockRedis = {
+	get: jest.fn(),
+	del: jest.fn(),
+	set: jest.fn()
+}
+
+describe('Otp Module', () => {
+	let service: AuthService
+	let otpService: OtpService
+	let accountRepository: AccountRepository
+	let tokenService: TokenService
+
+	let account: Account = {
+		id: 'userId',
+		email: 'mock@gmail.com',
+		passwordHash: 'hashpassword',
+		firstName: 'Vito',
+		secondName: 'Cornleone',
+		avatar: 'https://jrai.s3.amazonaws.com/avatars/default.png',
+		isAuthVerified: true,
+		role: 'CUSTOMER',
+		isEmailVerified: true,
+		createdAt: new Date('2026-01-01T00:00:00.000Z'),
+		updatedAt: new Date('2026-01-01T00:00:00.000Z')
+	}
+
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [
+				ConfigService,
+				AuthService,
+				TokenService,
+				AccountRepository,
+				OtpService,
+				JwtService,
+				{
+					provide: PrismaService,
+					useValue: mockPrisma
+				},
+				{
+					provide: RedisService,
+					useValue: mockRedis
+				}
+			]
+		}).compile()
+
+		service = module.get<AuthService>(AuthService)
+		otpService = module.get<OtpService>(OtpService)
+		accountRepository = module.get<AccountRepository>(AccountRepository)
+		tokenService = module.get<TokenService>(TokenService)
+	})
+
+	afterEach(() => {
+		jest.restoreAllMocks()
+	})
+
+	it('Should send otp code for register', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		;(argon2.hash as jest.Mock).mockResolvedValue(account.passwordHash)
+		jest.spyOn(accountRepository, 'createAccount').mockResolvedValue(
+			account
+		)
+		jest.spyOn(otpService, 'send').mockResolvedValue({
+			hash: 'somehash',
+			code: '1234'
+		})
+
+		const response = await service.sendOTPRegister({
+			email: account.email,
+			firstName: account.firstName,
+			secondName: account.secondName,
+			password: 'plaintextpassword'
+		})
+
+		expect(response).toEqual({
+			status: true,
+			message: `OTP code was sent on the ${account.email}`
+		})
+	})
+
+	it('Should throw already exist error when sending register otp', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+
+		try {
+			await service.sendOTPRegister({
+				email: account.email,
+				firstName: account.firstName,
+				secondName: account.secondName,
+				password: 'plaintextpassword'
+			})
+		} catch (error) {
+			expectAlreadyExist(error, 'Account already exists')
+		}
+	})
+
+	it('Should resend otp register', async () => {
+		const modifiedAccount = { ...account, isAuthVerified: false }
+		mockPrisma.account.findUnique.mockResolvedValue(modifiedAccount)
+		;(argon2.hash as jest.Mock).mockResolvedValue(account.passwordHash)
+
+		jest.spyOn(otpService, 'send').mockResolvedValue({
+			hash: 'somehash',
+			code: '1234'
+		})
+		const response = await service.resendOTPRegister({
+			email: account.email
+		})
+		expect(response).toEqual({
+			status: true,
+			message: `OTP code was sent on the ${account.email}`
+		})
+	})
+
+	it('Should throw not found while resending otp register', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+
+		try {
+			await service.resendOTPRegister({
+				email: account.email
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should throw already exist while resending otp register', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+
+		try {
+			await service.resendOTPRegister({
+				email: account.email
+			})
+		} catch (error) {
+			expectAlreadyExist(error, 'Account already created')
+		}
+	})
+
+	it('Should verify registration', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		jest.spyOn(accountRepository, 'updateAccount').mockResolvedValue({
+			...account
+		})
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		const response = await service.verifyRegisterAccount({
+			email: account.email,
+			code: '123456'
+		})
+		expect(response.accessToken).toBe('accesstoken')
+		expect(response.account?.email).toBe(account.email)
+		expect(response.account?.firstName).toBe(account.firstName)
+		expect(response.account?.secondName).toBe(account.secondName)
+		expect(response.account?.avatar).toBe(account.avatar)
+		expect(response.account?.isEmailVerified).toBe(account.isEmailVerified)
+	})
+
+	it('Should throw not valid code while verifying registration', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(false)
+
+		try {
+			await service.verifyRegisterAccount({
+				email: account.email,
+				code: '123456'
+			})
+		} catch (error) {
+			expectInvalidArgument(error, 'Code is not valid')
+		}
+	})
+
+	it('Should throw not found account while verifying registration', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		try {
+			await service.verifyRegisterAccount({
+				email: account.email,
+				code: '123456'
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should throw cannot verify account while verifying registration', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		mockPrisma.account.updateAccount.mockRejectedValue(
+			new Error('Update error')
+		)
+		try {
+			await service.verifyRegisterAccount({
+				email: account.email,
+				code: '123456'
+			})
+		} catch (error) {
+			expectAborted(error, 'Cannot verify account')
+		}
+	})
+
+	it('Should login', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		mockPrisma.account.updateAccount.mockRejectedValue(
+			new Error('Update error')
+		)
+		;(argon2.verify as jest.Mock).mockResolvedValue(true)
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		const response = await service.login({
+			email: account.email,
+			password: 'plaintextpassword'
+		})
+		expect(response.accessToken).toBe('accesstoken')
+		expect(response.account?.email).toBe(account.email)
+		expect(response.account?.firstName).toBe(account.firstName)
+		expect(response.account?.secondName).toBe(account.secondName)
+		expect(response.account?.avatar).toBe(account.avatar)
+		expect(response.account?.isEmailVerified).toBe(account.isEmailVerified)
+	})
+
+	it('Should throw not found account while login', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+
+		try {
+			await service.login({
+				email: account.email,
+				password: 'plaintextpassword'
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should throw not complete registration while login', async () => {
+		const modifiedAccount = { ...account, isAuthVerified: false }
+		mockPrisma.account.findUnique.mockResolvedValue(modifiedAccount)
+
+		try {
+			await service.login({
+				email: account.email,
+				password: 'plaintextpassword'
+			})
+		} catch (error) {
+			expectAborted(error, 'Account is not completely registered')
+		}
+	})
+
+	it('Should throw passwoord not valid while login', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		;(argon2.verify as jest.Mock).mockResolvedValue(false)
+
+		try {
+			await service.login({
+				email: account.email,
+				password: 'plaintextpassword'
+			})
+		} catch (error) {
+			expectAborted(error, 'Password is not valid')
+		}
+	})
+
+	it('Should revalidate session', async () => {
+		jest.spyOn(tokenService, 'verifyToken').mockReturnValue(true)
+		jest.spyOn(tokenService, 'decodeToken').mockReturnValue({
+			sub: account.id
+		})
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		const response = await service.revalidateSession({
+			refreshToken: 'sometoken'
+		})
+		expect(response.accessToken).toBe('accesstoken')
+		expect(response.account?.email).toBe(account.email)
+		expect(response.account?.firstName).toBe(account.firstName)
+		expect(response.account?.secondName).toBe(account.secondName)
+		expect(response.account?.avatar).toBe(account.avatar)
+		expect(response.account?.isEmailVerified).toBe(account.isEmailVerified)
+	})
+
+	it('Should throw not valid token while revalidate session', async () => {
+		jest.spyOn(tokenService, 'verifyToken').mockReturnValue(false)
+
+		try {
+			await service.revalidateSession({
+				refreshToken: 'sometoken'
+			})
+		} catch (error) {
+			expectUnauthenticated(error, 'Session expired. Please login again')
+		}
+	})
+
+	it('Should throw not found exception while revalidate session', async () => {
+		jest.spyOn(tokenService, 'verifyToken').mockReturnValue(true)
+		jest.spyOn(tokenService, 'decodeToken').mockReturnValue({
+			sub: account.id
+		})
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+
+		try {
+			await service.revalidateSession({
+				refreshToken: 'sometoken'
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+})
