@@ -33,7 +33,7 @@ async function bootstrap() {
 
 	const document = SwaggerModule.createDocument(app, swaggerConfig)
 	SwaggerModule.setup('/docs', app, document, {
-		yamlDocumentUrl: 'swagger.yaml'
+		yamlDocumentUrl: 'openapi.yaml'
 	})
 
 	app.useGlobalFilters(new GrpcExceptionFilter())

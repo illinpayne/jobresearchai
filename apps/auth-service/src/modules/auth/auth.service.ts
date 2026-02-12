@@ -186,7 +186,7 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
 		}
 
-		const codes = await this.otpService.send(email, 'forgot-password')
+		const codes = await this.otpService.resend(email, 'forgot-password')
 
 		//TODO: make send code via notification microservice
 		// eslint-disable-next-line no-console

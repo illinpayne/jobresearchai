@@ -1,0 +1,135 @@
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
+import { LoaderCircle } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useLogin } from '@/api/hooks/useLogin.hook';
+import { instance } from '@/api/instance';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { FormInputError } from '@/components/ui/formInputError';
+import { Input } from '@/components/ui/input';
+import { ROUTES } from '@/constants';
+import { accountCacheKey, CacheAccount } from '@/lib/cache';
+import { setSessionToken } from '@/lib/cookies';
+import { cn } from '@/lib/utils';
+import { AuthWrapper } from './auth-wrapper';
+
+const loginSchema = z.object({
+  email: z.email({ message: 'Enter correct email address' }),
+  password: z
+    .string()
+    .min(6, { message: 'Password must be at least 6 characters long' })
+    .max(32, { message: 'Password must be no more than 32 characters long' }),
+});
+
+export type Login = z.infer<typeof loginSchema>;
+
+export function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+
+  const { mutateAsync, isPending } = useLogin({
+    //TODO: onSuccess here and send-otp-register-form should use DRY princ.
+    async onSuccess(data) {
+      const { accessToken } = data;
+      if (accessToken && typeof accessToken === 'string') {
+        setSessionToken(accessToken);
+        instance.defaults.headers['Authorization'] = data.accessToken;
+        const cacheData = CacheAccount(data.account);
+
+        localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
+        queryClient.setQueryData(['account'], data.account, { updatedAt: Date.now() });
+
+        const { toast } = await import('sonner');
+        toast.success('Logged in successfully');
+
+        const redirectTo = searchParams.get('redirectTo') || ROUTES.OVERVIEW;
+        router.push(redirectTo);
+      }
+    },
+    async onError(error: any) {
+      const { toast } = await import('sonner');
+      toast.error(error.response?.data?.message ?? 'Error during login');
+    },
+  });
+
+  async function onSubmit(values: Login) {
+    await mutateAsync({
+      email: values.email,
+      password: values.password,
+    });
+  }
+
+  const { register, handleSubmit, formState } = useForm<Login>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  return (
+    <div className='h-screen overflow-hidden bg-linear-180 from-sky-400/40 via-white to-white grid grid-cols-7'>
+      <div className='col-span-3 flex flex-col justify-center px-4'>
+        <AuthWrapper heading='Sign in'>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className='flex flex-col gap-4 min-w-102'>
+            <div>
+              <label htmlFor='email'>Email</label>
+              <Input
+                type='email'
+                id='email'
+                disabled={isPending}
+                {...register('email')}
+                aria-invalid={!!formState.errors.email}
+                placeholder='tony.soprano@jrai.com'
+              />
+              <FormInputError>{formState.errors.email?.message}</FormInputError>
+            </div>
+            <div>
+              <label htmlFor='email'>Password</label>
+              <Input
+                disabled={isPending}
+                type='password'
+                {...register('password')}
+              />
+              <FormInputError>{formState.errors.password?.message}</FormInputError>
+              <Link
+                href={ROUTES.AUTH.FORGOT_PASSWORD}
+                className={cn(buttonVariants({ variant: 'link' }), 'px-0 w-fit')}>
+                Forgot password?
+              </Link>
+            </div>
+            <Button
+              type='submit'
+              disabled={isPending || !formState.isValid}>
+              {isPending ? <LoaderCircle className='animate-spin size-6' /> : 'Sign in'}
+            </Button>
+          </form>
+          <p className='text-center text-sm'>
+            Don't have an account?{' '}
+            <Link
+              href={ROUTES.AUTH.SIGNUP}
+              className={cn(buttonVariants({ variant: 'link' }), 'px-0')}>
+              Sign up
+            </Link>
+          </p>
+        </AuthWrapper>
+      </div>
+      <div className='col-span-4 overflow-hidden relative'>
+        <Image
+          src='/images/bg-auth.png'
+          alt='Background'
+          className='h-full w-full object-cover opacity-80'
+          fill
+        />
+      </div>
+    </div>
+  );
+}

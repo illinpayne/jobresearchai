@@ -8,6 +8,7 @@ export function getCorsConfig(config: ConfigService<AllConfigs>): CorsOptions {
 		origin: (
 			config.get('app.allowed_origins', { infer: true }) as string
 		).split(','),
-		methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
+		methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+		credentials: true
 	}
 }
