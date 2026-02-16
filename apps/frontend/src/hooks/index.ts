@@ -1,1 +1,1 @@
-export * from "./useOtpTimer.hook";
+export * from './useOtpTimer.hook';

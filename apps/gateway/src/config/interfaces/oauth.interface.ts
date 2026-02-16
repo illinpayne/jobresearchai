@@ -1,5 +1,7 @@
 export interface OAuthConfig {
-	oAuthID: string
-	oAuthSecret: string
-	oAuthCallbackUrl: string
+	clientId: string
+	secret: string
+	callbackUrl: string
+	redirectUrl: string
+	tokenKey: string
 }

@@ -6,10 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import axios from 'axios';
-import type {
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import type {
   AuthResponse,
@@ -20,7 +17,7 @@ import type {
   ResetPasswordDto,
   SendOtpRegisterDto,
   SendOtpResponse,
-  VerifyOTPRegister
+  VerifyOTPRegister,
 } from './';
 
 /**
@@ -28,108 +25,85 @@ import type {
  * @summary Register new account
  */
 export const authControllerSendRegisterOTPV1 = (
-    sendOtpRegisterDto: SendOtpRegisterDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/send-otp-register`,
-      sendOtpRegisterDto,options
-    );
-  }
+  sendOtpRegisterDto: SendOtpRegisterDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/send-otp-register`, sendOtpRegisterDto, options);
+};
 
 /**
  * Sends OTP code to the email for verify
  * @summary Resend otp code for register
  */
 export const authControllerResendRegisterOTPV1 = (
-    resendOtpDto: ResendOtpDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/resend-otp-register`,
-      resendOtpDto,options
-    );
-  }
+  resendOtpDto: ResendOtpDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/resend-otp-register`, resendOtpDto, options);
+};
 
 /**
  * Verifies OTP code and log into account
  * @summary Verify OTP code and log in
  */
 export const authControllerVerifyRegisterOTPV1 = (
-    verifyOTPRegister: VerifyOTPRegister, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AuthResponse>> => {
-    return axios.post(
-      `/v1/auth/verify-otp-register`,
-      verifyOTPRegister,options
-    );
-  }
+  verifyOTPRegister: VerifyOTPRegister,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AuthResponse>> => {
+  return axios.post(`/v1/auth/verify-otp-register`, verifyOTPRegister, options);
+};
 
 /**
  * Login into existing account with defined credentials
  * @summary Login into account
  */
-export const authControllerLoginV1 = (
-    loginDto: LoginDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AuthResponse>> => {
-    return axios.post(
-      `/v1/auth/login`,
-      loginDto,options
-    );
-  }
+export const authControllerLoginV1 = (loginDto: LoginDto, options?: AxiosRequestConfig): Promise<AxiosResponse<AuthResponse>> => {
+  return axios.post(`/v1/auth/login`, loginDto, options);
+};
 
 /**
  * Revalidates the session for the expired one
  * @summary Revalidate session
  */
-export const authControllerRevalidateSessionV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AuthResponse>> => {
-    return axios.post(
-      `/v1/auth/revalidate`,undefined,options
-    );
-  }
+export const authControllerRevalidateSessionV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<AuthResponse>> => {
+  return axios.post(`/v1/auth/revalidate`, undefined, options);
+};
 
 /**
  * Logout from the account
  * @summary Logout session
  */
-export const authControllerLogoutV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LogoutResponse>> => {
-    return axios.post(
-      `/v1/auth/logout`,undefined,options
-    );
-  }
+export const authControllerLogoutV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<LogoutResponse>> => {
+  return axios.post(`/v1/auth/logout`, undefined, options);
+};
 
 /**
  * Sends an OTP code to the user email for password reset
  * @summary Forgot password
  */
 export const authControllerForgotPasswordV1 = (
-    forgotPasswordDto: ForgotPasswordDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/forgot-password`,
-      forgotPasswordDto,options
-    );
-  }
+  forgotPasswordDto: ForgotPasswordDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/forgot-password`, forgotPasswordDto, options);
+};
 
 /**
  * Resets the password for the account with provided email, code and new password
  * @summary Reset password
  */
 export const authControllerResetPasswordV1 = (
-    resetPasswordDto: ResetPasswordDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/reset-password`,
-      resetPasswordDto,options
-    );
-  }
+  resetPasswordDto: ResetPasswordDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/reset-password`, resetPasswordDto, options);
+};
 
-export type AuthControllerSendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerResendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerVerifyRegisterOTPV1Result = AxiosResponse<AuthResponse>
-export type AuthControllerLoginV1Result = AxiosResponse<AuthResponse>
-export type AuthControllerRevalidateSessionV1Result = AxiosResponse<AuthResponse>
-export type AuthControllerLogoutV1Result = AxiosResponse<LogoutResponse>
-export type AuthControllerForgotPasswordV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerResetPasswordV1Result = AxiosResponse<SendOtpResponse>
+export type AuthControllerSendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerResendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerVerifyRegisterOTPV1Result = AxiosResponse<AuthResponse>;
+export type AuthControllerLoginV1Result = AxiosResponse<AuthResponse>;
+export type AuthControllerRevalidateSessionV1Result = AxiosResponse<AuthResponse>;
+export type AuthControllerLogoutV1Result = AxiosResponse<LogoutResponse>;
+export type AuthControllerForgotPasswordV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerResetPasswordV1Result = AxiosResponse<SendOtpResponse>;

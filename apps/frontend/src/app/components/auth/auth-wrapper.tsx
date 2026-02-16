@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { Watermark } from '@/components/ui/watermark';
+import { APP_CONFIG, OAUTH_CONFIG } from '@/constants';
 import { cn } from '@/lib/utils';
 
 interface AuthWrapperProps {
@@ -14,10 +15,10 @@ interface AuthWrapperProps {
 
 export function AuthWrapper({ children, heading, className, isSocialAuth = true }: AuthWrapperProps) {
   function getOAuthURL() {
-    const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
+    const rootUrl = OAUTH_CONFIG.rootUrl;
     const options = {
-      redirect_uri: 'http://localhost:5000/v1/auth/oauth',
-      client_id: process.env.NEXT_PUBLIC_OAUTH_ID as string,
+      redirect_uri: `${APP_CONFIG.apiUrl}${OAUTH_CONFIG.redirectPath}`,
+      client_id: OAUTH_CONFIG.clientUrl as string,
       access_type: 'offline',
       response_type: 'code',
       prompt: 'consent',
@@ -29,7 +30,7 @@ export function AuthWrapper({ children, heading, className, isSocialAuth = true 
   }
 
   return (
-    <div className={`mx-auto flex flex-col gap-4 w-fit ${className || ''}`}>
+    <div className={`mx-auto flex flex-col gap-4 ${className || ''}`}>
       <h1 className='text-4xl font-semibold font-montserrat tracking-tighter text-blue-900'>{heading}</h1>
       {isSocialAuth && (
         <>

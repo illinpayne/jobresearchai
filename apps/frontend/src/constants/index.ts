@@ -1,3 +1,3 @@
-export * from "./app";
-export * from "./routes";
-export * from "./seo";
+export * from './app';
+export * from './routes';
+export * from './seo';

@@ -44,7 +44,7 @@ export function ResetPasswordForm({ email }: IProps) {
   const { mutateAsync, isPending } = useResetPassword({
     async onSuccess() {
       const { toast } = await import('sonner');
-      toast.info('Password reset successfully, you can now sign in with your new password');
+      toast.info('Password reset successfully, sign in with new password');
 
       const redirectTo = ROUTES.AUTH.SIGNIN();
       router.push(redirectTo);

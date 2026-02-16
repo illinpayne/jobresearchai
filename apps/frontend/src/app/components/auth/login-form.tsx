@@ -5,6 +5,7 @@ import { LoaderCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useLogin } from '@/api/hooks/useLogin.hook';
@@ -13,10 +14,13 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/constants';
+import { timerDuration } from '@/constants/times';
+import { useOtpTrigger } from '@/hooks';
 import { accountCacheKey, CacheAccount } from '@/lib/cache';
 import { setSessionToken } from '@/lib/cookies';
 import { cn } from '@/lib/utils';
 import { AuthWrapper } from './auth-wrapper';
+import { SendOtpRegisterForm } from './send-otp-register-form';
 
 const loginSchema = z.object({
   email: z.email({ message: 'Enter correct email address' }),
@@ -32,6 +36,9 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+
+  const [formSubmitted, setFormSubmitted] = React.useState(false);
+  const { startTimer } = useOtpTrigger('register-otp', timerDuration);
 
   const { mutateAsync, isPending } = useLogin({
     //TODO: onSuccess here and send-otp-register-form should use DRY princ.
@@ -53,8 +60,14 @@ export function LoginForm() {
       }
     },
     async onError(error: any) {
+      const message = error.response?.data?.message;
+      if (message === 'Account is not completely registered') {
+        startTimer();
+        setFormSubmitted(true);
+        return;
+      }
       const { toast } = await import('sonner');
-      toast.error(error.response?.data?.message ?? 'Error during login');
+      toast.error(message ?? 'Error during login');
     },
   });
 
@@ -65,7 +78,7 @@ export function LoginForm() {
     });
   }
 
-  const { register, handleSubmit, formState } = useForm<Login>({
+  const { register, handleSubmit, getValues, formState } = useForm<Login>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
@@ -73,10 +86,26 @@ export function LoginForm() {
     },
   });
 
+  if (formSubmitted) {
+    return (
+      <div className='min-h-screen overflow-hidden bg-linear-180 from-sky-400/40 via-white to-white flex justify-center items-center relative'>
+        <div className='w-6 bg-blue-300 h-800 absolute rotate-80 -translate-y-20'></div>
+        <div className='w-6 bg-blue-400 h-800 absolute rotate-80 -translate-y-10'></div>
+        <div className='w-6 bg-blue-600 h-800 absolute rotate-80'></div>
+        <SendOtpRegisterForm
+          duration={timerDuration}
+          email={getValues('email')}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className='h-screen overflow-hidden bg-linear-180 from-sky-400/40 via-white to-white grid grid-cols-7'>
       <div className='col-span-3 flex flex-col justify-center px-4'>
-        <AuthWrapper heading='Sign in'>
+        <AuthWrapper
+          heading='Sign in'
+          className='min-w-[20em]'>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-4 min-w-102'>
@@ -96,6 +125,7 @@ export function LoginForm() {
               <label htmlFor='email'>Password</label>
               <Input
                 disabled={isPending}
+                aria-invalid={!!formState.errors.password}
                 type='password'
                 {...register('password')}
               />

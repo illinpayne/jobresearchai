@@ -1,7 +1,5 @@
-import { RpcStatus } from '@jrai/contracts/grpc'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { RpcException } from '@nestjs/microservices'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Account } from '@prisma/generated/client'
 import * as argon2 from 'argon2'
@@ -43,7 +41,7 @@ const mockRedis = {
 	set: jest.fn()
 }
 
-describe('Otp Module', () => {
+describe('Auth Module', () => {
 	let service: AuthService
 	let otpService: OtpService
 	let accountRepository: AccountRepository
@@ -303,6 +301,95 @@ describe('Otp Module', () => {
 			})
 		} catch (error) {
 			expectAborted(error, 'Password is not valid')
+		}
+	})
+
+	it('Should login with google oauth', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		const response = await service.oAuthSignin({
+			email: account.email,
+			givenName: account.firstName,
+			familyName: account.secondName,
+			picture: account.avatar as string,
+			provider: 'google'
+		})
+		expect(response.accessToken).toBe('accesstoken')
+		expect(response.account?.email).toBe(account.email)
+		expect(response.account?.firstName).toBe(account.firstName)
+		expect(response.account?.secondName).toBe(account.secondName)
+		expect(response.account?.avatar).toBe(account.avatar)
+		expect(response.account?.isEmailVerified).toBe(account.isEmailVerified)
+	})
+
+	it('Should abort if account isnt verified while login with google oauth', async () => {
+		const modifiedAccount = { ...account, isAuthVerified: false }
+		mockPrisma.account.findUnique.mockResolvedValue(modifiedAccount)
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		try {
+			await service.oAuthSignin({
+				email: account.email,
+				givenName: account.firstName,
+				familyName: account.secondName,
+				picture: account.avatar as string,
+				provider: 'google'
+			})
+		} catch (error) {
+			expectAborted(error, 'Account is not completely registered')
+		}
+	})
+
+	it('Should register with google oauth', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		mockPrisma.account.create.mockResolvedValue(account)
+
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		const response = await service.oAuthSignin({
+			email: account.email,
+			givenName: account.firstName,
+			familyName: account.secondName,
+			picture: account.avatar as string,
+			provider: 'google'
+		})
+		expect(response.accessToken).toBe('accesstoken')
+		expect(response.account?.email).toBe(account.email)
+		expect(response.account?.firstName).toBe(account.firstName)
+		expect(response.account?.secondName).toBe(account.secondName)
+		expect(response.account?.avatar).toBe(account.avatar)
+		expect(response.account?.isEmailVerified).toBe(account.isEmailVerified)
+	})
+
+	it('Should abort if regiter error while register with google oauth', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		mockPrisma.account.create.mockResolvedValue(account)
+
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		try {
+			await service.oAuthSignin({
+				email: account.email,
+				givenName: account.firstName,
+				familyName: account.secondName,
+				picture: account.avatar as string,
+				provider: 'google'
+			})
+		} catch (error) {
+			expectAborted(error, 'Cannot register account')
 		}
 	})
 

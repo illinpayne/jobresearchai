@@ -51,7 +51,6 @@ export class AccountController {
 	@Get('me')
 	@HttpCode(HttpStatus.OK)
 	async getMe(@CurrentUser('id') id: string) {
-		console.log('call')
 		return await this.client.call('getMe', { id } as GetMeRequest)
 	}
 

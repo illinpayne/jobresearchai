@@ -20,6 +20,7 @@ import {
 	UnauthorizedException,
 	UseGuards
 } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { AuthGuard } from '@nestjs/passport'
 import {
 	ApiBadRequestResponse,
@@ -35,6 +36,7 @@ import type { Request, Response } from 'express'
 
 import { OAuthUser, Protected } from '@/common/decorators'
 import { CookieType } from '@/common/enums/cookie.enum'
+import { AllConfigs } from '@/config/interfaces'
 import { CookieService } from '@/infrastructure/cookie-service/cookie-service.service'
 
 import { AuthClientGrpc } from './auth.grpc'
@@ -56,7 +58,8 @@ export class AuthController {
 	private readonly logger = new Logger(AuthController.name)
 	public constructor(
 		private readonly client: AuthClientGrpc,
-		private readonly cookieService: CookieService
+		private readonly cookieService: CookieService,
+		private readonly config: ConfigService<AllConfigs>
 	) {}
 
 	@ApiOperation({
@@ -163,14 +166,23 @@ export class AuthController {
 		@OAuthUser() user: GoogleAccount,
 		@Res({ passthrough: true }) res: Response
 	) {
-		const { accessToken, refreshToken } = await this.client.call(
-			'oAuthSignIn',
-			user
-		)
-		this.passTokenViaCookies(res, refreshToken, user.email)
-		res.redirect(
-			`http://localhost:3000/authentication?token='${accessToken}'`
-		)
+		const redirectUrl = this.config.get('oauth.redirectUrl', {
+			infer: true
+		}) as string
+		const tokenKey = this.config.get('oauth.tokenKey', {
+			infer: true
+		}) as string
+
+		try {
+			const { accessToken, refreshToken } = await this.client.call(
+				'oAuthSignIn',
+				user
+			)
+			this.passTokenViaCookies(res, refreshToken, user.email)
+			res.redirect(`${redirectUrl}?${tokenKey}=${accessToken}`)
+		} catch (error) {
+			res.redirect(redirectUrl)
+		}
 	}
 
 	@ApiOperation({

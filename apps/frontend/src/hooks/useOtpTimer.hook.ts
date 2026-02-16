@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 export const useOtpTrigger = (storageKey: string, duration: number) => {
   const startTimer = useCallback(() => {
     localStorage.setItem(storageKey, Date.now().toString());
     localStorage.setItem(`${storageKey}_dur`, duration.toString());
-    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event('storage'));
   }, [storageKey, duration]);
 
   const clearTimer = useCallback(() => {
     localStorage.removeItem(storageKey);
     localStorage.removeItem(`${storageKey}_dur`);
-    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event('storage'));
   }, [storageKey]);
 
   return { startTimer, clearTimer };
@@ -43,7 +43,7 @@ export const useOtpTicker = (storageKey: string) => {
 
   return {
     timeLeft,
-    formattedTime: `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, "0")}`,
+    formattedTime: `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`,
     canResend: timeLeft === 0,
   };
 };

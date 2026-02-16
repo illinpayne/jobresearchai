@@ -10,13 +10,13 @@ import { GoogleAccount } from '@/modules/auth/models/google-user.model'
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 	constructor(private readonly configService: ConfigService<AllConfigs>) {
 		super({
-			clientID: configService.get('oauth.oAuthID', {
+			clientID: configService.get('oauth.clientId', {
 				infer: true
 			}) as string,
-			clientSecret: configService.get('oauth.oAuthSecret', {
+			clientSecret: configService.get('oauth.secret', {
 				infer: true
 			}) as string,
-			callbackURL: configService.get('oauth.oAuthCallbackUrl', {
+			callbackURL: configService.get('oauth.callbackUrl', {
 				infer: true
 			}) as string,
 			scope: ['email', 'profile']

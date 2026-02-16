@@ -12,4 +12,12 @@ export class OAuthValidator {
 	@IsString()
 	@IsNotEmpty()
 	public OAUTH_CALLBACK_URL: string
+
+	@IsString()
+	@IsNotEmpty()
+	public OAUTH_REDIRECT_URL: string
+
+	@IsString()
+	@IsNotEmpty()
+	public OAUTH_TOKEN_KEY: string
 }

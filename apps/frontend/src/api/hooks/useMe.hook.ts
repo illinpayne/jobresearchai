@@ -1,23 +1,10 @@
-import {
-  type UseQueryOptions,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useEffect } from "react";
-import {
-  accountCacheKey,
-  accountCacheStaleTime,
-  CacheAccount,
-} from "@/lib/cache";
-import type { AccountResponse } from "../generated";
-import { getMe } from "../requests/user.req";
+import { type UseQueryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { accountCacheKey, accountCacheStaleTime, CacheAccount } from '@/lib/cache';
+import type { AccountResponse } from '../generated';
+import { getMe } from '../requests/user.req';
 
-export const useMe = (
-  options?: Omit<
-    UseQueryOptions<AccountResponse, unknown>,
-    "queryKey" | "queryFn"
-  >,
-) => {
+export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 'queryKey' | 'queryFn'>) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -25,15 +12,15 @@ export const useMe = (
     if (!saved) return;
     const { data, createdAt } = JSON.parse(saved);
 
-    if (!queryClient.getQueryData(["account"])) {
-      queryClient.setQueryData(["account"], data, {
+    if (!queryClient.getQueryData(['account'])) {
+      queryClient.setQueryData(['account'], data, {
         updatedAt: createdAt,
       });
     }
   }, [queryClient]);
 
   return useQuery({
-    queryKey: ["account"],
+    queryKey: ['account'],
     queryFn: async () => {
       const data = await getMe();
 

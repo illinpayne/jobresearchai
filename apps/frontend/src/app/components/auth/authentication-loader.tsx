@@ -1,9 +1,11 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: Simply for redirection */
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useMe } from '@/api/hooks/useMe.hook';
+import { instance } from '@/api/instance';
 import { setSessionToken } from '@/lib/cookies';
 
 interface Props {
@@ -11,15 +13,28 @@ interface Props {
 }
 
 export default function AuthenticationLoader({ token }: Props) {
-  const { data, isSuccess, isPending, isLoading } = useMe();
+  const { refetch, isPending, isLoading } = useMe({ enabled: false, retry: false });
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (isSuccess && data && token) {
+    const initializeAuth = async () => {
       setSessionToken(token);
-      router.push('/overview');
-    }
-  }, [isSuccess, data]);
+      instance.defaults.headers['Authorization'] = token;
+
+      const { data: userData, isSuccess } = await refetch();
+
+      if (isSuccess && userData) {
+        queryClient.setQueryData(['me'], userData);
+
+        router.push('/overview');
+      }
+    };
+
+    initializeAuth();
+  }, [token, refetch, router, queryClient]);
+
+  console.log('rerenders');
 
   return (
     <div className='h-screen flex justify-center items-center bg-white-200'>

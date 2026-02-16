@@ -1,22 +1,22 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  output: "standalone",
+  output: 'standalone',
   trailingSlash: false,
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "**",
+        protocol: 'https',
+        hostname: '**',
       },
     ],
     dangerouslyAllowSVG: false,
   },
   typedRoutes: false,
   experimental: {
-    optimizePackageImports: ["tailwindcss"],
+    optimizePackageImports: ['tailwindcss'],
     // TODO: Check the size of average resume
     // serverActions: {
     //   bodySizeLimit: "5mb",

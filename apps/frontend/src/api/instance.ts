@@ -1,13 +1,9 @@
-import axios from "axios";
-import { redirect } from "next/navigation";
-import { accountCacheKey } from "@/lib/cache";
-import {
-  getSessionToken,
-  removeSessionToken,
-  setSessionToken,
-} from "@/lib/cookies";
-import { APP_CONFIG } from "../constants/app";
-import { refresh } from "./requests/auth.req";
+import axios from 'axios';
+import { redirect } from 'next/navigation';
+import { accountCacheKey } from '@/lib/cache';
+import { getSessionToken, removeSessionToken, setSessionToken } from '@/lib/cookies';
+import { APP_CONFIG } from '../constants/app';
+import { refresh } from './requests/auth.req';
 
 export const api = axios.create({
   baseURL: APP_CONFIG.apiUrl,
@@ -23,7 +19,7 @@ instance.interceptors.request.use(
   (config) => {
     const token = getSessionToken();
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -46,20 +42,20 @@ instance.interceptors.response.use(
           const newAccessToken = resp.accessToken;
           setSessionToken(newAccessToken);
 
-          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return instance(originalRequest);
         } catch (error) {
           removeSessionToken();
-          if (typeof window !== "undefined") {
+          if (typeof window !== 'undefined') {
             localStorage.removeItem(accountCacheKey);
           }
-          const { toast } = await import("sonner");
-          toast.error("Session expired, redirecting to login...");
+          const { toast } = await import('sonner');
+          toast.error('Session expired, redirecting to login...');
           isRefreshing = true;
           setTimeout(() => {
-            redirect("/signin");
+            redirect('/signin');
           }, 1000);
-          return Promise.reject("Session expired");
+          return Promise.reject('Session expired');
         }
       }
     }
