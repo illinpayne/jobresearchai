@@ -8,12 +8,13 @@ import { OTPGeneratedCode } from '@/shared/otp.types'
 
 @Injectable()
 export class OtpService {
+	private readonly duration = 120
 	public constructor(private readonly redis: RedisService) {}
 
 	public async send(key: string, type: string): Promise<OTPGeneratedCode> {
 		const { code, hash } = this.generateCode()
 
-		await this.redis.set(`otp:${type}:${key}`, hash, 'EX', 300)
+		await this.redis.set(`otp:${type}:${key}`, hash, 'EX', this.duration)
 
 		return {
 			code,
@@ -28,7 +29,7 @@ export class OtpService {
 		}
 
 		const { code, hash } = this.generateCode()
-		await this.redis.set(`otp:${type}:${key}`, hash, 'EX', 300)
+		await this.redis.set(`otp:${type}:${key}`, hash, 'EX', this.duration)
 
 		return {
 			code,

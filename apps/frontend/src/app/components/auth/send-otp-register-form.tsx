@@ -66,14 +66,13 @@ export function SendOtpRegisterForm({ email, duration }: IProps) {
   });
 
   const { mutateAsync: mutateResend } = useResendRegisterOtp({
-    async onSuccess(data) {
+    async onSuccess() {
       const { toast } = await import('sonner');
       toast.success('OTP code resent successfully');
     },
     async onError(error: any) {
       const { toast } = await import('sonner');
       toast.error(error.response?.data?.message ?? 'Error during resending OTP code');
-      reset({ code: '' });
     },
   });
 
@@ -94,6 +93,7 @@ export function SendOtpRegisterForm({ email, duration }: IProps) {
 
   async function onResend() {
     await mutateResend({ email });
+    reset({ code: '' });
   }
 
   return (

@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useMe } from '@/api/hooks/useMe.hook';
 import { instance } from '@/api/instance';
+import { accountCacheKey, CacheAccount } from '@/lib/cache';
+import { refetchSession } from '@/lib/client/session-persist';
 import { setSessionToken } from '@/lib/cookies';
 
 interface Props {
@@ -19,16 +21,28 @@ export default function AuthenticationLoader({ token }: Props) {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      setSessionToken(token);
-      instance.defaults.headers['Authorization'] = token;
-
-      const { data: userData, isSuccess } = await refetch();
-
-      if (isSuccess && userData) {
-        queryClient.setQueryData(['me'], userData);
-
+      const isSuccess = await refetchSession({
+        accessToken: token,
+        queryClient,
+        refetch,
+      });
+      if (isSuccess) {
         router.push('/overview');
       }
+      // setSessionToken(token);
+      // instance.defaults.headers['Authorization'] = token;
+
+      // const { data: userData, isSuccess } = await refetch();
+
+      // if (isSuccess && userData) {
+      //   const cacheData = CacheAccount(userData);
+      //   localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
+      //   queryClient.setQueryData(['account'], userData, {
+      //     updatedAt: Date.now(),
+      //   });
+
+      //   router.push('/overview');
+      // }
     };
 
     initializeAuth();

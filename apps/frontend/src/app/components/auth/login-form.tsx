@@ -14,9 +14,10 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/constants';
-import { timerDuration } from '@/constants/times';
+import { otpCodeDurationSeconds } from '@/constants/times';
 import { useOtpTrigger } from '@/hooks';
 import { accountCacheKey, CacheAccount } from '@/lib/cache';
+import { persistSession } from '@/lib/client/session-persist';
 import { setSessionToken } from '@/lib/cookies';
 import { cn } from '@/lib/utils';
 import { AuthWrapper } from './auth-wrapper';
@@ -38,19 +39,14 @@ export function LoginForm() {
   const queryClient = useQueryClient();
 
   const [formSubmitted, setFormSubmitted] = React.useState(false);
-  const { startTimer } = useOtpTrigger('register-otp', timerDuration);
+  const { startTimer } = useOtpTrigger('register-otp', otpCodeDurationSeconds);
 
   const { mutateAsync, isPending } = useLogin({
     //TODO: onSuccess here and send-otp-register-form should use DRY princ.
     async onSuccess(data) {
-      const { accessToken } = data;
+      const { accessToken, account } = data;
       if (accessToken && typeof accessToken === 'string') {
-        setSessionToken(accessToken);
-        instance.defaults.headers['Authorization'] = data.accessToken;
-        const cacheData = CacheAccount(data.account);
-
-        localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
-        queryClient.setQueryData(['account'], data.account, { updatedAt: Date.now() });
+        persistSession({ accessToken, account, queryClient });
 
         const { toast } = await import('sonner');
         toast.success('Logged in successfully');
@@ -93,7 +89,7 @@ export function LoginForm() {
         <div className='w-6 bg-blue-400 h-800 absolute rotate-80 -translate-y-10'></div>
         <div className='w-6 bg-blue-600 h-800 absolute rotate-80'></div>
         <SendOtpRegisterForm
-          duration={timerDuration}
+          duration={otpCodeDurationSeconds}
           email={getValues('email')}
         />
       </div>

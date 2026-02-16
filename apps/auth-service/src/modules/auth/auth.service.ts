@@ -148,9 +148,7 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.ABORTED, 'Password is not valid')
 		}
 
-		//TODO: refactor return immediately
-		const getTokens = this.generateJwt(findAccount)
-		return getTokens
+		return this.generateJwt(findAccount)
 	}
 
 	public async oAuthSignin(request: GoogleAccount): Promise<AuthResponse> {
@@ -167,9 +165,7 @@ export class AuthService {
 			)
 		}
 
-		//TODO: refactor return immediately
-		const getTokens = this.generateJwt(findAccount)
-		return getTokens
+		return this.generateJwt(findAccount)
 	}
 
 	protected async oAuthSignup(request: GoogleAccount): Promise<AuthResponse> {
@@ -183,9 +179,8 @@ export class AuthService {
 				avatar: request.picture,
 				passwordHash: ''
 			})
-			//TODO: refactor return immediately
-			const getTokens = this.generateJwt(newAccount)
-			return getTokens
+
+			return this.generateJwt(newAccount)
 		} catch (error) {
 			throw new GrpcException(RpcStatus.ABORTED, 'Cannot verify account')
 		}

@@ -1,1 +1,1 @@
-export const timerDuration = 300;
+export const otpCodeDurationSeconds = 120;

@@ -10,7 +10,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/constants';
-import { timerDuration } from '@/constants/times';
+import { otpCodeDurationSeconds } from '@/constants/times';
 import { useOtpTrigger } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { AuthWrapper } from './auth-wrapper';
@@ -38,7 +38,7 @@ export type Register = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const [formSubmitted, setFormSubmitted] = React.useState(false);
-  const { startTimer } = useOtpTrigger('register-otp', timerDuration);
+  const { startTimer } = useOtpTrigger('register-otp', otpCodeDurationSeconds);
 
   const { mutateAsync, isPending } = useSendRegisterOtp({
     async onError(error: any) {
@@ -83,13 +83,13 @@ export function RegisterForm() {
       <div className='w-6 bg-blue-600 h-800 absolute rotate-80'></div>
       {formSubmitted ? (
         <SendOtpRegisterForm
-          duration={timerDuration}
+          duration={otpCodeDurationSeconds}
           email={getValues('email')}
         />
       ) : (
         <AuthWrapper
           heading='Sign up'
-          className='bg-white rounded-md px-10 py-10 shadow-sm z-10'
+          className='bg-white rounded-md max-w-160 px-10 py-10 shadow-sm z-10'
           isSocialAuth={false}>
           <form
             onSubmit={handleSubmit(onSubmit)}
