@@ -5,7 +5,10 @@ export default async function proxy(request: NextRequest) {
   const { cookies, url } = request;
 
   const token = cookies.get("token")?.value;
-  const isAuthPage = url.includes("/signin") || url.includes("/signup");
+  const isAuthPage =
+    url.includes("/signin") ||
+    url.includes("/signup") ||
+    url.includes("/authentication");
   if (isAuthPage) {
     if (token) {
       return NextResponse.redirect(new URL("/overview", url));
@@ -24,5 +27,5 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/signin", "/signup", "/overview/:path*"],
+  matcher: ["/signin", "/signup", "/authentication", "/overview/:path*"],
 };

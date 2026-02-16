@@ -1,0 +1,32 @@
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: Simply for redirection */
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useMe } from '@/api/hooks/useMe.hook';
+import { setSessionToken } from '@/lib/cookies';
+
+interface Props {
+  token: string;
+}
+
+export default function AuthenticationLoader({ token }: Props) {
+  const { data, isSuccess, isPending, isLoading } = useMe();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSuccess && data && token) {
+      setSessionToken(token);
+      router.push('/overview');
+    }
+  }, [isSuccess, data]);
+
+  return (
+    <div className='h-screen flex justify-center items-center bg-white-200'>
+      <div className='mx-auto flex flex-col items-center gap-4'>
+        <h2 className='text-2xl font-semibold'>Successfully autheticated!</h2>
+        {isLoading || isPending ? <p>Getting the account data, please wait...</p> : <p>Done</p>}
+      </div>
+    </div>
+  );
+}

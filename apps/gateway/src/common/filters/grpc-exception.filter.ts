@@ -36,7 +36,7 @@ export class GrpcExceptionFilter implements ExceptionFilter {
 		//TODO: Typize this stuff
 		return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
 			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-			message: 'Internal Server Error'
+			message: exception?.message ?? 'Internal Server Error'
 		})
 	}
 

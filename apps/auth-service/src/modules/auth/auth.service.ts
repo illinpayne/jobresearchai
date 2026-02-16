@@ -1,6 +1,7 @@
 import type {
 	AuthResponse,
 	ForgotPasswordRequest,
+	GoogleAccount,
 	Account as GrpcAccount,
 	LoginRequest,
 	RegisterSendOtpRequest,
@@ -150,6 +151,44 @@ export class AuthService {
 		//TODO: refactor return immediately
 		const getTokens = this.generateJwt(findAccount)
 		return getTokens
+	}
+
+	public async oAuthSignin(request: GoogleAccount): Promise<AuthResponse> {
+		const findAccount = await this.accountRepository.getByEmail(
+			request.email
+		)
+		if (!findAccount) {
+			return await this.oAuthSignup(request)
+		}
+		if (!findAccount.isAuthVerified) {
+			throw new GrpcException(
+				RpcStatus.ABORTED,
+				'Account is not completely registered'
+			)
+		}
+
+		//TODO: refactor return immediately
+		const getTokens = this.generateJwt(findAccount)
+		return getTokens
+	}
+
+	protected async oAuthSignup(request: GoogleAccount): Promise<AuthResponse> {
+		try {
+			const newAccount = await this.accountRepository.createAccount({
+				email: request.email,
+				firstName: request.givenName,
+				secondName: request.familyName,
+				isAuthVerified: true,
+				isEmailVerified: true,
+				avatar: request.picture,
+				passwordHash: ''
+			})
+			//TODO: refactor return immediately
+			const getTokens = this.generateJwt(newAccount)
+			return getTokens
+		} catch (error) {
+			throw new GrpcException(RpcStatus.ABORTED, 'Cannot verify account')
+		}
 	}
 
 	public async revalidateSession(

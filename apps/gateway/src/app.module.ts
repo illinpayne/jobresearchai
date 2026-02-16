@@ -3,11 +3,15 @@ import { ConfigModule } from '@nestjs/config'
 
 import { appEnv, jwtEnv } from '@/config/env'
 
+import { oauthEnv } from './config/env/oauth.env'
 import { AppsModule } from './modules/apps.module'
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({ isGlobal: true, load: [appEnv, jwtEnv] }),
+		ConfigModule.forRoot({
+			isGlobal: true,
+			load: [appEnv, jwtEnv, oauthEnv]
+		}),
 		AppsModule
 	]
 })

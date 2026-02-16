@@ -44,6 +44,14 @@ export interface Account {
   isEmailVerified: boolean;
 }
 
+export interface GoogleAccount {
+  email: string;
+  givenName: string;
+  familyName: string;
+  picture: string;
+  provider: string;
+}
+
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
@@ -96,6 +104,10 @@ export interface AuthServiceClient {
   /** Reset password by OTP code */
 
   resetPassword(request: ResetPasswordRequest): Observable<SendOtpResponse>;
+
+  /** Sign in / up with oauth, makes account without otp! */
+
+  oAuthSignIn(request: GoogleAccount): Observable<AuthResponse>;
 }
 
 /** Auth rpc */
@@ -136,6 +148,10 @@ export interface AuthServiceController {
   resetPassword(
     request: ResetPasswordRequest,
   ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
+
+  /** Sign in / up with oauth, makes account without otp! */
+
+  oAuthSignIn(request: GoogleAccount): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
 }
 
 export function AuthServiceControllerMethods() {
@@ -148,6 +164,7 @@ export function AuthServiceControllerMethods() {
       "resendRegisterOtp",
       "forgotPassword",
       "resetPassword",
+      "oAuthSignIn",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

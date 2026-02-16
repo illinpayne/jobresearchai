@@ -9,6 +9,7 @@ import {
 import {
 	Body,
 	Controller,
+	Get,
 	HttpCode,
 	HttpStatus,
 	Logger,
@@ -16,8 +17,10 @@ import {
 	Post,
 	Req,
 	Res,
-	UnauthorizedException
+	UnauthorizedException,
+	UseGuards
 } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 import {
 	ApiBadRequestResponse,
 	ApiBearerAuth,
@@ -30,7 +33,7 @@ import {
 } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 
-import { Protected } from '@/common/decorators'
+import { OAuthUser, Protected } from '@/common/decorators'
 import { CookieType } from '@/common/enums/cookie.enum'
 import { CookieService } from '@/infrastructure/cookie-service/cookie-service.service'
 
@@ -43,6 +46,7 @@ import {
 	SendOtpRegisterDto,
 	VerifyOTPRegister
 } from './dtos'
+import type { GoogleAccount } from './models/google-user.model'
 import { AuthResponse } from './responses/auth.response'
 import { LogoutResponse } from './responses/logout.response'
 import { SendOtpResponse } from './responses/send-otp-register.response'
@@ -50,7 +54,7 @@ import { SendOtpResponse } from './responses/send-otp-register.response'
 @Controller('auth')
 export class AuthController {
 	private readonly logger = new Logger(AuthController.name)
-	constructor(
+	public constructor(
 		private readonly client: AuthClientGrpc,
 		private readonly cookieService: CookieService
 	) {}
@@ -69,7 +73,7 @@ export class AuthController {
 	@ApiInternalServerErrorResponse({ description: 'Failed to send OTP' })
 	@Post('send-otp-register')
 	@HttpCode(HttpStatus.OK)
-	async sendRegisterOTP(@Body() dto: SendOtpRegisterDto) {
+	public async sendRegisterOTP(@Body() dto: SendOtpRegisterDto) {
 		return await this.client.call(
 			'sendRegisterOtp',
 			dto as RegisterSendOtpRequest
@@ -91,7 +95,7 @@ export class AuthController {
 	@ApiInternalServerErrorResponse({ description: 'Failed to send OTP' })
 	@Post('resend-otp-register')
 	@HttpCode(HttpStatus.OK)
-	async resendRegisterOTP(@Body() dto: ResendOtpDto) {
+	public async resendRegisterOTP(@Body() dto: ResendOtpDto) {
 		return await this.client.call(
 			'resendRegisterOtp',
 			dto as RegisterSendOtpRequest
@@ -113,7 +117,7 @@ export class AuthController {
 	})
 	@Post('verify-otp-register')
 	@HttpCode(HttpStatus.OK)
-	async verifyRegisterOTP(
+	public async verifyRegisterOTP(
 		@Res({ passthrough: true }) res: Response,
 		@Body() dto: VerifyOTPRegister
 	) {
@@ -139,7 +143,7 @@ export class AuthController {
 			'Account is not completely registered, Password is not valid'
 	})
 	@Post('login')
-	async login(
+	public async login(
 		@Res({ passthrough: true }) res: Response,
 		@Body() dto: LoginDto
 	) {
@@ -149,6 +153,24 @@ export class AuthController {
 		)
 		this.passTokenViaCookies(res, refreshToken, dto.email)
 		return { accessToken, account }
+	}
+
+	//** Swagger prevented */
+	@Get('oauth')
+	@UseGuards(AuthGuard('google'))
+	@HttpCode(HttpStatus.OK)
+	public async oauthLogin(
+		@OAuthUser() user: GoogleAccount,
+		@Res({ passthrough: true }) res: Response
+	) {
+		const { accessToken, refreshToken } = await this.client.call(
+			'oAuthSignIn',
+			user
+		)
+		this.passTokenViaCookies(res, refreshToken, user.email)
+		res.redirect(
+			`http://localhost:3000/authentication?token='${accessToken}'`
+		)
 	}
 
 	@ApiOperation({

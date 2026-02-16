@@ -19,6 +19,8 @@ service AuthService {
 	rpc ForgotPassword(ForgotPasswordRequest) returns (SendOtpResponse);
 	// Reset password by OTP code
 	rpc ResetPassword(ResetPasswordRequest) returns (SendOtpResponse);
+	// Sign in / up with oauth, makes account without otp!
+	rpc OAuthSignIn(GoogleAccount) returns (AuthResponse);
 }
 
 message RegisterSendOtpRequest {
@@ -53,6 +55,14 @@ message Account {
 	string second_name = 3;
 	string avatar = 4;
 	bool is_email_verified = 5;
+}
+
+message GoogleAccount {
+	string email = 1;
+	string given_name = 2;
+	string family_name = 3;
+	string picture = 4;
+	string provider = 5;
 }
 
 message AuthResponse {

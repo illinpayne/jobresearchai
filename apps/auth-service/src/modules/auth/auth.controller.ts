@@ -1,14 +1,15 @@
-import {
-	AUTH_SERVICE_NAME,
-	type AuthResponse,
-	type ForgotPasswordRequest,
-	type LoginRequest,
-	type RegisterSendOtpRequest,
-	type RegisterVerifyOtpRequest,
-	type ResendOTPRegisterRequest,
-	type ResetPasswordRequest,
-	type RevalidateSessionRequest,
-	type SendOtpResponse
+import { AUTH_SERVICE_NAME } from '@jrai/contracts/gen/auth'
+import type {
+	AuthResponse,
+	ForgotPasswordRequest,
+	GoogleAccount,
+	LoginRequest,
+	RegisterSendOtpRequest,
+	RegisterVerifyOtpRequest,
+	ResendOTPRegisterRequest,
+	ResetPasswordRequest,
+	RevalidateSessionRequest,
+	SendOtpResponse
 } from '@jrai/contracts/gen/auth'
 import { Controller } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
@@ -43,6 +44,11 @@ export class AuthController {
 	@GrpcMethod(AUTH_SERVICE_NAME, 'Login')
 	public async login(request: LoginRequest): Promise<AuthResponse> {
 		return await this.authService.login(request)
+	}
+
+	@GrpcMethod(AUTH_SERVICE_NAME, 'OAuthSignIn')
+	public async oAuthSignin(request: GoogleAccount): Promise<AuthResponse> {
+		return await this.authService.oAuthSignin(request)
 	}
 
 	@GrpcMethod(AUTH_SERVICE_NAME, 'RevalidateSession')
