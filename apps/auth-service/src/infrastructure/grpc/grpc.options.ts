@@ -1,8 +1,8 @@
 import { grpcPackages as grpcPacks, protoPaths } from '@jrai/contracts'
 import { GrpcOptions } from '@nestjs/microservices'
 
-export const grpcPackages = [grpcPacks.auth_v1]
-export const grpcProtoPaths = [protoPaths.AUTH]
+export const grpcPackages = [grpcPacks.auth_v1, grpcPacks.account_v1]
+export const grpcProtoPaths = [protoPaths.AUTH, protoPaths.ACCOUNT]
 
 export const grpcProtoLoader: NonNullable<GrpcOptions['options']['loader']> = {
 	keepCase: false,

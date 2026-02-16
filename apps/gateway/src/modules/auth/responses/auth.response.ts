@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { AccountResponse } from '@/modules/user/responses/account.response'
+import { AccountResponse } from '@/modules/accounts/responses/account.response'
 
 export class AuthResponse {
 	@ApiProperty({ type: String, default: 'eyfBcvvbh465...' })

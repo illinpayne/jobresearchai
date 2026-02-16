@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package account.v1;
+import "auth.proto";
+
+// Account rpc
+service AccountService {
+	// Get current user
+	rpc GetMe(GetMeRequest) returns (auth.v1.Account);
+	// Change personal data
+	rpc ChangePersonalData(ChangePersonalDataRequest) returns (auth.v1.Account);
+	// Change avatar request
+	rpc ChangeAvatar(ChangeAvatarRequest) returns (auth.v1.Account) ;
+}
+
+message GetMeRequest {
+	string id = 1;
+}
+
+message ChangePersonalDataRequest {
+	string id = 1;
+	optional string first_name = 2;
+	optional string second_name = 3;
+}
+
+message ChangeAvatarRequest {
+	string id = 1;
+	string avatar = 2;
+}
