@@ -1,5 +1,6 @@
 import type {
 	AuthResponse,
+	ChangeEmailRequest,
 	ForgotPasswordRequest,
 	GoogleAccount,
 	Account as GrpcAccount,
@@ -9,6 +10,7 @@ import type {
 	ResendOTPRegisterRequest,
 	ResetPasswordRequest,
 	RevalidateSessionRequest,
+	SendOTPEmailRequest,
 	SendOtpResponse
 } from '@jrai/contracts/gen/auth'
 import { GrpcException, RpcStatus } from '@jrai/contracts/grpc'
@@ -17,6 +19,7 @@ import { Account } from '@prisma/generated/client'
 import { hash, verify } from 'argon2'
 
 import { TokenService } from '@/infrastructure/token-service/token-service.service'
+import { AuthProviders } from '@/shared/auth.types'
 
 import { AccountRepository } from '../account/account.repository'
 import { OtpService } from '../otp/otp.service'
@@ -48,7 +51,12 @@ export class AuthService {
 				email,
 				passwordHash,
 				firstName,
-				secondName
+				secondName,
+				providers: {
+					create: {
+						provider: AuthProviders.Internal
+					}
+				}
 			})
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
@@ -177,7 +185,12 @@ export class AuthService {
 				isAuthVerified: true,
 				isEmailVerified: true,
 				avatar: request.picture,
-				passwordHash: ''
+				passwordHash: '',
+				providers: {
+					create: {
+						provider: AuthProviders.Google
+					}
+				}
 			})
 
 			return this.generateJwt(newAccount)
@@ -207,7 +220,7 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
 		}
 
-		return this.generateJwt(findAccount)
+		return this.generateJwtWithOnlyAccessToken(findAccount, refreshToken)
 	}
 
 	public async forgotPassword(
@@ -270,6 +283,79 @@ export class AuthService {
 		}
 	}
 
+	// OTP for change email
+	public async sendEmailOTP(
+		request: SendOTPEmailRequest
+	): Promise<SendOtpResponse> {
+		const { email } = request
+
+		const findAccount = await this.accountRepository.getByEmail(email)
+		if (!findAccount) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
+		}
+
+		// Use resend for prevent sending dublicates
+		const codes = await this.otpService.resend(email, 'change-email')
+
+		//TODO: make send code via notification microservice
+		// eslint-disable-next-line no-console
+		console.log(codes.code)
+
+		return {
+			status: true,
+			message: `OTP code was sent on the ${email}`
+		}
+	}
+
+	public async changeEmail(
+		request: ChangeEmailRequest
+	): Promise<SendOtpResponse> {
+		const { email, newEmail, code } = request
+
+		const authAccount = await this.accountRepository.getByEmail(email)
+		if (!authAccount) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
+		}
+
+		if (authAccount.passwordHash === '') {
+			throw new GrpcException(
+				RpcStatus.FAILED_PRECONDITION,
+				'There is no password for this account, please add password first'
+			)
+		}
+
+		const findAccount = await this.accountRepository.getByEmail(newEmail)
+		if (findAccount) {
+			throw new GrpcException(RpcStatus.ABORTED, 'Account already exists')
+		}
+
+		const isCodeValid = await this.otpService.verify(
+			email,
+			'change-email',
+			code
+		)
+		if (!isCodeValid) {
+			throw new GrpcException(
+				RpcStatus.INVALID_ARGUMENT,
+				'Code is not valid'
+			)
+		}
+
+		try {
+			await this.accountRepository.updateAccount(
+				{ email },
+				{ email: newEmail }
+			)
+		} catch (error) {
+			throw new GrpcException(RpcStatus.ABORTED, 'Cannot change email')
+		}
+
+		return {
+			status: true,
+			message: 'Email was successfully changed'
+		}
+	}
+
 	private generateJwt(account: Account): AuthResponse {
 		const tokens = this.tokenService.generateTokens({
 			email: account.email,
@@ -279,6 +365,23 @@ export class AuthService {
 
 		return {
 			...tokens,
+			account: account as GrpcAccount
+		}
+	}
+
+	private generateJwtWithOnlyAccessToken(
+		account: Account,
+		refreshToken: string
+	): AuthResponse {
+		const accessToken = this.tokenService.generateAccessToken({
+			email: account.email,
+			id: account.id,
+			roles: [account.role]
+		})
+
+		return {
+			accessToken,
+			refreshToken,
 			account: account as GrpcAccount
 		}
 	}

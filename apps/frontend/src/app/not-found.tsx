@@ -1,8 +1,7 @@
 import { Frown } from 'lucide-react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import BackButton from '../components/shared/back-button';
 
 export const metadata: Metadata = {
   title: 'Page Not Found',
@@ -22,11 +21,12 @@ export default function NotFoundPage() {
         <p>You were aiming for a page, but unleashed ancient chaos</p>
         <p>instead. Typical Pandora move.</p>
         <br />
-        <Link
+        <BackButton />
+        {/* <Link
           href={'/'}
           className={cn(buttonVariants({ size: 'lg' }), 'text-md')}>
           Go back!
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

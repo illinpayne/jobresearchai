@@ -54,7 +54,7 @@ export function SendOtpRegisterForm({ email, duration }: IProps) {
         const { toast } = await import('sonner');
         toast.success('Account verified, go ahead :)');
 
-        const redirectTo = searchParams.get('redirectTo') || ROUTES.OVERVIEW;
+        const redirectTo = searchParams.get('redirectTo') || ROUTES.OVERVIEW.DEFAULT;
         router.push(redirectTo);
       }
     },

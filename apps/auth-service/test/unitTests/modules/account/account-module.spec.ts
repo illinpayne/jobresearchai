@@ -5,7 +5,7 @@ import { PrismaService } from '@/infrastructure/prisma/prisma.service'
 import { AccountRepository } from '@/modules/account/account.repository'
 import { AccountService } from '@/modules/account/account.service'
 
-import { expectNotFound } from '../../../shared/index'
+import { expectNotFound, expectUnauthenticated } from '../../../shared/index'
 
 jest.mock('@/infrastructure/prisma/prisma.service', () => {
 	return {
@@ -64,6 +64,15 @@ describe('Account Module', () => {
 		expect(response?.firstName).toBe(account.firstName)
 		expect(response?.secondName).toBe(account.secondName)
 		expect(response?.avatar).toBe(account.avatar)
+	})
+
+	it('Should throw authenticate error when account is not found', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		try {
+			await service.getMe(account.id)
+		} catch (error) {
+			expectUnauthenticated(error, 'Account was deleted')
+		}
 	})
 
 	it('Should update personal data', async () => {

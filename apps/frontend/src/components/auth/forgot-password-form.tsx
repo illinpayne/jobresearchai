@@ -62,7 +62,11 @@ export function ForgotPasswordForm() {
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-4'>
             <div>
-              <label htmlFor='email'>Email</label>
+              <label
+                htmlFor='email'
+                className='text-sm font-medium'>
+                Email
+              </label>
               <Input
                 type='email'
                 id='email'

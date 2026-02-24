@@ -1,10 +1,12 @@
-import {
+import type {
+	ChangeEmailRequest,
 	ForgotPasswordRequest,
 	LoginRequest,
 	RegisterSendOtpRequest,
 	RegisterVerifyOtpRequest,
 	ResetPasswordRequest,
-	RevalidateSessionRequest
+	RevalidateSessionRequest,
+	SendOTPEmailRequest
 } from '@jrai/contracts/gen/auth'
 import {
 	Body,
@@ -34,7 +36,7 @@ import {
 } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 
-import { OAuthUser, Protected } from '@/common/decorators'
+import { CurrentUser, OAuthUser, Protected } from '@/common/decorators'
 import { CookieType } from '@/common/enums/cookie.enum'
 import { AllConfigs } from '@/config/interfaces'
 import { CookieService } from '@/infrastructure/cookie-service/cookie-service.service'
@@ -48,6 +50,7 @@ import {
 	SendOtpRegisterDto,
 	VerifyOTPRegister
 } from './dtos'
+import { ChangeEmailDto } from './dtos/change-email.dto'
 import type { GoogleAccount } from './models/google-user.model'
 import { AuthResponse } from './responses/auth.response'
 import { LogoutResponse } from './responses/logout.response'
@@ -222,7 +225,6 @@ export class AuthController {
 		return { accessToken, account }
 	}
 
-	//TODO: Make endpoint authorized
 	@ApiOperation({
 		summary: 'Logout session',
 		description: 'Logout from the account'
@@ -231,9 +233,7 @@ export class AuthController {
 		description: 'Successfully logged out',
 		type: LogoutResponse
 	})
-	@ApiBearerAuth()
 	@Post('logout')
-	@Protected()
 	@HttpCode(HttpStatus.OK)
 	public logout(@Res({ passthrough: true }) res: Response) {
 		this.cookieService.removeCookie(res, CookieType.REFRESH_TOKEN)
@@ -280,6 +280,61 @@ export class AuthController {
 			'resetPassword',
 			dto as ResetPasswordRequest
 		)
+	}
+	//
+	@ApiOperation({
+		summary: 'Send otp for change email',
+		description: 'Sends an OTP code to the user email for change email'
+	})
+	@ApiOkResponse({
+		description: 'Successfully sent change email OTP code',
+		type: SendOtpResponse
+	})
+	@ApiNotFoundResponse({ description: 'Account not found' })
+	@ApiBearerAuth()
+	@Protected()
+	@Post('send-email-otp')
+	@HttpCode(HttpStatus.OK)
+	public async sendOTPEmail(@CurrentUser('email') email: string) {
+		return await this.client.call('sendChangeEmailOtp', {
+			email
+		} as SendOTPEmailRequest)
+	}
+
+	@ApiOperation({
+		summary: 'Change email',
+		description:
+			'Resets the password for the account with provided email, code and new password'
+	})
+	@ApiOkResponse({
+		description: 'Email was successfully changed',
+		type: SendOtpResponse
+	})
+	@ApiBadRequestResponse({
+		description:
+			'Code is not valid, There is no password for this account, please add password first'
+	})
+	@ApiNotFoundResponse({ description: 'Account not found' })
+	@ApiConflictResponse({
+		description:
+			'Account already exists, Cannot change email, Expired code, Invalid or expired code'
+	})
+	@ApiBearerAuth()
+	@Protected()
+	@Post('change-email')
+	@HttpCode(HttpStatus.OK)
+	public async changeEmail(
+		@Res({ passthrough: true }) res: Response,
+		@CurrentUser('email') email: string,
+		@Body() dto: ChangeEmailDto
+	) {
+		const response = await this.client.call('changeEmail', {
+			code: dto.code,
+			newEmail: dto.newEmail,
+			email
+		} as ChangeEmailRequest)
+		this.cookieService.removeCookie(res, CookieType.REFRESH_TOKEN)
+		return response
 	}
 
 	private passTokenViaCookies(

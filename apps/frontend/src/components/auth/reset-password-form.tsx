@@ -109,8 +109,13 @@ export function ResetPasswordForm({ email }: IProps) {
           <FormInputError>{formState.errors.code?.message}</FormInputError>
         </div>
         <div>
-          <label htmlFor='email'>Password</label>
+          <label
+            htmlFor='password'
+            className='text-sm font-medium'>
+            Password
+          </label>
           <Input
+            id='password'
             disabled={isPending}
             type='password'
             {...register('password')}
@@ -118,8 +123,13 @@ export function ResetPasswordForm({ email }: IProps) {
           <FormInputError>{formState.errors.password?.message}</FormInputError>
         </div>
         <div>
-          <label htmlFor='email'>Confirm password</label>
+          <label
+            htmlFor='confirmPassword'
+            className='text-sm font-medium'>
+            Confirm password
+          </label>
           <Input
+            id='confirmPassword'
             disabled={isPending}
             type='password'
             {...register('passwordConfirmation')}

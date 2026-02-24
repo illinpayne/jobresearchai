@@ -1,6 +1,7 @@
 import { AUTH_SERVICE_NAME } from '@jrai/contracts/gen/auth'
 import type {
 	AuthResponse,
+	ChangeEmailRequest,
 	ForgotPasswordRequest,
 	GoogleAccount,
 	LoginRequest,
@@ -9,6 +10,7 @@ import type {
 	ResendOTPRegisterRequest,
 	ResetPasswordRequest,
 	RevalidateSessionRequest,
+	SendOTPEmailRequest,
 	SendOtpResponse
 } from '@jrai/contracts/gen/auth'
 import { Controller } from '@nestjs/common'
@@ -70,5 +72,19 @@ export class AuthController {
 		request: ResetPasswordRequest
 	): Promise<SendOtpResponse> {
 		return await this.authService.resetPassword(request)
+	}
+
+	@GrpcMethod(AUTH_SERVICE_NAME, 'SendChangeEmailOtp')
+	public async sendChangeEmailOtp(
+		request: SendOTPEmailRequest
+	): Promise<SendOtpResponse> {
+		return await this.authService.sendEmailOTP(request)
+	}
+
+	@GrpcMethod(AUTH_SERVICE_NAME, 'ChangeEmail')
+	public async changeEmail(
+		request: ChangeEmailRequest
+	): Promise<SendOtpResponse> {
+		return await this.authService.changeEmail(request)
 	}
 }

@@ -6,6 +6,8 @@ import { RedisService } from '@/infrastructure/redis/redis.service'
 import { OtpService } from '@/modules/otp/otp.service'
 import { OTPGeneratedCode } from '@/shared/otp.types'
 
+import { expectAborted } from '../../../shared'
+
 jest.mock('patcode', () => ({
 	generateCode: jest.fn(() => '123456')
 }))
@@ -80,9 +82,7 @@ describe('Otp Module', () => {
 		try {
 			await service.resend('mock@gmail.com', 'register')
 		} catch (error) {
-			expect(error).toBeInstanceOf(RpcException)
-			expect(error.error.details).toBe('Resend not allowed yet')
-			expect(error.error.code).toBe(10)
+			expectAborted(error, 'Resend not allowed yet')
 		}
 	})
 
@@ -119,6 +119,19 @@ describe('Otp Module', () => {
 			expect(error).toBeInstanceOf(RpcException)
 			expect(error.error.details).toBe('Invalid or expired code')
 			expect(error.error.code).toBe(10)
+		}
+	})
+
+	it('Should throw abort error if otp code is not exist while verifying', async () => {
+		jest.spyOn(redisService, 'get').mockResolvedValue(null)
+
+		try {
+			await service.verify('mock@gmail.com', 'register', '123456')
+		} catch (error) {
+			expectAborted(error, 'Expired code')
+			// expect(error).toBeInstanceOf(RpcException)
+			// expect(error.error.details).toBe('Invalid or expired code')
+			// expect(error.error.code).toBe(10)
 		}
 	})
 })

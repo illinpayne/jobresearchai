@@ -6,8 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './accountControllerChangeProfileAvatarV1Body';
 export * from './accountResponse';
 export * from './authResponse';
+export * from './changeEmailDto';
+export * from './changePersonalDataDto';
 export * from './forgotPasswordDto';
 export * from './loginDto';
 export * from './logoutResponse';

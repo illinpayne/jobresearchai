@@ -13,7 +13,14 @@ export class AccountService {
 	public constructor(private readonly accountRepository: AccountRepository) {}
 
 	public async getMe(id: string): Promise<Account> {
-		return (await this.accountRepository.getById(id)) as Account
+		const account = await this.accountRepository.getById(id)
+		if (!account) {
+			throw new GrpcException(
+				RpcStatus.UNAUTHENTICATED,
+				'Account was deleted'
+			)
+		}
+		return account as Account
 	}
 
 	public async changePersonalData(

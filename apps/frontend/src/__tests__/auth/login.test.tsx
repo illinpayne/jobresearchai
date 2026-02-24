@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
-import { LoginForm } from '@/app/components/auth/login-form';
+import { LoginForm } from '@/components/auth/login-form';
 import { TanstackQueryProvider } from '@/providers';
 
 vi.mock('next/navigation', () => ({

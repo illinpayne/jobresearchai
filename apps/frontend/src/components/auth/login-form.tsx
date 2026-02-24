@@ -9,16 +9,13 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useLogin } from '@/api/hooks/useLogin.hook';
-import { instance } from '@/api/instance';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/constants';
 import { otpCodeDurationSeconds } from '@/constants/times';
 import { useOtpTrigger } from '@/hooks';
-import { accountCacheKey, CacheAccount } from '@/lib/cache';
 import { persistSession } from '@/lib/client/session-persist';
-import { setSessionToken } from '@/lib/cookies';
 import { cn } from '@/lib/utils';
 import { AuthWrapper } from './auth-wrapper';
 import { SendOtpRegisterForm } from './send-otp-register-form';
@@ -51,7 +48,7 @@ export function LoginForm() {
         const { toast } = await import('sonner');
         toast.success('Logged in successfully');
 
-        const redirectTo = searchParams.get('redirectTo') || ROUTES.OVERVIEW;
+        const redirectTo = searchParams.get('redirectTo') || ROUTES.OVERVIEW.DEFAULT;
         router.push(redirectTo);
       }
     },
@@ -106,7 +103,11 @@ export function LoginForm() {
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-4 min-w-102'>
             <div>
-              <label htmlFor='email'>Email</label>
+              <label
+                htmlFor='email'
+                className='text-sm font-medium'>
+                Email
+              </label>
               <Input
                 type='email'
                 id='email'
@@ -118,8 +119,13 @@ export function LoginForm() {
               <FormInputError>{formState.errors.email?.message}</FormInputError>
             </div>
             <div>
-              <label htmlFor='email'>Password</label>
+              <label
+                htmlFor='password'
+                className='text-sm font-medium'>
+                Password
+              </label>
               <Input
+                id='password'
                 disabled={isPending}
                 aria-invalid={!!formState.errors.password}
                 type='password'

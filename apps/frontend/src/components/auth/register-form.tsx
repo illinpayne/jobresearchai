@@ -95,7 +95,11 @@ export function RegisterForm() {
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-4'>
             <div>
-              <label htmlFor='email'>Email</label>
+              <label
+                htmlFor='email'
+                className='text-sm font-medium'>
+                Email
+              </label>
               <Input
                 type='email'
                 id='email'
@@ -108,7 +112,11 @@ export function RegisterForm() {
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <div>
-                <label htmlFor='firstName'>First name</label>
+                <label
+                  htmlFor='firstName'
+                  className='text-sm font-medium'>
+                  First name
+                </label>
                 <Input
                   type='text'
                   id='firstName'
@@ -120,7 +128,11 @@ export function RegisterForm() {
                 <FormInputError>{formState.errors.firstName?.message}</FormInputError>
               </div>
               <div>
-                <label htmlFor='secondName'>Second name</label>
+                <label
+                  htmlFor='secondName'
+                  className='text-sm font-medium'>
+                  Second name
+                </label>
                 <Input
                   type='text'
                   id='secondName'
@@ -133,8 +145,13 @@ export function RegisterForm() {
               </div>
             </div>
             <div>
-              <label htmlFor='email'>Password</label>
+              <label
+                htmlFor='password'
+                className='text-sm font-medium'>
+                Password
+              </label>
               <Input
+                id='password'
                 disabled={isPending}
                 type='password'
                 {...register('password')}
@@ -142,8 +159,13 @@ export function RegisterForm() {
               <FormInputError>{formState.errors.password?.message}</FormInputError>
             </div>
             <div>
-              <label htmlFor='email'>Confirm password</label>
+              <label
+                htmlFor='confirmPassword'
+                className='text-sm font-medium'>
+                Confirm password
+              </label>
               <Input
+                id='confirmPassword'
                 disabled={isPending}
                 type='password'
                 {...register('passwordConfirmation')}

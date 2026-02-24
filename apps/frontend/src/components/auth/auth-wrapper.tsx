@@ -18,7 +18,7 @@ export function AuthWrapper({ children, heading, className, isSocialAuth = true 
     const rootUrl = OAUTH_CONFIG.rootUrl;
     const options = {
       redirect_uri: `${APP_CONFIG.apiUrl}${OAUTH_CONFIG.redirectPath}`,
-      client_id: OAUTH_CONFIG.clientUrl as string,
+      client_id: OAUTH_CONFIG.clientId as string,
       access_type: 'offline',
       response_type: 'code',
       prompt: 'consent',
@@ -33,23 +33,18 @@ export function AuthWrapper({ children, heading, className, isSocialAuth = true 
     <div className={`mx-auto flex flex-col gap-4 ${className || ''}`}>
       <h1 className='text-4xl font-semibold font-montserrat tracking-tighter text-blue-900'>{heading}</h1>
       {isSocialAuth && (
-        <>
+        <div className='grid grid-cols-1 gap-4'>
           <Link
             href={getOAuthURL()}
             className={cn(buttonVariants({ size: 'lg' }), 'bg-primary')}>
             Continue with Google
           </Link>
-          {/* <Button
-            className='bg-primary'
-            size='lg'>
-            Continue with Google
-          </Button> */}
-          <div className='flex items-center'>
+          <div className='flex items-center col-span-2'>
             <hr className='border-gray-200 w-full'></hr>
             <p className='px-3'>or</p>
             <hr className='border-gray-200 w-full'></hr>
           </div>
-        </>
+        </div>
       )}
       {children}
       <Watermark name='JobResearcher AI' />

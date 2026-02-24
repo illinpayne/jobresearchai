@@ -83,9 +83,13 @@
     },
     "coveragePathIgnorePatterns": [
       "node_modules",
+      "\\redis.service\\.ts$",
       "\\.dto\\.ts$",
       "\\.response\\.ts$",
       "\\.decorator\\.ts$",
+      "\\.options\\.ts$",
+      "\\.server\\.ts$",
+      "\\.controller\\.ts$",
       "\\.guard\\.ts$",
       "\\.strategy\\.ts$",
       "\\.env\\.ts$",

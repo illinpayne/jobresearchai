@@ -1,8 +1,8 @@
 'use client';
 
+import { Loader2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useOtpTicker, useOtpTrigger } from '@/hooks';
-import { Loader2, RotateCcw } from 'lucide-react';
 
 interface OtpTimerProps {
   onResend: () => Promise<void> | void;

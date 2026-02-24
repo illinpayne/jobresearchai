@@ -17,6 +17,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import {
 	ApiBearerAuth,
+	ApiBody,
+	ApiConsumes,
 	ApiInternalServerErrorResponse,
 	ApiNotFoundResponse,
 	ApiOkResponse,
@@ -99,6 +101,18 @@ export class AccountController {
 		description: 'Failed to get personal data'
 	})
 	@ApiBearerAuth()
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary'
+				}
+			}
+		}
+	})
 	@Protected()
 	@UseInterceptors(FileInterceptor('avatar'))
 	@Put('change-avatar')

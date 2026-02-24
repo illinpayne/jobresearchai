@@ -1,8 +1,9 @@
-import { removeSessionToken } from '@/lib/cookies';
 import type {
   AuthResponse,
+  ChangeEmailDto,
   ForgotPasswordDto,
   LoginDto,
+  LogoutResponse,
   ResendOtpDto,
   ResetPasswordDto,
   SendOtpRegisterDto,
@@ -18,6 +19,8 @@ export enum AuthEndpoints {
   RESEND_OTP_REGISTER = '/auth/resend-otp-register',
   FORGOT_OTP_REGISTER = '/auth/forgot-password',
   RESET_OTP_REGISTER = '/auth/reset-password',
+  SEND_EMAIL_OTP = '/auth/send-email-otp',
+  CHANGE_EMAIL = '/auth/change-email',
   REVALIDATE = '/auth/revalidate',
   LOGOUT = '/auth/logout',
 }
@@ -41,4 +44,13 @@ export const resetPassword = async (dto: ResetPasswordDto) =>
 
 export const refresh = async () => await api.post<AuthResponse>(AuthEndpoints.REVALIDATE).then((response) => response.data);
 
-export const logout = async () => await instance.post<boolean>(AuthEndpoints.LOGOUT).then(() => removeSessionToken());
+export const sendEmailOTP = async () =>
+  await instance.post<SendOtpResponse>(AuthEndpoints.SEND_EMAIL_OTP).then((response) => response.data);
+
+export const changeEmail = async (dto: ChangeEmailDto) =>
+  await instance.post<SendOtpResponse>(AuthEndpoints.CHANGE_EMAIL, dto).then((response) => response.data);
+
+export const logout = async () =>
+  await instance.post<LogoutResponse>(AuthEndpoints.LOGOUT).then((response) => {
+    return response.data;
+  });

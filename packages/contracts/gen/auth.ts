@@ -72,6 +72,16 @@ export interface ResetPasswordRequest {
   newPassword: string;
 }
 
+export interface SendOTPEmailRequest {
+  email: string;
+}
+
+export interface ChangeEmailRequest {
+  email: string;
+  newEmail: string;
+  code: string;
+}
+
 export const AUTH_V1_PACKAGE_NAME = "auth.v1";
 
 /** Auth rpc */
@@ -108,6 +118,14 @@ export interface AuthServiceClient {
   /** Sign in / up with oauth, makes account without otp! */
 
   oAuthSignIn(request: GoogleAccount): Observable<AuthResponse>;
+
+  /** Send OTP Code for change email */
+
+  sendChangeEmailOtp(request: SendOTPEmailRequest): Observable<SendOtpResponse>;
+
+  /** Change email by OTP code */
+
+  changeEmail(request: ChangeEmailRequest): Observable<SendOtpResponse>;
 }
 
 /** Auth rpc */
@@ -152,6 +170,16 @@ export interface AuthServiceController {
   /** Sign in / up with oauth, makes account without otp! */
 
   oAuthSignIn(request: GoogleAccount): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
+
+  /** Send OTP Code for change email */
+
+  sendChangeEmailOtp(
+    request: SendOTPEmailRequest,
+  ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
+
+  /** Change email by OTP code */
+
+  changeEmail(request: ChangeEmailRequest): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
 }
 
 export function AuthServiceControllerMethods() {
@@ -165,6 +193,8 @@ export function AuthServiceControllerMethods() {
       "forgotPassword",
       "resetPassword",
       "oAuthSignIn",
+      "sendChangeEmailOtp",
+      "changeEmail",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

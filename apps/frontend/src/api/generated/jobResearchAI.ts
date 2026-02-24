@@ -9,7 +9,11 @@ import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import type {
+  AccountControllerChangeProfileAvatarV1Body,
+  AccountResponse,
   AuthResponse,
+  ChangeEmailDto,
+  ChangePersonalDataDto,
   ForgotPasswordDto,
   LoginDto,
   LogoutResponse,
@@ -61,6 +65,10 @@ export const authControllerLoginV1 = (loginDto: LoginDto, options?: AxiosRequest
   return axios.post(`/v1/auth/login`, loginDto, options);
 };
 
+export const authControllerOauthLoginV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+  return axios.get(`/v1/auth/oauth`, options);
+};
+
 /**
  * Revalidates the session for the expired one
  * @summary Revalidate session
@@ -99,11 +107,71 @@ export const authControllerResetPasswordV1 = (
   return axios.post(`/v1/auth/reset-password`, resetPasswordDto, options);
 };
 
+/**
+ * Sends an OTP code to the user email for change email
+ * @summary Send otp for change email
+ */
+export const authControllerSendOTPEmailV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/send-email-otp`, undefined, options);
+};
+
+/**
+ * Resets the password for the account with provided email, code and new password
+ * @summary Change email
+ */
+export const authControllerChangeEmailV1 = (
+  changeEmailDto: ChangeEmailDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/change-email`, changeEmailDto, options);
+};
+
+/**
+ * Provides authenticated account data
+ * @summary Account session data
+ */
+export const accountControllerGetMeV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<AccountResponse>> => {
+  return axios.get(`/v1/account/me`, options);
+};
+
+/**
+ * Updates personal information about customer
+ * @summary Change personal data
+ */
+export const accountControllerUpdatePersonalDataV1 = (
+  changePersonalDataDto: ChangePersonalDataDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AccountResponse>> => {
+  return axios.put(`/v1/account/personal-data`, changePersonalDataDto, options);
+};
+
+/**
+ * Change customer avatar
+ * @summary Change avatar profile
+ */
+export const accountControllerChangeProfileAvatarV1 = (
+  accountControllerChangeProfileAvatarV1Body: AccountControllerChangeProfileAvatarV1Body,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AccountResponse>> => {
+  const formData = new FormData();
+  if (accountControllerChangeProfileAvatarV1Body.file !== undefined) {
+    formData.append(`file`, accountControllerChangeProfileAvatarV1Body.file);
+  }
+
+  return axios.put(`/v1/account/change-avatar`, formData, options);
+};
+
 export type AuthControllerSendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>;
 export type AuthControllerResendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>;
 export type AuthControllerVerifyRegisterOTPV1Result = AxiosResponse<AuthResponse>;
 export type AuthControllerLoginV1Result = AxiosResponse<AuthResponse>;
+export type AuthControllerOauthLoginV1Result = AxiosResponse<void>;
 export type AuthControllerRevalidateSessionV1Result = AxiosResponse<AuthResponse>;
 export type AuthControllerLogoutV1Result = AxiosResponse<LogoutResponse>;
 export type AuthControllerForgotPasswordV1Result = AxiosResponse<SendOtpResponse>;
 export type AuthControllerResetPasswordV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerSendOTPEmailV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerChangeEmailV1Result = AxiosResponse<SendOtpResponse>;
+export type AccountControllerGetMeV1Result = AxiosResponse<AccountResponse>;
+export type AccountControllerUpdatePersonalDataV1Result = AxiosResponse<AccountResponse>;
+export type AccountControllerChangeProfileAvatarV1Result = AxiosResponse<AccountResponse>;

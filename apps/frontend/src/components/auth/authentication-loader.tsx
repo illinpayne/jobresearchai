@@ -29,26 +29,10 @@ export default function AuthenticationLoader({ token }: Props) {
       if (isSuccess) {
         router.push('/overview');
       }
-      // setSessionToken(token);
-      // instance.defaults.headers['Authorization'] = token;
-
-      // const { data: userData, isSuccess } = await refetch();
-
-      // if (isSuccess && userData) {
-      //   const cacheData = CacheAccount(userData);
-      //   localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
-      //   queryClient.setQueryData(['account'], userData, {
-      //     updatedAt: Date.now(),
-      //   });
-
-      //   router.push('/overview');
-      // }
     };
 
     initializeAuth();
   }, [token, refetch, router, queryClient]);
-
-  console.log('rerenders');
 
   return (
     <div className='h-screen flex justify-center items-center bg-white-200'>

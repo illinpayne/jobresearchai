@@ -1,7 +1,7 @@
-import { config } from 'dotenv';
+// import { config } from 'dotenv';
 import { defineConfig } from 'orval';
 
-config({ path: '.env' });
+// config({ path: '.env' });
 
 export default defineConfig({
   client: {

@@ -5,7 +5,7 @@ export const APP_CONFIG = {
 } as const;
 
 export const OAUTH_CONFIG = {
-  clientUrl: process.env['NEXT_PUBLIC_OAUTH_ID'],
+  clientId: process.env['NEXT_PUBLIC_OAUTH_ID'],
   secret: process.env['NEXT_PUBLIC_OAUTH_SECRET'],
   redirectPath: process.env['NEXT_PUBLIC_OAUTH_REDIRECT_PATH'],
   rootUrl: process.env['NEXT_PUBLIC_OAUTH_ROOT_URL'],

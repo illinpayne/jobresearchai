@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider     = \"prisma-client\"\n  output       = \"./generated\"\n  moduleFormat = \"cjs\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum AccountRole {\n  CUSTOMER\n  ADMIN\n\n  @@map(\"account_roles\")\n}\n\nmodel Account {\n  id             String  @id @default(nanoid())\n  email          String  @unique\n  passwordHash   String  @map(\"password_hash\")\n  firstName      String  @map(\"first_name\")\n  secondName     String  @map(\"second_name\")\n  avatar         String? @map(\"avatar\")\n  isAuthVerified Boolean @default(false) @map(\"is_auth_verified\")\n\n  role AccountRole @default(CUSTOMER)\n\n  isEmailVerified Boolean @default(false) @map(\"is_email_verified\")\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  @@map(\"accounts\")\n}\n",
+  "inlineSchema": "generator client {\n  provider     = \"prisma-client\"\n  output       = \"./generated\"\n  moduleFormat = \"cjs\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum AccountRole {\n  CUSTOMER\n  ADMIN\n\n  @@map(\"account_roles\")\n}\n\nmodel Account {\n  id             String  @id @default(nanoid())\n  email          String  @unique\n  passwordHash   String  @map(\"password_hash\")\n  firstName      String  @map(\"first_name\")\n  secondName     String  @map(\"second_name\")\n  avatar         String? @map(\"avatar\")\n  isAuthVerified Boolean @default(false) @map(\"is_auth_verified\")\n\n  role AccountRole @default(CUSTOMER)\n\n  isEmailVerified Boolean @default(false) @map(\"is_email_verified\")\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  providers Provider[]\n\n  @@map(\"accounts\")\n}\n\nmodel Provider {\n  id       String @id @default(nanoid())\n  provider String @default(\"internal\")\n\n  accountId String  @map(\"account_id\")\n  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)\n\n  @@unique([provider, id])\n  @@map(\"providers\")\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"password_hash\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"first_name\"},{\"name\":\"secondName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"second_name\"},{\"name\":\"avatar\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"avatar\"},{\"name\":\"isAuthVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_auth_verified\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"AccountRole\"},{\"name\":\"isEmailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_email_verified\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"}],\"dbName\":\"accounts\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"password_hash\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"first_name\"},{\"name\":\"secondName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"second_name\"},{\"name\":\"avatar\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"avatar\"},{\"name\":\"isAuthVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_auth_verified\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"AccountRole\"},{\"name\":\"isEmailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_email_verified\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"providers\",\"kind\":\"object\",\"type\":\"Provider\",\"relationName\":\"AccountToProvider\"}],\"dbName\":\"accounts\"},\"Provider\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"account_id\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToProvider\"}],\"dbName\":\"providers\"}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -185,6 +185,16 @@ export interface PrismaClient<
     * ```
     */
   get account(): Prisma.AccountDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.provider`: Exposes CRUD operations for the **Provider** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Providers
+    * const providers = await prisma.provider.findMany()
+    * ```
+    */
+  get provider(): Prisma.ProviderDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

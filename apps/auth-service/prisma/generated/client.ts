@@ -42,3 +42,8 @@ export { Prisma }
  * 
  */
 export type Account = Prisma.AccountModel
+/**
+ * Model Provider
+ * 
+ */
+export type Provider = Prisma.ProviderModel

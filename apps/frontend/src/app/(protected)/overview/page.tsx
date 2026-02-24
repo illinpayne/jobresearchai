@@ -1,8 +1,9 @@
-'use client';
+import type { Metadata } from 'next';
 
-import { useMe } from '@/api/hooks/useMe.hook';
+export const metadata: Metadata = {
+  title: 'Overview',
+};
 
-export default function Dashboard() {
-  const data = useMe();
-  return <div>Dashboard: {data.data?.email}</div>;
+export default function Overview() {
+  return <div className='h-[200vh]'>ggg</div>;
 }

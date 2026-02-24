@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Montserrat } from 'next/font/google';
+import { Geist, Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { APP_CONFIG, SEO } from '@/constants';
@@ -10,9 +10,9 @@ const font = Geist({
   variable: '--font-ibm-plex-sans',
 });
 
-const montserral = Montserrat({
-  subsets: ['cyrillic', 'latin'],
-  variable: '--font-montserrat',
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -78,7 +78,7 @@ export default function RootLayout({
     <html
       lang='en'
       suppressHydrationWarning>
-      <body className={`${font.className} ${font.variable} ${montserral.variable} antialiased`}>
+      <body className={`${font.className} ${font.variable} ${inter.variable} antialiased`}>
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
         <Toaster />
       </body>

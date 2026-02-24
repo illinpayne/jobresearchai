@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { accountCacheKey } from '@/lib/cache';
 import { getSessionToken, removeSessionToken, setSessionToken } from '@/lib/cookies';
 import { APP_CONFIG } from '../constants/app';
-import { refresh } from './requests/auth.req';
+import { logout, refresh } from './requests/auth.req';
 
 export const api = axios.create({
   baseURL: APP_CONFIG.apiUrl,
@@ -38,7 +38,6 @@ instance.interceptors.response.use(
       if (!isRefreshing) {
         try {
           const resp = await refresh();
-          console.log(resp);
           const newAccessToken = resp.accessToken;
           setSessionToken(newAccessToken);
 
@@ -49,8 +48,9 @@ instance.interceptors.response.use(
           if (typeof window !== 'undefined') {
             localStorage.removeItem(accountCacheKey);
           }
-          const { toast } = await import('sonner');
-          toast.error('Session expired, redirecting to login...');
+          await logout();
+          // const { toast } = await import("sonner");
+          // toast.error("Session expired, redirecting to login.");
           isRefreshing = true;
           setTimeout(() => {
             redirect('/signin');

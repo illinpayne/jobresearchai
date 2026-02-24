@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config'
-import { JwtService } from '@nestjs/jwt'
+import { JwtModule, JwtService } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Account } from '@prisma/generated/client'
 import * as argon2 from 'argon2'
@@ -14,6 +14,7 @@ import { OtpService } from '@/modules/otp/otp.service'
 import {
 	expectAborted,
 	expectAlreadyExist,
+	expectFailedPrecondition,
 	expectInvalidArgument,
 	expectNotFound,
 	expectUnauthenticated
@@ -65,6 +66,12 @@ describe('Auth Module', () => {
 		jest.spyOn(console, 'log').mockImplementation(() => {})
 
 		const module: TestingModule = await Test.createTestingModule({
+			imports: [
+				JwtModule.register({
+					secret: 'test-secret',
+					signOptions: { expiresIn: '60s' }
+				})
+			],
 			providers: [
 				ConfigService,
 				AuthService,
@@ -129,6 +136,22 @@ describe('Auth Module', () => {
 			})
 		} catch (error) {
 			expectAlreadyExist(error, 'Account already exists')
+		}
+	})
+
+	it('Should throw abort error when sending register otp', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		mockPrisma.account.create.mockRejectedValue(null)
+
+		try {
+			await service.sendOTPRegister({
+				email: account.email,
+				firstName: account.firstName,
+				secondName: account.secondName,
+				password: 'plaintextpassword'
+			})
+		} catch (error) {
+			expectAborted(error, 'Cannot create account')
 		}
 	})
 
@@ -399,10 +422,9 @@ describe('Auth Module', () => {
 			sub: account.id
 		})
 		mockPrisma.account.findUnique.mockResolvedValue(account)
-		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
-			accessToken: 'accesstoken',
-			refreshToken: 'refreshtoken'
-		})
+		jest.spyOn(tokenService, 'generateAccessToken').mockReturnValue(
+			'accesstoken'
+		)
 
 		const response = await service.revalidateSession({
 			refreshToken: 'sometoken'
@@ -537,6 +559,224 @@ describe('Auth Module', () => {
 			})
 		} catch (error) {
 			expectAborted(error, 'Cannot reset password')
+		}
+	})
+
+	it('Should login with oauth', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		const response = await service.oAuthSignin({
+			email: account.email,
+			givenName: account.firstName,
+			familyName: account.secondName,
+			picture: account.avatar as string,
+			provider: 'google'
+		})
+		expect(response.accessToken).toBe('accesstoken')
+		expect(response.account?.email).toBe(account.email)
+		expect(response.account?.firstName).toBe(account.firstName)
+		expect(response.account?.secondName).toBe(account.secondName)
+		expect(response.account?.avatar).toBe(account.avatar)
+		expect(response.account?.isEmailVerified).toBe(account.isEmailVerified)
+	})
+
+	it('Should throw aborted if account not completely created while login with oauth', async () => {
+		const modified = { ...account, isAuthVerified: false }
+		mockPrisma.account.findUnique.mockResolvedValue(modified)
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		try {
+			await service.oAuthSignin({
+				email: account.email,
+				givenName: account.firstName,
+				familyName: account.secondName,
+				picture: account.avatar as string,
+				provider: 'google'
+			})
+		} catch (error) {
+			expectAborted(error, 'Account is not completely registered')
+		}
+	})
+
+	it('Should register with oauth', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		const modified = {
+			...account,
+			isAuthVerified: true,
+			isEmailVerified: true
+		}
+		jest.spyOn(accountRepository, 'createAccount').mockResolvedValue(
+			modified
+		)
+		jest.spyOn(tokenService, 'generateTokens').mockReturnValue({
+			accessToken: 'accesstoken',
+			refreshToken: 'refreshtoken'
+		})
+
+		const response = await service.oAuthSignin({
+			email: account.email,
+			givenName: account.firstName,
+			familyName: account.secondName,
+			picture: account.avatar as string,
+			provider: 'google'
+		})
+		expect(response.accessToken).toBe('accesstoken')
+		expect(response.account?.email).toBe(account.email)
+		expect(response.account?.firstName).toBe(account.firstName)
+		expect(response.account?.secondName).toBe(account.secondName)
+		expect(response.account?.avatar).toBe(account.avatar)
+	})
+
+	it('Should throw aborted while register with oauth', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+		jest.spyOn(accountRepository, 'createAccount').mockRejectedValue(null)
+
+		try {
+			await service.oAuthSignin({
+				email: account.email,
+				givenName: account.firstName,
+				familyName: account.secondName,
+				picture: account.avatar as string,
+				provider: 'google'
+			})
+		} catch (error) {
+			expectAborted(error, 'Cannot verify account')
+		}
+	})
+
+	it('Should send otp for change email', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(account)
+		jest.spyOn(otpService, 'resend').mockResolvedValue({
+			hash: 'somehash',
+			code: '1234'
+		})
+
+		const response = await service.sendEmailOTP({
+			email: account.email
+		})
+		expect(response).toEqual({
+			status: true,
+			message: `OTP code was sent on the ${account.email}`
+		})
+	})
+
+	it('Should throw not found error while send otp for change email', async () => {
+		mockPrisma.account.findUnique.mockResolvedValue(null)
+
+		try {
+			await service.sendEmailOTP({
+				email: account.email
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should change email with otp verification', async () => {
+		mockPrisma.account.findUnique.mockResolvedValueOnce(account)
+		mockPrisma.account.findUnique.mockResolvedValueOnce(null)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		jest.spyOn(accountRepository, 'updateAccount').mockResolvedValue({
+			...account,
+			passwordHash: 'newhashpassword'
+		})
+
+		const response = await service.changeEmail({
+			email: account.email,
+			newEmail: 'newemail@gmail.com',
+			code: '123456'
+		})
+		expect(response.message).toBe('Email was successfully changed')
+		expect(response.status).toBe(true)
+	})
+
+	it('Should throw not found authorized user while change email with otp verification', async () => {
+		mockPrisma.account.findUnique.mockResolvedValueOnce(null)
+		try {
+			await service.changeEmail({
+				email: account.email,
+				newEmail: 'newemail@gmail.com',
+				code: '123456'
+			})
+		} catch (error) {
+			expectNotFound(error, 'Account not found')
+		}
+	})
+
+	it('Should throw not added password before change email while change email with otp verification', async () => {
+		const modified = { ...account, passwordHash: '' }
+		mockPrisma.account.findUnique.mockResolvedValueOnce(modified)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		jest.spyOn(accountRepository, 'updateAccount').mockResolvedValue({
+			...account,
+			passwordHash: 'newhashpassword'
+		})
+
+		try {
+			await service.changeEmail({
+				email: account.email,
+				newEmail: 'newemail@gmail.com',
+				code: '123456'
+			})
+		} catch (error) {
+			expectFailedPrecondition(
+				error,
+				'There is no password for this account, please add password first'
+			)
+		}
+	})
+
+	it('Should throw found account by new email while change email with otp verification', async () => {
+		mockPrisma.account.findUnique.mockResolvedValueOnce(account)
+		mockPrisma.account.findUnique.mockResolvedValueOnce(account)
+		try {
+			await service.changeEmail({
+				email: account.email,
+				newEmail: 'newemail@gmail.com',
+				code: '123456'
+			})
+		} catch (error) {
+			expectAborted(error, 'Account already exists')
+		}
+	})
+
+	it('Should throw not valid code while change email with otp verification', async () => {
+		mockPrisma.account.findUnique.mockResolvedValueOnce(account)
+		mockPrisma.account.findUnique.mockResolvedValueOnce(null)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(false)
+
+		try {
+			await service.changeEmail({
+				email: account.email,
+				newEmail: 'newemail@gmail.com',
+				code: '123456'
+			})
+		} catch (error) {
+			expectInvalidArgument(error, 'Code is not valid')
+		}
+	})
+
+	it('Should throw aborted while unable to update accont while change email with otp verification', async () => {
+		mockPrisma.account.findUnique.mockResolvedValueOnce(account)
+		mockPrisma.account.findUnique.mockResolvedValueOnce(null)
+		jest.spyOn(otpService, 'verify').mockResolvedValue(true)
+		jest.spyOn(accountRepository, 'updateAccount').mockRejectedValue(null)
+
+		try {
+			await service.changeEmail({
+				email: account.email,
+				newEmail: 'newemail@gmail.com',
+				code: '123456'
+			})
+		} catch (error) {
+			expectAborted(error, 'Cannot change email')
 		}
 	})
 })

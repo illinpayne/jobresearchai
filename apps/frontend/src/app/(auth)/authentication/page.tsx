@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import AuthenticationLoader from '@/app/components/auth/authentication-loader';
+import AuthenticationLoader from '@/components/auth/authentication-loader';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 

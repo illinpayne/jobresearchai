@@ -17,10 +17,14 @@ export class TokenService {
 		private readonly config: ConfigService<AllConfigs>
 	) {}
 
-	public generateTokens(payload: JwtPayload): JwtTokens {
-		const accessToken = this.jwtService.sign(payload, {
+	public generateAccessToken(payload: JwtPayload): string {
+		return this.jwtService.sign(payload, {
 			expiresIn: this.config.get('jwt.accessTokenTTL', { infer: true })
 		})
+	}
+
+	public generateTokens(payload: JwtPayload): JwtTokens {
+		const accessToken = this.generateAccessToken(payload)
 
 		const refreshTokenPayload: JwtRefreshTokenPayload = {
 			sub: payload.id

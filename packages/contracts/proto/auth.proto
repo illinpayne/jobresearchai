@@ -21,6 +21,10 @@ service AuthService {
 	rpc ResetPassword(ResetPasswordRequest) returns (SendOtpResponse);
 	// Sign in / up with oauth, makes account without otp!
 	rpc OAuthSignIn(GoogleAccount) returns (AuthResponse);
+	// Send OTP Code for change email
+	rpc SendChangeEmailOtp(SendOTPEmailRequest) returns (SendOtpResponse);
+	// Change email by OTP code
+	rpc ChangeEmail(ChangeEmailRequest) returns (SendOtpResponse);
 }
 
 message RegisterSendOtpRequest {
@@ -84,3 +88,14 @@ message ResetPasswordRequest {
 	string code = 2;
 	string new_password = 3;
 }
+
+message SendOTPEmailRequest {
+	string email = 1;
+}
+
+message ChangeEmailRequest {
+	string email = 1;
+	string new_email = 2;
+	string code = 3;
+}
+

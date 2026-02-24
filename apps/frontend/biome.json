@@ -32,7 +32,8 @@
         "noNextAsyncClientComponent": "error"
       },
       "a11y": {
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off"
       }
     },
     "domains": {
