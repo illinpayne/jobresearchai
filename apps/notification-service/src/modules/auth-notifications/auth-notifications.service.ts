@@ -6,7 +6,7 @@ import React from 'react'
 import { MailService } from '@/common/abstractions/mail.service.abstract'
 import ChangeEmail from '@/emails/change-email-otp'
 import ForgotPassword from '@/emails/forgot-password-otp'
-import { Register } from '@/emails/register-otp'
+import Register from '@/emails/register-otp'
 
 @Injectable()
 export class AuthNotificationsService {

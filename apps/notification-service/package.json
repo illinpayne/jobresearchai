@@ -84,13 +84,17 @@
     "moduleFileExtensions": [
       "js",
       "json",
-      "ts"
+      "ts",
+      "tsx"
     ],
     "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)sx?$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@react-email)/)"
+    ],
     "coveragePathIgnorePatterns": [
       "node_modules",
       "\\redis.service\\.ts$",
@@ -121,6 +125,7 @@
     "coverageDirectory": "coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
+      "^@/emails/(.*)$": "<rootDir>/emails/$1",
       "^@/(.*)$": "<rootDir>/src/$1",
       "^@prisma/generated/(.*)$": "<rootDir>/prisma/generated/$1"
     }

@@ -10,7 +10,6 @@ import {
 
 import { MailProps } from '../types/mail.types'
 
-// This service is currently not used, but it can be used in the future if we want to switch to a different mailer that is compatible with @nestjs-modules/mailer
 @Injectable()
 export class MailerService implements MailService, ExtendedMailService {
 	public constructor(
