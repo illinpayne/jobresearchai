@@ -658,7 +658,7 @@ describe('Auth Module', () => {
 			code: '1234'
 		})
 
-		const response = await service.sendEmailOTP({
+		const response = await service.sendChangeEmailOTP({
 			email: account.email
 		})
 		expect(response).toEqual({
@@ -671,7 +671,7 @@ describe('Auth Module', () => {
 		mockPrisma.account.findUnique.mockResolvedValue(null)
 
 		try {
-			await service.sendEmailOTP({
+			await service.sendChangeEmailOTP({
 				email: account.email
 			})
 		} catch (error) {

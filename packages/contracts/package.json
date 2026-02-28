@@ -1,6 +1,6 @@
 {
   "name": "@jrai/contracts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "gRPC contracts for APIs",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

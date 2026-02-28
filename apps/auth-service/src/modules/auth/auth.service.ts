@@ -18,6 +18,7 @@ import { Injectable } from '@nestjs/common'
 import { Account } from '@prisma/generated/client'
 import { hash, verify } from 'argon2'
 
+import { MessagingService } from '@/infrastructure/messaging/messaging.service'
 import { TokenService } from '@/infrastructure/token-service/token-service.service'
 import { AuthProviders } from '@/shared/auth.types'
 
@@ -29,7 +30,8 @@ export class AuthService {
 	public constructor(
 		private readonly accountRepository: AccountRepository,
 		private readonly otpService: OtpService,
-		private readonly tokenService: TokenService
+		private readonly tokenService: TokenService,
+		private readonly messagingService: MessagingService
 	) {}
 
 	public async sendOTPRegister(
@@ -63,11 +65,11 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.ABORTED, 'Cannot create account')
 		}
 
-		const codes = await this.otpService.send(email, 'register')
-
-		//TODO: make send code via notification microservice
-		// eslint-disable-next-line no-console
-		console.log(codes.code)
+		const codes = await this.otpService.persist(email, 'register')
+		await this.messagingService.sendRegisterOtp({
+			email,
+			code: codes.code
+		})
 
 		return {
 			status: true,
@@ -91,11 +93,11 @@ export class AuthService {
 			)
 		}
 
-		const codes = await this.otpService.resend(email, 'register')
-
-		//TODO: make send code via notification microservice
-		// eslint-disable-next-line no-console
-		console.log(codes.code)
+		const codes = await this.otpService.repersist(email, 'register')
+		await this.messagingService.sendRegisterOtp({
+			email,
+			code: codes.code
+		})
 
 		return {
 			status: true,
@@ -233,11 +235,11 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
 		}
 
-		const codes = await this.otpService.resend(email, 'forgot-password')
-
-		//TODO: make send code via notification microservice
-		// eslint-disable-next-line no-console
-		console.log(codes.code)
+		const codes = await this.otpService.repersist(email, 'forgot-password')
+		await this.messagingService.sendForgotPasswordOtp({
+			email,
+			code: codes.code
+		})
 
 		return {
 			status: true,
@@ -283,8 +285,7 @@ export class AuthService {
 		}
 	}
 
-	// OTP for change email
-	public async sendEmailOTP(
+	public async sendChangeEmailOTP(
 		request: SendOTPEmailRequest
 	): Promise<SendOtpResponse> {
 		const { email } = request
@@ -294,12 +295,11 @@ export class AuthService {
 			throw new GrpcException(RpcStatus.NOT_FOUND, 'Account not found')
 		}
 
-		// Use resend for prevent sending dublicates
-		const codes = await this.otpService.resend(email, 'change-email')
-
-		//TODO: make send code via notification microservice
-		// eslint-disable-next-line no-console
-		console.log(codes.code)
+		const codes = await this.otpService.repersist(email, 'change-email')
+		await this.messagingService.sendChangeEmailOtp({
+			email,
+			code: codes.code
+		})
 
 		return {
 			status: true,

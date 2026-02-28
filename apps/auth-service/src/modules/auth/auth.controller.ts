@@ -78,7 +78,7 @@ export class AuthController {
 	public async sendChangeEmailOtp(
 		request: SendOTPEmailRequest
 	): Promise<SendOtpResponse> {
-		return await this.authService.sendEmailOTP(request)
+		return await this.authService.sendChangeEmailOTP(request)
 	}
 
 	@GrpcMethod(AUTH_SERVICE_NAME, 'ChangeEmail')

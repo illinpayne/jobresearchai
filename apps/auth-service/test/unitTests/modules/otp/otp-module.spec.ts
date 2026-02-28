@@ -47,7 +47,7 @@ describe('Otp Module', () => {
 			hash: 'somehash'
 		} as OTPGeneratedCode)
 
-		const result: OTPGeneratedCode = await service.send(
+		const result: OTPGeneratedCode = await service.persist(
 			'mock@gmail.com',
 			'register'
 		)
@@ -63,7 +63,7 @@ describe('Otp Module', () => {
 			hash: 'somehash'
 		} as OTPGeneratedCode)
 
-		const result: OTPGeneratedCode = await service.resend(
+		const result: OTPGeneratedCode = await service.repersist(
 			'mock@gmail.com',
 			'register'
 		)
@@ -80,7 +80,7 @@ describe('Otp Module', () => {
 		} as OTPGeneratedCode)
 
 		try {
-			await service.resend('mock@gmail.com', 'register')
+			await service.repersist('mock@gmail.com', 'register')
 		} catch (error) {
 			expectAborted(error, 'Resend not allowed yet')
 		}
