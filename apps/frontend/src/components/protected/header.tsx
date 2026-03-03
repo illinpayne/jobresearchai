@@ -1,8 +1,8 @@
 'use client';
 
-import { Briefcase, Home, SearchCheck, Settings } from 'lucide-react';
+import { Briefcase, Home, Settings } from 'lucide-react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Suspense } from 'react';
 import { ROUTES } from '@/constants';
 import { HeaderButton } from '../shared/header-button';
 import ProfilePopover from './profile-popover';
@@ -37,9 +37,13 @@ export default function OverviewHeader() {
   }
   return (
     <header className='sticky top-0 left-0 h-screen flex flex-col items-center gap-8 py-0 bg-neutral-100 border-r px-1'>
-      <button className='rounded hover:bg-gray-200 py-2 px-3 transition-all'>
-        {/* TODO: Put icon */}
-        <SearchCheck size={28} />
+      <button className='rounded py-2 px-3'>
+        <Image
+          src={'/images/icon.webp'}
+          width={40}
+          height={40}
+          alt='logo'
+        />
       </button>
       <nav className='list-none flex flex-col gap-3'>
         {navigation.map((nav, i) => (

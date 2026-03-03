@@ -48,11 +48,11 @@ export default function UpdateAvatarForm() {
       await mutateAsync(formData);
       const { toast } = await import('sonner');
       toast.info('Avatar has been updated, wait some time for update to take effect.');
-      setImageSrc(null);
     } catch (error: any) {
       const { toast } = await import('sonner');
       toast.error(error.response?.data?.message ?? 'Upload failed, try again later.');
     }
+    setImageSrc(null);
   };
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,13 +107,17 @@ export default function UpdateAvatarForm() {
               'flex flex-col gap-2 size-50 rounded-full overflow-hidden relative',
               errors.avatar?.message && 'outline-4 outline-red-500/50',
             )}>
-            <NextImage
-              src={getImage(user?.avatar, 0, 0)}
-              alt='avatar'
-              height={800}
-              width={800}
-              priority
-            />
+            {user.avatar ? (
+              <NextImage
+                src={getImage(user.avatar)}
+                alt='avatar'
+                height={800}
+                width={800}
+                priority
+              />
+            ) : (
+              <div className='bg-primary size-full flex items-center justify-center text-white text-8xl font-bold'>{user.firstName[0]}</div>
+            )}
             <div className='size-full absolute inset-0 transition-all cursor-pointer hover:bg-black/30 rounded-full'></div>
           </label>
           <input

@@ -3,12 +3,11 @@ import Link from 'next/link';
 import AuthenticationLoader from '@/components/auth/authentication-loader';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import type { SearchParams } from '@/shared/shared.types';
 
 export const metadata: Metadata = {
   title: 'Redirecting to the dashboard',
 };
-
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 export default async function AuthenticationPage(props: { searchParams: SearchParams }) {
   const params = await props.searchParams;

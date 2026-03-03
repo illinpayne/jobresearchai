@@ -1,6 +1,5 @@
 'use client';
 
-import { get } from 'http';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -58,7 +57,7 @@ export default function ProfilePopover() {
       <PopoverTrigger asChild>
         {data?.avatar ? (
           <Image
-            src={getImage(data.avatar, 0, 0)}
+            src={getImage(data.avatar)}
             alt='image'
             className='size-10 object-contain rounded-full cursor-pointer data-[state=open]:outline-4 data-[state=open]:scale-95 transition-all'
             width={40}
@@ -78,7 +77,7 @@ export default function ProfilePopover() {
           <div className='grid grid-cols-[36px_auto_auto] gap-2 mt-2 items-center'>
             {data?.avatar ? (
               <Image
-                src={getImage(data.avatar, 0, 0)}
+                src={getImage(data.avatar)}
                 alt='image'
                 className='size-9 object-contain rounded-full data-[state=open]:outline-4 data-[state=open]:scale-95 transition-all'
                 width={36}

@@ -12,8 +12,7 @@ import { useLogin } from '@/api/hooks/useLogin.hook';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
-import { ROUTES } from '@/constants';
-import { otpCodeDurationSeconds } from '@/constants/times';
+import { otpCodeDurationSeconds, ROUTES } from '@/constants';
 import { useOtpTrigger } from '@/hooks';
 import { persistSession } from '@/lib/client/session-persist';
 import { cn } from '@/lib/utils';
@@ -39,7 +38,6 @@ export function LoginForm() {
   const { startTimer } = useOtpTrigger('register-otp', otpCodeDurationSeconds);
 
   const { mutateAsync, isPending } = useLogin({
-    //TODO: onSuccess here and send-otp-register-form should use DRY princ.
     async onSuccess(data) {
       const { accessToken, account } = data;
       if (accessToken && typeof accessToken === 'string') {

@@ -16,10 +16,15 @@ export class GrpcExceptionFilter implements ExceptionFilter {
 		if (this.isGrpcError(exception)) {
 			const status = grpcToHttpStatus[exception.code] || 500
 
+			const message = (exception.details as string).includes(
+				'ECONNREFUSED'
+			)
+				? 'Service unavailable, try again later'
+				: exception.details
 			//TODO: Typize this stuff
 			return response.status(status).json({
 				statusCode: status,
-				message: exception.details || 'Service unavailable'
+				message: message
 			})
 		}
 

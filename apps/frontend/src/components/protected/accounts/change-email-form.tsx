@@ -8,9 +8,7 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useChangeEmail } from '@/api/hooks/useChangeEmail.hook';
-import { useForgotPassword } from '@/api/hooks/useForgotPassword.hook';
 import { useMe } from '@/api/hooks/useMe.hook';
-import { useResetPassword } from '@/api/hooks/useResetPassword.hook';
 import { useSendEmailOTP } from '@/api/hooks/useSendEmailOTP.hook';
 import { Button } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
@@ -18,16 +16,7 @@ import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants';
-import {
-  changeEmailCacheKey,
-  changePasswordCacheKey,
-  DisposeCache,
-  GetEmailChangeCache,
-  GetPasswordChangeCache,
-  isCacheExpired,
-  SetEmailChangeCache,
-  SetPasswordChangeCache,
-} from '@/lib/cache';
+import { changeEmailCacheKey, DisposeCache, GetEmailChangeCache, isCacheExpired, SetEmailChangeCache } from '@/lib/cache';
 import { cleanSession } from '@/lib/client/session-persist';
 
 const changeEmailSchema = z.object({

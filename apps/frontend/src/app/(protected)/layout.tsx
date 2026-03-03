@@ -1,5 +1,5 @@
 import OverviewHeader from '@/components/protected/header';
-import { BillingModalProvider } from '@/providers/billing-dialog.provider';
+import { BillingModalProvider } from '@/providers';
 
 export default function OverviewLayout({
   children,

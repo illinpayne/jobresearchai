@@ -8,14 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 
 export const BillingModalProvider = () => {
-  //   const [isMounted, setIsMounted] = useState(false);
   const { onOpen, onClose, isOpen } = useBillingDialog();
-
-  //   useEffect(() => {
-  //     setIsMounted(true);
-  //   }, []);
-
-  //   if (!isMounted) return null;
 
   return (
     <Dialog

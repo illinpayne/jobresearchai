@@ -8,14 +8,12 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useResendRegisterOtp } from '@/api/hooks/useResendRegisterOtp.hook';
 import { useVerifyRegisterOtp } from '@/api/hooks/useVerifyRegisterOtp.hook';
-import { instance } from '@/api/instance';
 import { Button } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { ROUTES } from '@/constants';
 import { useOtpTrigger } from '@/hooks';
-import { accountCacheKey, CacheAccount } from '@/lib/cache';
-import { setSessionToken } from '@/lib/cookies';
+import { persistSession } from '@/lib/client/session-persist';
 import { OtpTimer } from '../shared/otp-timer';
 import { AuthWrapper } from './auth-wrapper';
 
@@ -41,14 +39,9 @@ export function SendOtpRegisterForm({ email, duration }: IProps) {
 
   const { mutateAsync, isPending } = useVerifyRegisterOtp({
     async onSuccess(data) {
-      const { accessToken } = data;
+      const { accessToken, account } = data;
       if (accessToken && typeof accessToken === 'string') {
-        setSessionToken(accessToken);
-        instance.defaults.headers['Authorization'] = data.accessToken;
-        const cacheData = CacheAccount(data.account);
-
-        localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
-        queryClient.setQueryData(['account'], data.account, { updatedAt: Date.now() });
+        persistSession({ accessToken, account, queryClient });
         clearTimer();
 
         const { toast } = await import('sonner');

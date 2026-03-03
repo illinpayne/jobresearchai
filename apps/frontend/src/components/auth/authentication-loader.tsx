@@ -5,10 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useMe } from '@/api/hooks/useMe.hook';
-import { instance } from '@/api/instance';
-import { accountCacheKey, CacheAccount } from '@/lib/cache';
 import { refetchSession } from '@/lib/client/session-persist';
-import { setSessionToken } from '@/lib/cookies';
 
 interface Props {
   token: string;

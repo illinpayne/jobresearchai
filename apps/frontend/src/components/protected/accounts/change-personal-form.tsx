@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { QueryKeys } from '@/constants';
 
 const changePersonalSchema = z.object({
   firstName: z.string().max(15, { message: 'First name is too long' }).nonempty({ message: 'First name is required' }),
@@ -25,7 +26,7 @@ export default function ChangePersonalForm() {
   const { mutateAsync, isPending, isSuccess } = useChangePersonalData({
     onSuccess: async (data) => {
       try {
-        queryClient.setQueryData(['account'], data);
+        queryClient.setQueryData([QueryKeys.MyAccount], data);
         const { toast } = await import('sonner');
         toast.success('Personal information has been changed');
       } catch (error: any) {
