@@ -2,6 +2,7 @@ import ChangeEmailForm from '@/components/protected/accounts/change-email-form';
 import ChangePasswordForm from '@/components/protected/accounts/change-password-form';
 import ChangePersonalForm from '@/components/protected/accounts/change-personal-form';
 import SubscriptionBanner from '@/components/protected/accounts/subscription-banner';
+import UpdateAvatarForm from '@/components/protected/accounts/update-avatar-form';
 
 export default function SettingsPage() {
   return (
@@ -10,9 +11,7 @@ export default function SettingsPage() {
         <h1 className='font-semibold text-2xl text-blue-900'>Personal info</h1>
         <p className='text-gray-600 text-sm'>Change your personal information or upload a new avatar for the profile!</p>
       </div>
-      <div className='flex items-center justify-center w-full mt-10'>
-        <div className='size-48 bg-red-500/10 rounded-full'></div>
-      </div>
+      <UpdateAvatarForm />
       <ChangePersonalForm />
       <div className='mt-10'>
         <h1 className='font-semibold text-2xl text-blue-900'>Password update form</h1>

@@ -6,10 +6,13 @@ import type {
 import {
 	Body,
 	Controller,
+	FileTypeValidator,
 	Get,
 	HttpCode,
 	HttpStatus,
+	MaxFileSizeValidator,
 	NotFoundException,
+	ParseFilePipe,
 	Put,
 	UploadedFile,
 	UseInterceptors
@@ -25,8 +28,11 @@ import {
 	ApiOperation,
 	ApiUnauthorizedResponse
 } from '@nestjs/swagger'
+import { extname } from 'path'
 
 import { CurrentUser, Protected } from '@/common/decorators'
+
+import { StorageClientGrpc } from '../storage/storage.grpc'
 
 import { AccountClientGrpc } from './account.grpc'
 import { ChangePersonalDataDto } from './dtos/change-personal-data.dto'
@@ -34,7 +40,10 @@ import { AccountResponse } from './responses/account.response'
 
 @Controller('account')
 export class AccountController {
-	constructor(private readonly client: AccountClientGrpc) {}
+	constructor(
+		private readonly authClient: AccountClientGrpc,
+		private readonly storageClient: StorageClientGrpc
+	) {}
 
 	@ApiOperation({
 		summary: 'Account session data',
@@ -53,7 +62,7 @@ export class AccountController {
 	@Get('me')
 	@HttpCode(HttpStatus.OK)
 	async getMe(@CurrentUser('id') id: string) {
-		return await this.client.call('getMe', { id } as GetMeRequest)
+		return await this.authClient.call('getMe', { id } as GetMeRequest)
 	}
 
 	@ApiOperation({
@@ -79,7 +88,7 @@ export class AccountController {
 		@CurrentUser('id') id: string,
 		@Body() dto: ChangePersonalDataDto
 	) {
-		return await this.client.call('changePersonalData', {
+		return await this.authClient.call('changePersonalData', {
 			id,
 			...dto
 		} as ChangePersonalDataRequest)
@@ -119,17 +128,35 @@ export class AccountController {
 	@HttpCode(HttpStatus.OK)
 	async changeProfileAvatar(
 		@CurrentUser('id') id: string,
-		@UploadedFile() file: Express.Multer.File
+		@UploadedFile(
+			new ParseFilePipe({
+				validators: [
+					new FileTypeValidator({
+						fileType: '.(png|jpeg|jpg|webp)$'
+					}),
+					new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 })
+				]
+			})
+		)
+		file: Express.Multer.File
 	) {
-		//TODO: do the stuff with saving, getting db name (only name, no extension)
-		// Geneate the name which will be using in a URL template
-		// Example: https://cdn.s3.com/uploads/users/<gotten_name>.pmg
 		if (!file) {
 			throw new NotFoundException('Image not found')
 		}
-		return await this.client.call('changeAvatar', {
+
+		const user = await this.authClient.call('getMe', { id } as GetMeRequest)
+
+		const saveResponse = await this.storageClient.call('saveAvatar', {
+			data: file.buffer,
+			mimetype: file.mimetype
+		})
+		await this.storageClient.call('removeAvatar', {
+			fileName: user.avatar
+		})
+
+		return await this.authClient.call('changeAvatar', {
 			id,
-			avatar: file.originalname
+			avatar: saveResponse.fileName
 		} as ChangeAvatarRequest)
 	}
 }

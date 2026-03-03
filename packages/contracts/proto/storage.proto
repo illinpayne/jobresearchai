@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package storage.v1;
+import "google/protobuf/empty.proto";
+
+// Storage rpc
+service StorageService {
+	// Saves avatar to storage
+	rpc SaveAvatar(SaveAvatarRequest) returns (AvatarResponse);
+	// Remove avatar
+	rpc RemoveAvatar(RemoveAvatarRequest) returns (google.protobuf.Empty);
+}
+
+message SaveAvatarRequest {
+	bytes data = 1;
+	string mimetype = 3;
+}
+
+message RemoveAvatarRequest {
+	string file_name = 1;
+}
+
+message AvatarResponse {
+	string file_name = 1;
+}

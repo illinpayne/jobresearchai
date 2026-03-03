@@ -8,7 +8,7 @@ import { AuthNotificationsService } from './auth-notifications.service'
 
 @Controller()
 export class AuthNotificationsController {
-	constructor(
+	public constructor(
 		private readonly authNotificationsService: AuthNotificationsService,
 		private readonly rmqService: RmqService
 	) {}

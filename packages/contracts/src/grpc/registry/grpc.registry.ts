@@ -11,4 +11,9 @@ export const GRPC_CLIENT = {
     protoPath: protoPaths.ACCOUNT,
     env: "ACCOUNT_GRPC_URL",
   },
+  STORAGE_PACKAGE: {
+    package: "storage.v1",
+    protoPath: protoPaths.STORAGE,
+    env: "STORAGE_GRPC_URL",
+  },
 } as const;

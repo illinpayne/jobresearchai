@@ -1,5 +1,6 @@
 'use client';
 
+import { get } from 'http';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -8,8 +9,8 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from '@/components/ui/popover';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants';
-import { useBillingDialog } from '@/hooks/use-billing-dialog.hook';
-import { cn } from '@/lib/utils';
+import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
+import { cn, getImage } from '@/lib/utils';
 import LogoutButton from './logout.button';
 
 export default function ProfilePopover() {
@@ -57,7 +58,7 @@ export default function ProfilePopover() {
       <PopoverTrigger asChild>
         {data?.avatar ? (
           <Image
-            src={data.avatar}
+            src={getImage(data.avatar, 0, 0)}
             alt='image'
             className='size-10 object-contain rounded-full cursor-pointer data-[state=open]:outline-4 data-[state=open]:scale-95 transition-all'
             width={40}
@@ -77,7 +78,7 @@ export default function ProfilePopover() {
           <div className='grid grid-cols-[36px_auto_auto] gap-2 mt-2 items-center'>
             {data?.avatar ? (
               <Image
-                src={data.avatar}
+                src={getImage(data.avatar, 0, 0)}
                 alt='image'
                 className='size-9 object-contain rounded-full data-[state=open]:outline-4 data-[state=open]:scale-95 transition-all'
                 width={36}

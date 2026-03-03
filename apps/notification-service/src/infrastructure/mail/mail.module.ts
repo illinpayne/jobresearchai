@@ -12,8 +12,6 @@ import { getMailerConfig } from '@/config/loaders'
 import { MailProcessor } from './mail.processor'
 import { MailerService } from './mailers/mailer.service'
 
-// import { ResendService } from './mailers/resend.service'
-
 @Module({
 	imports: [
 		MailerModule.forRootAsync({

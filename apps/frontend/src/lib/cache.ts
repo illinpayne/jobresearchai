@@ -1,6 +1,6 @@
 import type { AccountResponse } from '@/api/generated';
 
-const fiveMinutes = 5000; //5 * 60 * 1000;
+const fiveMinutes = 5 * 60 * 1000;
 const twoMinutes = 2 * 60 * 1000;
 
 export const accountCacheStaleTime = fiveMinutes;

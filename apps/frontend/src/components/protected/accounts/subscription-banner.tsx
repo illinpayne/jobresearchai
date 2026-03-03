@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useBillingDialog } from '@/hooks/use-billing-dialog.hook';
+import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 
 export default function SubscriptionBanner() {
   const { onOpen } = useBillingDialog();

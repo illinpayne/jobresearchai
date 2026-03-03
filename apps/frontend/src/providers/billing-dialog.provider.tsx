@@ -1,12 +1,11 @@
 'use client';
 
-import { CircleUser, Gem, User, UserRound, X } from 'lucide-react';
+import { CircleUser, Gem, X } from 'lucide-react';
 import Image from 'next/image';
-import { VisuallyHidden } from 'radix-ui';
 import { BillingBlock } from '@/components/shared/billing-block';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useBillingDialog } from '@/hooks/use-billing-dialog.hook';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 
 export const BillingModalProvider = () => {
   //   const [isMounted, setIsMounted] = useState(false);
