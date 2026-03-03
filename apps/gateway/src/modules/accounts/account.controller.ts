@@ -28,7 +28,6 @@ import {
 	ApiOperation,
 	ApiUnauthorizedResponse
 } from '@nestjs/swagger'
-import { extname } from 'path'
 
 import { CurrentUser, Protected } from '@/common/decorators'
 

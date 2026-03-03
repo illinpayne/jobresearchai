@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common'
 import type { Response } from 'express'
 
+import { IGrpcExceptionBody } from '@/shared/filters.types'
+
 @Catch()
 export class GrpcExceptionFilter implements ExceptionFilter {
 	public catch(exception: any, host: ArgumentsHost) {
@@ -21,27 +23,28 @@ export class GrpcExceptionFilter implements ExceptionFilter {
 			)
 				? 'Service unavailable, try again later'
 				: exception.details
-			//TODO: Typize this stuff
+
 			return response.status(status).json({
 				statusCode: status,
 				message: message
-			})
+			} as IGrpcExceptionBody)
 		}
 
 		if (exception instanceof HttpException) {
 			const status = exception.getStatus()
 
-			//TODO: Typize this stuff
 			return response
 				.status(status)
-				.json({ statusCode: status, message: exception.message })
+				.json({
+					statusCode: status,
+					message: exception.message
+				} as IGrpcExceptionBody)
 		}
 
-		//TODO: Typize this stuff
 		return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
 			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 			message: exception?.message ?? 'Internal Server Error'
-		})
+		} as IGrpcExceptionBody)
 	}
 
 	private isGrpcError(exception: any) {

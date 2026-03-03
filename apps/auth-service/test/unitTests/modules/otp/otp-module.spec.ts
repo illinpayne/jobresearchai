@@ -116,9 +116,7 @@ describe('Otp Module', () => {
 		try {
 			await service.verify('mock@gmail.com', 'register', '123456')
 		} catch (error) {
-			expect(error).toBeInstanceOf(RpcException)
-			expect(error.error.details).toBe('Invalid or expired code')
-			expect(error.error.code).toBe(10)
+			expectAborted(error, 'Invalid or expired code')
 		}
 	})
 

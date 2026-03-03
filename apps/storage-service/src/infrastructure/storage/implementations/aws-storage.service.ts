@@ -21,10 +21,6 @@ export class AwsStorageService implements Storage {
 		private configService: ConfigService<AllConfigs>
 	) {}
 
-	public get(fileName: string): Promise<any> {
-		throw new Error('Method not implemented.')
-	}
-
 	public async save(data: StorageData): Promise<void> {
 		const { data: body, fileName, mimetype } = data
 		const bucketName = this.configService.get('aws.bucketName', {

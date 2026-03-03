@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import type { Account } from '@prisma/generated/client'
 import * as argon2 from 'argon2'
 
+import { MessagingService } from '@/infrastructure/messaging/messaging.service'
 import { PrismaService } from '@/infrastructure/prisma/prisma.service'
 import { RedisService } from '@/infrastructure/redis/redis.service'
 import { TokenService } from '@/infrastructure/token-service/token-service.service'
@@ -40,6 +41,12 @@ const mockRedis = {
 	get: jest.fn(),
 	del: jest.fn(),
 	set: jest.fn()
+}
+
+const mockMessaging = {
+	sendRegisterOtp: jest.fn(),
+	sendForgotPasswordOtp: jest.fn(),
+	sendChangeEmailOtp: jest.fn()
 }
 
 describe('Auth Module', () => {
@@ -86,6 +93,10 @@ describe('Auth Module', () => {
 				{
 					provide: RedisService,
 					useValue: mockRedis
+				},
+				{
+					provide: MessagingService,
+					useValue: mockMessaging
 				}
 			]
 		}).compile()
@@ -106,7 +117,7 @@ describe('Auth Module', () => {
 		jest.spyOn(accountRepository, 'createAccount').mockResolvedValue(
 			account
 		)
-		jest.spyOn(otpService, 'send').mockResolvedValue({
+		jest.spyOn(otpService, 'persist').mockResolvedValue({
 			hash: 'somehash',
 			code: '1234'
 		})
@@ -160,7 +171,7 @@ describe('Auth Module', () => {
 		mockPrisma.account.findUnique.mockResolvedValue(modifiedAccount)
 		;(argon2.hash as jest.Mock).mockResolvedValue(account.passwordHash)
 
-		jest.spyOn(otpService, 'send').mockResolvedValue({
+		jest.spyOn(otpService, 'persist').mockResolvedValue({
 			hash: 'somehash',
 			code: '1234'
 		})
@@ -467,7 +478,7 @@ describe('Auth Module', () => {
 
 	it('Should send otp for forgot password', async () => {
 		mockPrisma.account.findUnique.mockResolvedValue(account)
-		jest.spyOn(otpService, 'send').mockResolvedValue({
+		jest.spyOn(otpService, 'persist').mockResolvedValue({
 			hash: 'somehash',
 			code: '1234'
 		})
@@ -653,7 +664,7 @@ describe('Auth Module', () => {
 
 	it('Should send otp for change email', async () => {
 		mockPrisma.account.findUnique.mockResolvedValue(account)
-		jest.spyOn(otpService, 'resend').mockResolvedValue({
+		jest.spyOn(otpService, 'repersist').mockResolvedValue({
 			hash: 'somehash',
 			code: '1234'
 		})
