@@ -5,6 +5,6 @@ import { RmqModule } from './rmq/rmq.module'
 import { StorageModule } from './storage/storage.module'
 
 @Module({
-	imports: [RmqModule, StorageModule, QueueModule]
+	imports: [RmqModule, QueueModule, StorageModule]
 })
 export class InfrastructureModule {}

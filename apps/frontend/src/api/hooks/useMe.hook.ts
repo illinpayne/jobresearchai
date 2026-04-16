@@ -1,22 +1,12 @@
-import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { QueryKeys } from "@/constants";
-import {
-  accountCacheKey,
-  accountCacheStaleTime,
-  CacheAccount,
-  type CachedAccount,
-} from "@/lib/cache";
-import type { AccountResponse } from "../generated";
-import { getMe } from "../requests/account.req";
+import { type UseQueryOptions, useQuery } from '@tanstack/react-query';
+import { QueryKeys } from '@/constants';
+import { accountCacheKey, accountCacheStaleTime, CacheAccount, type CachedAccount } from '@/lib/cache';
+import type { AccountResponse } from '../generated';
+import { getMe } from '../requests/account.req';
 
-export const useMe = (
-  options?: Omit<
-    UseQueryOptions<AccountResponse, unknown>,
-    "queryKey" | "queryFn"
-  >,
-) => {
+export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 'queryKey' | 'queryFn'>) => {
   const getImmediateData = (): CachedAccount | null => {
-    if (typeof window === "undefined") return null;
+    if (typeof window === 'undefined') return null;
     try {
       const item = localStorage.getItem(accountCacheKey);
       if (!item) {
@@ -49,6 +39,7 @@ export const useMe = (
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
+    enabled: !!initialData && options?.enabled !== false,
     ...options,
   });
 };

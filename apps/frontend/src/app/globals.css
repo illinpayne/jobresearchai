@@ -4,7 +4,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "AngryFont";
+  /* The path starts at / because it's in the public folder */
+  src: url("/fonts/Angry.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+  --breakpoint-3xl: 1920px;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -47,6 +64,8 @@
   --radius-4xl: calc(var(--radius) + 16px);
   --text-2sm: 13px;
   --font-inter: var(--font-inter);
+  --font-nunito-sans: var(--font-nunito-sans);
+  --font-angry: "AngryFont", sans-serif;
 }
 
 @theme {
@@ -77,6 +96,25 @@ body {
 * {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--border)) transparent;
+}
+
+html,
+body {
+  /* Stop the browser's native 'spring' or 'smooth' behavior */
+  scroll-behavior: smooth !important;
+  overscroll-behavior-y: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+svg {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+section {
+  scroll-margin-top: 80px;
 }
 
 :root {
@@ -155,4 +193,8 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.parallax-box {
+  will-change: transform;
 }

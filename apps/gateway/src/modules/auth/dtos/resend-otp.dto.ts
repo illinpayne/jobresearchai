@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty } from 'class-validator'
 
 export class ResendOtpDto {
 	@ApiProperty({ type: String, default: 'tony.soprano@gmail.com' })
-	@IsEmail()
+	@IsEmail({}, { message: 'Email address is not correct' })
 	@IsNotEmpty({ message: 'Email address should not be empty' })
-	email: string
+	email!: string
 }

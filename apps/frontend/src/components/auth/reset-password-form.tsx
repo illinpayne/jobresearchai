@@ -75,7 +75,7 @@ export function ResetPasswordForm({ email }: IProps) {
   return (
     <AuthWrapper
       heading='Reset password'
-      className='bg-white rounded-md px-10 py-10 shadow-sm z-10 min-w-100'
+      className='bg-white rounded-md px-10 py-10 shadow-sm z-10 min-w-100 max-sm:bg-white/70 max-sm:backdrop-blur-lg max-sm:shadow-none'
       isSocialAuth={false}>
       <p className='line-clamp-2 max-w-100'>
         Please, check the <span className='text-primary'>{email}</span> to verify the code
@@ -94,7 +94,7 @@ export function ResetPasswordForm({ email }: IProps) {
                   value={field.value}
                   onChange={field.onChange}
                   disabled={isPending}>
-                  <InputOTPGroup className='flex justify-center gap-2 w-full *:border-l'>
+                  <InputOTPGroup className='flex justify-center gap-2 w-full *:border-l max-sm:*:bg-white max-sm:*:border-none max-sm:*:text-lg'>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
                     <InputOTPSlot index={2} />

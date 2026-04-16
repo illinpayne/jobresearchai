@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Inter } from 'next/font/google';
+import { Geist, Inter, Nunito_Sans } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { APP_CONFIG, SEO } from '@/constants';
@@ -13,6 +13,11 @@ const font = Geist({
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+});
+
+const nunito_sans = Nunito_Sans({
+  subsets: ['latin'],
+  variable: '--font-nunito-sans',
 });
 
 export const metadata: Metadata = {
@@ -78,7 +83,7 @@ export default function RootLayout({
     <html
       lang='en'
       suppressHydrationWarning>
-      <body className={`${font.className} ${font.variable} ${inter.variable} antialiased`}>
+      <body className={`${font.className} ${font.variable} ${inter.variable} ${nunito_sans.variable} antialiased`}>
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
         <Toaster />
       </body>

@@ -1,3 +1,3 @@
 export enum QueryKeys {
-  MyAccount = "account",
+  MyAccount = 'account',
 }

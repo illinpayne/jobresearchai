@@ -57,7 +57,10 @@ export default function OverviewHeader() {
         ))}
       </nav>
       <div className='w-full py-4 flex flex-col items-center mt-auto'>
-        <ProfilePopover />
+        <ProfilePopover
+          side='right'
+          classSide='translate-x-8 -translate-y-5 '
+        />
       </div>
     </header>
   );

@@ -81,6 +81,13 @@ export class AuthService {
 		request: ResendOTPRegisterRequest
 	): Promise<SendOtpResponse> {
 		const { email } = request
+		console.log(email)
+		if (!email || email === '') {
+			throw new GrpcException(
+				RpcStatus.INVALID_ARGUMENT,
+				'Email is not detected'
+			)
+		}
 
 		const findAccount = await this.accountRepository.getByEmail(email)
 		if (!findAccount) {

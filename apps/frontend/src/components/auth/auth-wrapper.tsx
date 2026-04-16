@@ -33,7 +33,7 @@ export function AuthWrapper({ children, heading, className, isSocialAuth = true 
     <div className={`mx-auto flex flex-col gap-4 ${className || ''}`}>
       <h1 className='text-4xl font-semibold font-montserrat tracking-tighter text-blue-900'>{heading}</h1>
       {isSocialAuth && (
-        <div className='grid grid-cols-1 gap-4'>
+        <div className='grid grid-cols-1 gap-y-4'>
           <Link
             href={getOAuthURL()}
             className={cn(buttonVariants({ size: 'lg' }), 'bg-primary')}>

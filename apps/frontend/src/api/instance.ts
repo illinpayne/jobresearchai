@@ -52,9 +52,9 @@ instance.interceptors.response.use(
           // const { toast } = await import("sonner");
           // toast.error("Session expired, redirecting to login.");
           isRefreshing = true;
-          setTimeout(() => {
-            redirect('/signin');
-          }, 1000);
+          // setTimeout(() => {
+          //   redirect('/signin');
+          // }, 1000);
           return Promise.reject('Session expired');
         }
       }

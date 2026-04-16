@@ -93,13 +93,13 @@ export function LoginForm() {
 
   return (
     <div className='h-screen overflow-hidden bg-linear-180 from-sky-400/40 via-white to-white grid grid-cols-7'>
-      <div className='col-span-3 flex flex-col justify-center px-4'>
+      <div className='col-span-3 flex flex-col justify-center px-4 max-xl:col-span-full'>
         <AuthWrapper
           heading='Sign in'
-          className='min-w-[20em]'>
+          className='min-w-[20em] max-xl:min-w-auto'>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className='flex flex-col gap-4 min-w-102'>
+            className='flex flex-col gap-4 min-w-102 max-xl:min-w-auto'>
             <div>
               <label
                 htmlFor='email'
@@ -152,7 +152,7 @@ export function LoginForm() {
           </p>
         </AuthWrapper>
       </div>
-      <div className='col-span-4 overflow-hidden relative'>
+      <div className='col-span-4 overflow-hidden relative max-xl:hidden'>
         <Image
           src='/images/bg-auth.png'
           alt='Background'

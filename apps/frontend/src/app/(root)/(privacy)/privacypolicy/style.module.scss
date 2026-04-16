@@ -1,0 +1,28 @@
+@reference "tailwindcss";
+
+.container {
+  @apply w-[60vw] mx-auto py-10;
+
+  h1 {
+    @apply font-bold text-2xl pb-5;
+  }
+
+  h2 {
+    @apply font-bold text-xl my-5;
+  }
+
+  h3 {
+    @apply font-bold mt-5;
+  }
+
+  p {
+    @apply text-neutral-900;
+  }
+
+  ul {
+    @apply my-3;
+    li {
+      @apply list-decimal ml-10;
+    }
+  }
+}

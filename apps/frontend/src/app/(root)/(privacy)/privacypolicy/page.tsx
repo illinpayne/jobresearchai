@@ -1,6 +1,8 @@
+import s from './style.module.scss';
+
 export default function PrivacyPolicyPage() {
   return (
-    <div>
+    <div className={s.container}>
       <h1>Privacy Policy for Job Research AI</h1>
       <h2>Privacy Policy</h2>
       <p>

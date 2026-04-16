@@ -56,7 +56,7 @@ export function ForgotPasswordForm() {
       ) : (
         <AuthWrapper
           isSocialAuth={false}
-          className='bg-white rounded-md px-10 py-10 shadow-sm z-10'
+          className='bg-white rounded-md px-10 py-10 shadow-sm z-10 max-sm:bg-white/70 max-sm:backdrop-blur-lg max-sm:shadow-none'
           heading='Reset password'>
           <form
             onSubmit={handleSubmit(onSubmit)}

@@ -12,7 +12,12 @@ import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 import { cn, getImage } from '@/lib/utils';
 import LogoutButton from './logout.button';
 
-export default function ProfilePopover() {
+interface Props {
+  side: 'right' | 'top' | 'bottom' | 'left' | undefined;
+  classSide: string;
+}
+
+export default function ProfilePopover(props: Props) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const { onOpen } = useBillingDialog();
@@ -70,8 +75,8 @@ export default function ProfilePopover() {
         )}
       </PopoverTrigger>
       <PopoverContent
-        side='right'
-        className='translate-x-8 -translate-y-5 px-0 flex flex-col gap-6 min-w-min'>
+        side={props.side}
+        className={cn('px-0 flex flex-col gap-6 min-w-min', props.classSide)}>
         <PopoverHeader className='px-4'>
           <PopoverTitle>Account</PopoverTitle>
           <div className='grid grid-cols-[36px_auto_auto] gap-2 mt-2 items-center'>
