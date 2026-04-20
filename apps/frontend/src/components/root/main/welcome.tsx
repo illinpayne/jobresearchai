@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLayoutEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -74,7 +75,7 @@ export default function WelcomeSection() {
       </p>
       <p className='font-nunito-sans font-medium text-lg text-neutral-800 text-center z-10'>Find and save vacancies you want.</p>
       <div className='mt-10 z-10'>
-        <Link href={'/overview'}>
+        <Link href={ROUTES.OVERVIEW.NEW_RESUME}>
           <Button className='rounded-xl text-xl p-6 font-semibold font-nunito-sans'>Get started</Button>
         </Link>
       </div>

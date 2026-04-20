@@ -39,7 +39,7 @@ export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    enabled: !!initialData && options?.enabled !== false,
+    enabled: options?.enabled !== false,
     ...options,
   });
 };

@@ -14,3 +14,5 @@ export const OAUTH_CONFIG = {
 export const STORAGE_CONFIG = {
   storageUrl: process.env['NEXT_PUBLIC_STORAGE_URL'],
 };
+
+export const ApplicationName = 'Jobscaute';

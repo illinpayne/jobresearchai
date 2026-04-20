@@ -1,7 +1,7 @@
-import { APP_CONFIG } from './app';
+import { APP_CONFIG, ApplicationName } from './app';
 
 export const SEO = {
-  name: 'JobResearch AI',
+  name: `${ApplicationName} AI`,
   description:
     'JobResearch AI is an AI-powered job search assistant that helps you find your dream job, optimize your resume, and stay ahead in the competitive job market.',
   url: APP_CONFIG.baseUrl,

@@ -1,0 +1,88 @@
+'use client';
+
+import { cn } from '@/lib/utils';
+
+interface Props {
+  position: string;
+  years: number;
+  location: string;
+  data: {
+    key: string;
+    value: string;
+  }[];
+  accessibilityRating: number;
+}
+
+export default function UploadedResumeCard({ ...props }: Props) {
+  const getResumeFeedback = (score: number): string => {
+    if (score <= 30) {
+      return 'Resume score is critically low. AI models will likely skip this profile. Major content and keyword updates required.';
+    }
+
+    if (score <= 60) {
+      return 'Profile is under-optimized. You need more specific technical metrics and production-level project details to land offers.';
+    }
+
+    if (score <= 90) {
+      return 'Your resume is strong and well-structured for modern hiring pipelines.';
+    }
+
+    return 'Excellent! This resume is highly optimized for maximum offer conversion.';
+  };
+
+  const getResumeColor = (score: number): string => {
+    if (score <= 30) {
+      return `bg-red-500`;
+    }
+
+    if (score <= 60) {
+      return `bg-amber-400`;
+    }
+
+    if (score <= 90) {
+      return `bg-emerald-500`;
+    }
+
+    return `bg-primary`;
+  };
+
+  return (
+    <div
+      className={cn(
+        'rounded-lg p-4 transition-all outline hover:outline-primary group h-auto overflow-hidden',
+        false && 'outline-emerald-500 bg-emerald-500/5',
+      )}>
+      <div className='w-full flex justify-between items-center'>
+        <h2 className='text-2xl font-semibold'>{props.position}</h2>
+        <div>
+          <p className='font-nunito-sans font-bold text-end'>{props.accessibilityRating}/100</p>
+          <div className='flex'>
+            <div
+              className={cn('h-1 rounded', getResumeColor(props.accessibilityRating))}
+              style={{ width: props.accessibilityRating }}></div>
+            <div
+              className='h-1 bg-neutral-300 rounded-r'
+              style={{ width: 100 - props.accessibilityRating }}></div>
+          </div>
+        </div>
+      </div>
+      <div className='flex gap-1 items-center text-sm text-neutral-600'>
+        <p className=''>{props.years} y.o, </p>
+        <p>{props.location}</p>
+      </div>
+      <div className='flex flex-col divide-y mt-3 *:py-1'>
+        {props.data.map((f, i) => (
+          <div
+            key={i}
+            className='flex justify-between items-center'>
+            <p className='text-xl font-medium capitalize'>{f.key}</p>
+            <p>{f.value}</p>
+          </div>
+        ))}
+      </div>
+      <div className='flex flex-col mt-3'>
+        <p className={cn('text-sm text-neutral-600')}>{getResumeFeedback(props.accessibilityRating)}</p>
+      </div>
+    </div>
+  );
+}

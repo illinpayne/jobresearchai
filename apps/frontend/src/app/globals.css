@@ -65,6 +65,7 @@
   --text-2sm: 13px;
   --font-inter: var(--font-inter);
   --font-nunito-sans: var(--font-nunito-sans);
+  --font-borel: var(--font-borel);
   --font-angry: "AngryFont", sans-serif;
 }
 

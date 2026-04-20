@@ -1,9 +1,9 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
+import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLogout } from '@/api/hooks/useLogout.hook';
-import { Button } from '@/components/ui/button';
 import { cleanSession } from '@/lib/client/session-persist';
 
 export default function LogoutButton() {
@@ -28,12 +28,12 @@ export default function LogoutButton() {
   }
 
   return (
-    <Button
-      variant={'outline'}
+    <button
+      className='flex items-center gap-2 cursor-pointer w-full'
       disabled={isPending}
-      className='hover:bg-red-500/10 hover:border-red-500/60'
       onClick={async () => await logout()}>
+      <LogOut />
       Sign out
-    </Button>
+    </button>
   );
 }

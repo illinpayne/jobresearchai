@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Inter, Nunito_Sans } from 'next/font/google';
+import { Geist, Inter, Nunito_Sans, Playwrite_IS } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { APP_CONFIG, SEO } from '@/constants';
@@ -18,6 +18,11 @@ const inter = Inter({
 const nunito_sans = Nunito_Sans({
   subsets: ['latin'],
   variable: '--font-nunito-sans',
+});
+
+const borel = Playwrite_IS({
+  variable: '--font-borel',
+  weight: ['400'],
 });
 
 export const metadata: Metadata = {
@@ -83,7 +88,7 @@ export default function RootLayout({
     <html
       lang='en'
       suppressHydrationWarning>
-      <body className={`${font.className} ${font.variable} ${inter.variable} ${nunito_sans.variable} antialiased`}>
+      <body className={`${font.className} ${font.variable} ${inter.variable} ${nunito_sans.variable} ${borel.variable} antialiased`}>
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
         <Toaster />
       </body>

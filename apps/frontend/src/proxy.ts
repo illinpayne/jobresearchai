@@ -8,8 +8,9 @@ export default async function proxy(request: NextRequest) {
   const isAuthPage = url.includes('/signin') || url.includes('/signup') || url.includes('/authentication');
   if (isAuthPage) {
     if (token) {
-      return NextResponse.redirect(new URL('/overview', url));
+      return NextResponse.redirect(new URL('/overview/new', url));
     }
+
     return NextResponse.next();
   }
 
@@ -20,6 +21,9 @@ export default async function proxy(request: NextRequest) {
     loginUrl.searchParams.set('redirectTo', originPath);
 
     return NextResponse.redirect(loginUrl);
+  }
+  if (request.nextUrl.pathname === '/overview') {
+    return NextResponse.redirect(new URL('/overview/new', url));
   }
 }
 

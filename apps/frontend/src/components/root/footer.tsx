@@ -1,8 +1,10 @@
 'use client';
 
+import App from 'next/app';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ApplicationName } from '@/constants';
 import { navigations } from './header';
 
 const accountNavigation = [
@@ -37,7 +39,7 @@ export default function Footer() {
               height={24}
               alt='logo'
             />
-            <span className='font-black text-2xl text-primary font-angry tracking-wide translate-y-0.5'>jobresearch</span>
+            <span className='font-black text-2xl text-primary font-angry tracking-wide translate-y-0.5'>{ApplicationName}</span>
           </div>
         </div>
         <div className='grid grid-cols-2 col-span-2 font-nunito-sans xs:grid-cols-1 xs:mt-10 xs:gap-10 sm:grid-cols-2 sm:gap-2 lg:mt-0'>

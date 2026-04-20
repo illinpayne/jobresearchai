@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { ApplicationName } from '@/constants';
 import { Button } from '../ui/button';
 import HeaderLoginButton from './header-login-button';
 
@@ -41,8 +42,8 @@ export default function Header() {
             height={30}
             alt='logo'
           />
-          <span className='font-black text-3xl text-primary font-angry leading-0 tracking-wide translate-y-1 xs:block xs:text-xl sm:hidden lg:block lg:text-3xl'>
-            jobresearch
+          <span className='font-black text-3xl lowercase text-primary font-angry leading-0 tracking-wide translate-y-1 xs:block xs:text-xl sm:hidden lg:block lg:text-3xl'>
+            {ApplicationName}
           </span>
         </div>
         <nav className='list-none flex h-full items-center gap-10 font-semibold font-nunito-sans xs:hidden md:flex'>

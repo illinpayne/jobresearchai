@@ -3,7 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useMe } from '@/api/hooks/useMe.hook';
-import ProfilePopover from '../protected/profile-popover';
+import ProfileDropdown from '../protected/profile-dropdown/profile-dropdown';
+// import ProfilePopover from '../protected/profile-popover';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 
@@ -28,10 +29,11 @@ export default function HeaderLoginButton() {
           className='border-secondary text-secondary rounded-xs hover:bg-secondary hover:text-white'>
           Upgrade plan
         </Button>
-        <ProfilePopover
+        <ProfileDropdown {...user} />
+        {/* <ProfilePopover
           side='bottom'
           classSide='translate-y-2'
-        />
+        /> */}
       </div>
     );
   }

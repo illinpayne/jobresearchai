@@ -2,10 +2,13 @@
 
 import { CircleUser, Gem, X } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { BillingBlock } from '@/components/shared/billing-block';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ApplicationName, ROUTES } from '@/constants';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
+import { cn } from '@/lib/utils';
 
 export const BillingModalProvider = () => {
   const { onOpen, onClose, isOpen } = useBillingDialog();
@@ -16,7 +19,7 @@ export const BillingModalProvider = () => {
       open={isOpen}>
       <DialogContent
         showCloseButton={false}
-        className='rounded-xs sm:max-w-fit sm:max-h-fit pb-2'>
+        className='rounded-lg sm:max-w-max sm:max-h-max pb-2 no-scrollbar max-h-[95vh] overflow-y-auto'>
         <DialogHeader>
           <div className='flex items-center gap-2 select-none'>
             <Image
@@ -25,7 +28,7 @@ export const BillingModalProvider = () => {
               height={24}
               alt='logo'
             />
-            <h1 className='font-medium text-xl'>JobResearch</h1>
+            <h1 className='font-medium text-xl'>{ApplicationName}</h1>
             <button
               onClick={onClose}
               className='ml-auto cursor-pointer text-neutral-500 hover:text-blue-700'>
@@ -46,7 +49,7 @@ export const BillingModalProvider = () => {
             most popular
           </div>
           <div className='bg-white'></div>
-          <div className='col-span-3 grid grid-cols-3 divide-x border border-gray-200 rounded'>
+          <div className='col-span-3 grid grid-cols-3 divide-x border border-gray-200 rounded max-sm:grid-cols-1'>
             <BillingBlock
               title={`You're on Free`}
               description='Get started with the basics'
@@ -88,6 +91,7 @@ export const BillingModalProvider = () => {
                 { title: 'Ability to buy extra credits', active: true },
                 { title: 'Get into weekly TOP board with top candidates', active: true },
                 { title: 'Thinker AI', active: true },
+                { title: '25 000 tokens per month', active: true },
               ]}
             />
             <BillingBlock
@@ -121,11 +125,12 @@ export const BillingModalProvider = () => {
         </div>
         <div className='flex items-center justify-between w-full p-0'>
           <p className='text-sm text-neutral-500'>Cancel anytime. We'll remind you three days before your trial ends.</p>
-          <Button
-            variant={'link'}
-            className='px-0'>
+          <Link
+            href={ROUTES.OVERVIEW.AI}
+            className={cn('px-0', buttonVariants({ variant: 'link' }))}
+            onClick={() => onClose()}>
             See all features
-          </Button>
+          </Link>
         </div>
       </DialogContent>
     </Dialog>

@@ -13,6 +13,7 @@ import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { QueryKeys } from '@/constants';
+import { cn } from '@/lib/utils';
 
 const changePersonalSchema = z.object({
   firstName: z.string().max(15, { message: 'First name is too long' }).nonempty({ message: 'First name is required' }),
@@ -115,7 +116,11 @@ export default function ChangePersonalForm() {
         />
         <FormInputError>{formState.errors.secondName?.message}</FormInputError>
       </div>
-      <div className='flex justify-end'>
+      <div
+        className={cn(
+          'flex justify-end transition-all',
+          !formState.isValid || !formState.isDirty ? 'opacity-0 h-0' : 'opacity-100 h-auto',
+        )}>
         <Button
           type='submit'
           disabled={isPending || !formState.isValid || !formState.isDirty || isSuccess}>
