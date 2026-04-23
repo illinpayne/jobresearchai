@@ -140,7 +140,7 @@ export default function JobFilter() {
               </div>
             ))}
           </div>
-          {formState.isDirty && formState.isValid && (
+          {formState.isDirty && (
             <div
               className={cn('px-4 flex justify-end gap-3 py-2 border-t sticky bottom-0 bg-white/80 backdrop-blur-xs transition-all z-50')}>
               <Button

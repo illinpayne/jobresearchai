@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, Bot, BriefcaseBusiness, CircleUserRound, CreditCard, Files, PlusCircle, Settings, Zap } from 'lucide-react';
+import { ArrowLeft, Bot, BriefcaseBusiness, CreditCard, Files, PlusCircle, Settings, Zap } from 'lucide-react';
 import { ApplicationName } from '@/constants';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/lib/utils';
@@ -69,7 +69,7 @@ export function OverviewSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className='pt-2'>
+      <SidebarContent>
         <SidebarSection
           data={lih}
           title='Let it happen'

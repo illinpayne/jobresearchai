@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { allModels, availableModels } from '@/api/snapshots/ai/mock.data';
 import AllAiModels from '@/components/protected/ai/all-ai-models';
 import AvailableAiModels from '@/components/protected/ai/available-ai-models';
 
@@ -17,11 +18,8 @@ export default function AiPage() {
           <p className='text-xl text-neutral-600'>to find more related roles and secure offers faster than traditional searching.</p>
         </div>
         <div className='grid gap-20'>
-          <AvailableAiModels />
-          <div className='flex flex-col gap-3'>
-            <h2 className='text-2xl font-semibold'>Other models</h2>
-            <AllAiModels />
-          </div>
+          <AvailableAiModels availableModels={availableModels} />
+          <AllAiModels models={allModels} />
         </div>
       </section>
     </div>

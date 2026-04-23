@@ -16,19 +16,21 @@ export default function AiModelCard({ ...props }: Props) {
   return (
     <div
       className={cn(
-        'rounded-lg p-4 transition-all outline hover:outline-primary group h-fit overflow-hidden',
+        'rounded-lg p-4 transition-all outline hover:outline-primary group h-max overflow-hidden',
         props.isSelected && 'outline-emerald-500 bg-emerald-500/5',
       )}>
       <div className='w-full flex justify-between items-center'>
         <h2 className='text-2xl font-semibold'>{props.name}</h2>
         {props.isSelected ? (
           <p>
-            <span className='text-xs mr-3'>Currently used</span>
+            <span className='text-xs mr-3 max-md:hidden'>Currently used</span>
             <Check className='size-6 text-emerald-500 inline' />
           </p>
         ) : (
           !props.isAlreadyAvailable && (
-            <div className='text-sm border border-primary rounded px-2 bg-primary/5 text-primary capitalize'>{props.billing}</div>
+            <div className='text-sm border border-primary rounded px-2 bg-primary/5 text-primary capitalize max-md:mb-3'>
+              {props.billing}
+            </div>
           )
         )}
       </div>

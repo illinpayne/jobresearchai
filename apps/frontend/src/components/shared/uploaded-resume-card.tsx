@@ -1,17 +1,9 @@
 'use client';
 
+import type { ResumeResponse } from '@/api/snapshots/resumes/resume.types';
 import { cn } from '@/lib/utils';
 
-interface Props {
-  position: string;
-  years: number;
-  location: string;
-  data: {
-    key: string;
-    value: string;
-  }[];
-  accessibilityRating: number;
-}
+interface Props extends ResumeResponse {}
 
 export default function UploadedResumeCard({ ...props }: Props) {
   const getResumeFeedback = (score: number): string => {
@@ -52,36 +44,36 @@ export default function UploadedResumeCard({ ...props }: Props) {
         'rounded-lg p-4 transition-all outline hover:outline-primary group h-auto overflow-hidden',
         false && 'outline-emerald-500 bg-emerald-500/5',
       )}>
-      <div className='w-full flex justify-between items-center'>
+      <div className='w-full flex justify-between items-center max-sm:flex-col max-sm:items-start'>
         <h2 className='text-2xl font-semibold'>{props.position}</h2>
         <div>
-          <p className='font-nunito-sans font-bold text-end'>{props.accessibilityRating}/100</p>
+          <p className='font-nunito-sans font-bold text-end max-sm:hidden'>{props.rating}/100</p>
           <div className='flex'>
             <div
-              className={cn('h-1 rounded', getResumeColor(props.accessibilityRating))}
-              style={{ width: props.accessibilityRating }}></div>
+              className={cn('h-1 rounded', getResumeColor(props.rating))}
+              style={{ width: props.rating }}></div>
             <div
               className='h-1 bg-neutral-300 rounded-r'
-              style={{ width: 100 - props.accessibilityRating }}></div>
+              style={{ width: 100 - props.rating }}></div>
           </div>
         </div>
       </div>
       <div className='flex gap-1 items-center text-sm text-neutral-600'>
-        <p className=''>{props.years} y.o, </p>
+        <p className=''>{props.yearsOld} y.o, </p>
         <p>{props.location}</p>
       </div>
       <div className='flex flex-col divide-y mt-3 *:py-1'>
-        {props.data.map((f, i) => (
+        {props.specifications.map((f, i) => (
           <div
             key={i}
-            className='flex justify-between items-center'>
+            className='grid grid-cols-2 gap-5 max-xl:grid-cols-1 max-xl:gap-0 max-xl:my-1'>
             <p className='text-xl font-medium capitalize'>{f.key}</p>
-            <p>{f.value}</p>
+            <p className='line-clamp-2'>{f.value}</p>
           </div>
         ))}
       </div>
       <div className='flex flex-col mt-3'>
-        <p className={cn('text-sm text-neutral-600')}>{getResumeFeedback(props.accessibilityRating)}</p>
+        <p className={cn('text-sm text-neutral-600 text-balance')}>{getResumeFeedback(props.rating)}</p>
       </div>
     </div>
   );

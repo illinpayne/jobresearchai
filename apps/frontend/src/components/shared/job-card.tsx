@@ -25,7 +25,7 @@ export default function JobCard({ ...props }: JobResponse) {
         false && 'outline-emerald-500 bg-emerald-500/5 hover:bg-emerald-700/15 hover:outline-emerald-700',
         props.tags?.includes('hot') && 'bg-linear-to-br from-white to-abmer-500',
       )}>
-      <div className='grid grid-cols-[1fr_auto]'>
+      <div className='grid grid-cols-[1fr_auto] max-sm:grid-cols-1'>
         <div>
           <div className='w-full flex justify-between items-center gap-5'>
             <Link
@@ -39,14 +39,14 @@ export default function JobCard({ ...props }: JobResponse) {
             {props.salary && <p className='font-nunito-sans font-bold text-md mt-2'>{props.salary}</p>}
             {props.location && <p className='text-sm text-neutral-600'>{props.location}</p>}
           </div>
-          <p className='mt-3 text-neutral-700 w-[80%] text-justify line-clamp-6'>{props.description}</p>
+          <p className='mt-3 text-neutral-700 w-[80%] text-justify line-clamp-6 max-sm:w-full'>{props.description}</p>
           <div className='flex gap-4 items-center mt-3'>
             <p className='text-sm text-neutral-600 '>{props.uploadedAt ? formatSmartDate(props.uploadedAt) : 'Recently uploaded'}</p>
             <p className='text-sm text-blue-800'>{props.industry}</p>
           </div>
         </div>
         {props.sourceImageUrl && (
-          <div className='flex items-start'>
+          <div className='flex items-start max-sm:hidden'>
             <Image
               src={props.sourceImageUrl}
               alt='source-workua'
