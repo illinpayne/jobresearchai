@@ -1,22 +1,12 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
-import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { QueryKeys } from "@/constants";
-import {
-  accountCacheKey,
-  accountCacheStaleTime,
-  CacheAccount,
-  type CachedAccount,
-} from "@/lib/cache";
-import type { AccountResponse } from "../generated";
-import { getMe } from "../requests/account.req";
+import { type UseQueryOptions, useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
+import { QueryKeys } from '@/constants';
+import { accountCacheKey, accountCacheStaleTime, CacheAccount, type CachedAccount } from '@/lib/cache';
+import type { AccountResponse } from '../generated';
+import { getMe } from '../requests/account.req';
 
-export const useMe = (
-  options?: Omit<
-    UseQueryOptions<AccountResponse, unknown>,
-    "queryKey" | "queryFn"
-  >,
-) => {
+export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 'queryKey' | 'queryFn'>) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -24,7 +14,7 @@ export const useMe = (
   }, []);
 
   const cached = useMemo(() => {
-    if (!isMounted || typeof window === "undefined") return null;
+    if (!isMounted || typeof window === 'undefined') return null;
     try {
       const item = localStorage.getItem(accountCacheKey);
       if (!item) return null;
