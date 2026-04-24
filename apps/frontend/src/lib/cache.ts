@@ -9,6 +9,7 @@ export const changePasswordCacheStaleTime = twoMinutes;
 export const accountCacheKey = 'account_cache';
 export const changePasswordCacheKey = 'change_password_cache';
 export const changeEmailCacheKey = 'change_email_cache';
+export const aiModelCacheKey = 'ai-cache';
 
 export type BaseCache = {
   createdAt: number;
@@ -21,11 +22,30 @@ export type CachedAccount = BaseCache & {
 export type PasswordChangeCache = BaseCache;
 export type EmailChangeCache = BaseCache;
 
-export function CacheAccount(response: AccountResponse): CachedAccount {
+export function MakeCacheAccount(response: AccountResponse): CachedAccount {
   return {
     data: response,
     createdAt: Date.now(),
   };
+}
+export function InvalidateAccountCache(response: AccountResponse): CachedAccount {
+  const cache = localStorage.getItem(accountCacheKey);
+  let new_cache = null;
+  if (!cache) {
+    new_cache = {
+      data: response,
+      createdAt: Date.now(),
+    };
+  } else {
+    const cacheObject = JSON.parse(cache) as CachedAccount;
+    new_cache = {
+      data: response,
+      createdAt: cacheObject.createdAt,
+    };
+  }
+
+  localStorage.setItem(accountCacheKey, JSON.stringify(new_cache));
+  return new_cache;
 }
 
 export function GetPasswordChangeCache(): PasswordChangeCache | null {

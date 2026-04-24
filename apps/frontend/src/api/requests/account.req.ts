@@ -8,7 +8,6 @@ export enum AccountEndpoints {
 }
 
 export const getMe = async () => {
-  console.log('req');
   return await instance.get<AccountResponse>(AccountEndpoints.ME).then((response) => response.data);
 };
 

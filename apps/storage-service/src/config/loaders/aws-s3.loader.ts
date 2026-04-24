@@ -14,5 +14,11 @@ export const getS3Config = (
 		secretAccessKey: configService.get('aws.secretAccessKey', {
 			infer: true
 		}) as string
-	}
+	},
+	endpoint: configService.get('aws.endpoint', {
+		infer: true
+	}),
+	forcePathStyle: configService.get('aws.forcePathStyle', {
+		infer: true
+	})
 })

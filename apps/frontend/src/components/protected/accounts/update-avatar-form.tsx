@@ -2,6 +2,7 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: <explanation> */
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import NextImage from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import Cropper from 'react-easy-crop';
@@ -9,9 +10,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useChangeAvatar } from '@/api/hooks/useChangeAvatar.hook';
 import { useMe } from '@/api/hooks/useMe.hook';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { QueryKeys } from '@/constants';
+import { InvalidateAccountCache } from '@/lib/cache';
 import { cn, getCroppedImg, getImage } from '@/lib/utils';
+import { AvatarFallback } from '../overview-sidebar/avatar-fallback';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -26,8 +31,15 @@ export const AvatarSchema = z.object({
 export type AvatarValues = z.infer<typeof AvatarSchema>;
 
 export default function UpdateAvatarForm() {
+  const queryClient = useQueryClient();
+
   const { data: user } = useMe();
-  const { mutateAsync } = useChangeAvatar();
+  const { mutateAsync } = useChangeAvatar({
+    onSuccess(data) {
+      queryClient.setQueryData([QueryKeys.MyAccount], data);
+      InvalidateAccountCache(data);
+    },
+  });
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -104,21 +116,24 @@ export default function UpdateAvatarForm() {
           <label
             htmlFor='avatar-upload'
             className={cn(
-              'flex flex-col gap-2 size-50 rounded-full overflow-hidden relative',
+              'flex flex-col size-50 rounded-full overflow-hidden relative bg-neutral-200 hover:bg-neutral-300 transition-all cursor-pointer',
               errors.avatar?.message && 'outline-4 outline-red-500/50',
             )}>
+            ff
             {user.avatar ? (
-              <NextImage
-                src={getImage(user.avatar)}
-                alt='avatar'
-                height={800}
-                width={800}
-                priority
-              />
+              <Avatar className='size-full absolute'>
+                <AvatarImage
+                  src={getImage(user.avatar)}
+                  alt={user?.firstName}
+                />
+                <AvatarFallback
+                  initials={`${user.firstName[0]}${user.secondName[0]}`}
+                  className='text-5xl hover:bg-blue-600'
+                />
+              </Avatar>
             ) : (
               <div className='bg-primary size-full flex items-center justify-center text-white text-8xl font-bold'>{user.firstName[0]}</div>
             )}
-            <div className='size-full absolute inset-0 transition-all cursor-pointer hover:bg-black/30 rounded-full'></div>
           </label>
           <input
             type='file'

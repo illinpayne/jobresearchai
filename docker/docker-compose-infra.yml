@@ -1,3 +1,5 @@
+name: jrai-infrastructure
+
 services:
   redis:
     container_name: redis
@@ -24,10 +26,25 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - jrai
+  minio:
+    image: minio/minio
+    container_name: storage-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: jraiadmin
+      MINIO_ROOT_PASSWORD: jraipassword
+    volumes:
+      - storage_minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - jrai
 
 volumes:
   redis_data:
   rabbitmq_data:
+  storage_minio_data:
 
 networks:
   jrai:

@@ -3,4 +3,6 @@ export interface AwsConfig {
 	accessKeyId: string
 	secretAccessKey: string
 	bucketName: string
+	endpoint: string
+	forcePathStyle: boolean
 }

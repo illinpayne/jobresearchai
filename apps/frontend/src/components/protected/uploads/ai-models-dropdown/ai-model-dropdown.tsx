@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants';
+import { cn } from '@/lib/utils';
 import AiModelRow, { type AiModel } from './ai-model-row';
 
 interface Props {
@@ -18,11 +19,12 @@ interface Props {
   models: AiModelResponse[];
   onSelectModel: (model: AiModel) => void;
   onUpgradeAction: () => void;
+  isError?: boolean;
 }
 
 export function AiModels({ ...props }: Props) {
   function renderModels(models?: AiModelResponse[], selectedModel?: AiModelResponse) {
-    if (models && selectedModel) {
+    if (models) {
       return props.models.map((model, i) => (
         <AiModelRow
           key={`${i}`}
@@ -56,12 +58,23 @@ export function AiModels({ ...props }: Props) {
         </>
       );
     }
-    return <Skeleton className='w-full h-12 min-w-40' />;
+    return (
+      <div className='flex flex-col items-start gap-0.5 px-3 py-2 border rounded-sm bg-linear-to-bl from-rose-400/20 via-white to-white'>
+        <div className='flex justify-between gap-2 w-full'>
+          <p className='font-medium text-sm'>Model is not selected</p>
+        </div>
+        <p className='text-xs max-w-40 line-clamp-2'>Select a model to continue</p>
+      </div>
+    );
   }
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className='flex items-center gap-1 cursor-pointer outline-0! data-open:[&_svg]:rotate-180'>
+      <DropdownMenuTrigger
+        className={cn(
+          'flex items-center gap-1 cursor-pointer outline-0! data-open:[&_svg]:rotate-180',
+          props.isError && '*:text-red-600!',
+        )}>
         <p className='select-none'>{props.currentSelectedModel?.name ?? 'Select a model'}</p>
         <ChevronDown className='size-4 text-neutral-500 transition-all' />
       </DropdownMenuTrigger>

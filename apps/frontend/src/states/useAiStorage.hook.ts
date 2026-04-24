@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type { AiModelResponse } from '@/api/snapshots/ai/ai.dto';
+import { aiModelCacheKey } from '@/lib/cache';
 
 interface AIModelState extends AiModelResponse {}
 
@@ -28,7 +29,7 @@ export const useAIStore = create<AIStore>()(
       resetToDefault: () => set(initialState),
     }),
     {
-      name: 'ai-model',
+      name: aiModelCacheKey,
       storage: createJSONStorage(() => localStorage),
     },
   ),

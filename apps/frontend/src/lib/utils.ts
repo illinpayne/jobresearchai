@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { STORAGE_CONFIG } from '@/constants';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,7 +9,7 @@ export function getImage(filename: string) {
   if (filename.includes('google')) {
     return filename;
   }
-  return `${STORAGE_CONFIG.storageUrl}/avatars/${filename}`;
+  return `/s3-storage/avatars/${filename}`;
 }
 
 export async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<Blob> {

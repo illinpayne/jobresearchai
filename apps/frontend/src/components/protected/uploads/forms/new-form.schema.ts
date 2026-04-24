@@ -4,7 +4,7 @@ export const MAX_FILE_SIZE = 5 * 1024 * 1024;
 export const ACCEPTED_FILE_TYPES = ['application/pdf'];
 
 export const newFormSchema = z.object({
-  aiModel: z.string(),
+  aiModel: z.string().nonempty(),
   document: z
     .instanceof(File, { message: 'Please select a file.' })
     .refine((file) => file.size <= MAX_FILE_SIZE, {

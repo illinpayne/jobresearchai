@@ -23,8 +23,6 @@ export function DynamicGreeting() {
   else if (hour < 12) text = `Good morning, ${identifier}`;
   else if (hour < 17) text = `Afternoon, ${identifier}`;
 
-  console.log('Greeting Load');
-
   return (
     <h1 className='font-borel text-5xl font-medium text-transparent bg-clip-text bg-linear-to-r leading-20 from-blue-700 to-emerald-800 min-h-15 transition-opacity duration-500'>
       {text}

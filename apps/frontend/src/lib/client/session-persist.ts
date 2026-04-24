@@ -2,7 +2,7 @@ import type { QueryClient, QueryObserverResult, RefetchOptions } from '@tanstack
 import type { AccountResponse } from '@/api/generated';
 import { instance } from '@/api/instance';
 import { QueryKeys } from '@/constants';
-import { accountCacheKey, CacheAccount } from '../cache';
+import { accountCacheKey, aiModelCacheKey, changeEmailCacheKey, changePasswordCacheKey, MakeCacheAccount } from '../cache';
 import { removeSessionToken, setSessionToken } from '../cookies';
 
 export interface PersistSessionProps {
@@ -20,7 +20,7 @@ export function persistSession(props: PersistSessionProps) {
 
   setSessionToken(accessToken);
   instance.defaults.headers['Authorization'] = accessToken;
-  const cacheData = CacheAccount(account);
+  const cacheData = MakeCacheAccount(account);
 
   localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
   queryClient.setQueryData([QueryKeys.MyAccount], account, {
@@ -37,7 +37,7 @@ export async function refetchSession<T extends AccountResponse>(props: RefetchSe
   const { data: userData, isSuccess } = await refetch();
 
   if (isSuccess && userData) {
-    const cacheData = CacheAccount(userData);
+    const cacheData = MakeCacheAccount(userData);
     localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
     queryClient.setQueryData([QueryKeys.MyAccount], userData, {
       updatedAt: Date.now(),
@@ -49,6 +49,9 @@ export async function refetchSession<T extends AccountResponse>(props: RefetchSe
 export async function cleanSession(queryClient: QueryClient) {
   removeSessionToken();
   instance.defaults.headers['Authorization'] = '';
-  localStorage.removeItem(accountCacheKey);
+  const cache_to_remove = [accountCacheKey, changePasswordCacheKey, changeEmailCacheKey, aiModelCacheKey];
+  cache_to_remove.forEach((key) => {
+    localStorage.removeItem(key);
+  });
   queryClient.removeQueries({ queryKey: [QueryKeys.MyAccount] });
 }

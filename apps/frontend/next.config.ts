@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
     ],
     dangerouslyAllowSVG: false,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/s3-storage/:path*',
+        destination: 'http://localhost:9000/jrai-storage/:path*',
+      },
+    ];
+  },
   typedRoutes: false,
   experimental: {
     optimizePackageImports: ['tailwindcss'],

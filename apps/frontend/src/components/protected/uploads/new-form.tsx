@@ -174,8 +174,6 @@ export default function NewForm() {
       if (progress === 100) {
         setProgressStatus('Complete!');
         clearInterval(interval);
-        // Handle completion: Remove jobId from URL and redirect/show results
-        // router.replace('/results-page');
       }
     }, 2000);
 
@@ -195,8 +193,6 @@ export default function NewForm() {
       );
     }
   }, [isThinking]);
-
-  console.log('Load');
 
   return (
     <div className='w-full h-3/4 flex items-center justify-center flex-col relative overflow-hidden'>

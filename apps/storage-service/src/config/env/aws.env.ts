@@ -11,6 +11,8 @@ export const awsEnv = registerAs<AwsConfig>('aws', () => {
 		region: process.env.AWS_REGION as string,
 		accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
 		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-		bucketName: process.env.AWS_BUCKET_NAME as string
+		bucketName: process.env.AWS_BUCKET_NAME as string,
+		endpoint: process.env.AWS_ENDPOINT,
+		forcePathStyle: process.env.AWS_FORCE_PATH_STYLE === 'true'
 	} as AwsConfig
 })

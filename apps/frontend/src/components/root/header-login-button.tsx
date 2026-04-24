@@ -8,10 +8,10 @@ import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 
 export default function HeaderLoginButton() {
-  const { data: user } = useMe();
+  const { data: user, isLoading } = useMe();
   const router = useRouter();
 
-  if (!user) {
+  if (isLoading) {
     return <Skeleton className='h-10 w-30' />;
   }
 

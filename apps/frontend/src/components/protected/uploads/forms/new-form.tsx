@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: <explanation> */
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -44,10 +45,12 @@ function FormLogic() {
   const selectedFile = watch('document');
 
   useEffect(() => {
-    if (getValues('aiModel') !== aiStorage.name) {
-      setValue('aiModel', aiStorage.name);
+    if (aiStorage) {
+      if (getValues('aiModel') !== aiStorage.name) {
+        setValue('aiModel', aiStorage.name);
+      }
     }
-  }, [aiStorage.name, setValue, getValues]);
+  }, [aiStorage]);
 
   useEffect(() => {
     setIsThinking(!!activeJobId);
@@ -128,17 +131,18 @@ function FormLogic() {
                         models={[...availableModels.filter((f) => f.id !== aiStorage.id).slice(0, 3)]}
                         currentSelectedModel={availableModels.find((f) => f.name === field.value)}
                         onSelectModel={(model) => {
-                          setValue('aiModel', model.name);
+                          field.onChange(model.name);
                           const findModel = availableModels.find((f) => f.name === model.name);
                           if (findModel) aiStorage.setModel(findModel);
                         }}
                         onUpgradeAction={onOpen}
+                        isError={!!formState.errors.aiModel}
                       />
                     )}
                   />
                   <button
                     type='submit'
-                    disabled={!formState.isValid && !formState.errors.document}
+                    disabled={!formState.isValid}
                     className={cn(
                       'cursor-pointer disabled:cursor-default disabled:opacity-50 transition-opacity flex items-center p-0',
                       buttonVariants({ variant: 'outline' }),

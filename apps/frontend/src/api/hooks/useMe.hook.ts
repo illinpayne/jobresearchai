@@ -2,7 +2,7 @@
 import { type UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { QueryKeys } from '@/constants';
-import { accountCacheKey, accountCacheStaleTime, CacheAccount, type CachedAccount } from '@/lib/cache';
+import { accountCacheKey, accountCacheStaleTime, type CachedAccount, MakeCacheAccount } from '@/lib/cache';
 import type { AccountResponse } from '../generated';
 import { getMe } from '../requests/account.req';
 
@@ -30,7 +30,7 @@ export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 
     queryKey: [QueryKeys.MyAccount],
     queryFn: async () => {
       const data = await getMe();
-      const cacheData = CacheAccount(data);
+      const cacheData = MakeCacheAccount(data);
       localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
       return data;
     },
@@ -38,6 +38,7 @@ export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 
     initialDataUpdatedAt: cached?.createdAt,
     staleTime: accountCacheStaleTime,
     enabled: isMounted && options?.enabled !== false,
+    retry: 0,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     ...options,
