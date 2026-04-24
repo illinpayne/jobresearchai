@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import NewForm from '@/components/protected/uploads/new-form';
+import NewForm from '@/components/protected/uploads/forms/new-form';
 
 export const metadata: Metadata = {
   title: 'New resume',

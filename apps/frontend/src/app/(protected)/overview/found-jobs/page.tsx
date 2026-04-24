@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function FoundJobsPage() {
-  const foundJobs = false;
+  const foundJobs = true;
 
   if (!foundJobs) {
     return (

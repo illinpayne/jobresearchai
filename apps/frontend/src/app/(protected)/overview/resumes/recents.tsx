@@ -5,6 +5,7 @@ import { availableModels } from '@/api/snapshots/ai/mock.data';
 import type { ResumeResponse } from '@/api/snapshots/resumes/resume.types';
 import AvailableAiModels from '@/components/protected/ai/available-ai-models';
 import UploadedResumeCard from '@/components/shared/uploaded-resume-card';
+import UploadedResumeInProgressCard from '@/components/shared/uploaded-resume-inprogress-card';
 import { buttonVariants } from '@/components/ui/button';
 import { ROUTES } from '@/constants';
 import { cn } from '@/lib/utils';
@@ -36,9 +37,15 @@ export default function RecentResumeUploads({ ...props }: Props) {
     );
   }
   return (
-    <div className='flex flex-col gap-3'>
+    <div className='flex flex-col gap-4'>
       <h2 className='text-2xl font-semibold'>Recently uploads</h2>
+      <div className='grid grid-cols-3 gap-4'>
+        <UploadedResumeInProgressCard />
+        <UploadedResumeInProgressCard />
+        <UploadedResumeInProgressCard />
+      </div>
       <div className='grid gap-y-4'>
+        <UploadedResumeInProgressCard />
         {props.resumes.map((f) => (
           <UploadedResumeCard
             key={f.id}

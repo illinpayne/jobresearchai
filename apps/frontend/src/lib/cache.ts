@@ -1,4 +1,4 @@
-import type { AccountResponse } from '@/api/generated';
+import type { AccountResponse } from "@/api/generated";
 
 const fiveMinutes = 5 * 60 * 1000;
 const twoMinutes = 2 * 60 * 1000;
@@ -6,9 +6,9 @@ const twoMinutes = 2 * 60 * 1000;
 export const accountCacheStaleTime = fiveMinutes;
 export const changePasswordCacheStaleTime = twoMinutes;
 
-export const accountCacheKey = 'account_cache';
-export const changePasswordCacheKey = 'change_password_cache';
-export const changeEmailCacheKey = 'change_email_cache';
+export const accountCacheKey = "account_cache";
+export const changePasswordCacheKey = "change_password_cache";
+export const changeEmailCacheKey = "change_email_cache";
 
 export type BaseCache = {
   createdAt: number;

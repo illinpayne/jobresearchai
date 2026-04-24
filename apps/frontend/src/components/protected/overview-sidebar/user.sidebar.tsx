@@ -1,36 +1,19 @@
 'use client';
 
-import { Bell, ChevronsUpDown, Pyramid, Sparkles } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChevronsUpDown } from 'lucide-react';
 import { useMe } from '@/api/hooks/useMe.hook';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getImage } from '@/lib/utils';
 import ProfileContentDropdown from '../profile-dropdown/profile-content-dropdown';
 import { AvatarFallback } from './avatar-fallback';
-import LogoutButton from './logout.button';
 
 export function NavUser() {
-  const [mounted, setMounted] = useState(false);
-  const { isMobile } = useSidebar();
-
   const { data: user } = useMe();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted || !user) {
+  if (!user) {
     return <Skeleton className='w-full h-10 rounded-md bg-neutral-300' />;
   }
 

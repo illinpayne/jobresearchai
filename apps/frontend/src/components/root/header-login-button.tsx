@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { useMe } from '@/api/hooks/useMe.hook';
 import ProfileDropdown from '../protected/profile-dropdown/profile-dropdown';
 // import ProfilePopover from '../protected/profile-popover';
@@ -9,15 +8,10 @@ import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 
 export default function HeaderLoginButton() {
-  const [isMounted, setMounted] = useState(false);
   const { data: user } = useMe();
   const router = useRouter();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!isMounted) {
+  if (!user) {
     return <Skeleton className='h-10 w-30' />;
   }
 
