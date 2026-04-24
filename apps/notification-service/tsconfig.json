@@ -20,10 +20,11 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "baseUrl": "./",
+    "strictPropertyInitialization": false,
+    "useUnknownInCatchVariables": false,
     "paths": {
-			"@/emails/*": ["emails/*"],
-			"@/*": ["src/*"],
+			"@/emails/*": ["./emails/*"],
+			"@/*": ["./src/*"],
       "react": [ "./node_modules/@types/react" ]
 		},
     "jsx": "react-jsx",
