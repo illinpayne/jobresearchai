@@ -45,7 +45,6 @@ export default function RecentResumeUploads({ ...props }: Props) {
         <UploadedResumeInProgressCard />
       </div>
       <div className='grid gap-y-4'>
-        <UploadedResumeInProgressCard />
         {props.resumes.map((f) => (
           <UploadedResumeCard
             key={f.id}

@@ -41,7 +41,7 @@ export default function UploadedResumeCard({ ...props }: Props) {
   return (
     <div
       className={cn(
-        'rounded-lg p-4 transition-all outline hover:outline-primary group h-auto overflow-hidden',
+        'rounded-lg p-4 transition-all outline hover:outline-primary group h-auto overflow-hidden h-fit group',
         false && 'outline-emerald-500 bg-emerald-500/5',
       )}>
       <div className='w-full flex justify-between items-center max-sm:flex-col max-sm:items-start'>
@@ -74,6 +74,11 @@ export default function UploadedResumeCard({ ...props }: Props) {
       </div>
       <div className='flex flex-col mt-3'>
         <p className={cn('text-sm text-neutral-600 text-balance')}>{getResumeFeedback(props.rating)}</p>
+      </div>
+      <div className='flex justify-end h-0 overflow-hidden group-hover:h-7 transition-all duration-300'>
+        <p className={cn('text-xs text-neutral-600 text-balance mt-3')}>
+          {props.usedAiModel}, {props.spentTokens} tokens spent
+        </p>
       </div>
     </div>
   );

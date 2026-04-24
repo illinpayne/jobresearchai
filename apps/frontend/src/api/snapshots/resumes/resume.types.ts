@@ -9,6 +9,8 @@ export interface ResumeResponse {
   yearsOld: number;
   location: string;
   rating: number;
+  usedAiModel: string;
+  spentTokens: number;
   specifications: ResumeSpecification[];
   uploadedAt: Date;
 }
