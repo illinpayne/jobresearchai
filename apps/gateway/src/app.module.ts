@@ -5,6 +5,7 @@ import { appEnv, jwtEnv } from '@/config/env'
 
 import { oauthEnv } from './config/env/oauth.env'
 import { AppsModule } from './modules/apps.module'
+import { ParserModule } from './infrastructure/parser/parser.module';
 
 @Module({
 	imports: [
@@ -12,7 +13,8 @@ import { AppsModule } from './modules/apps.module'
 			isGlobal: true,
 			load: [appEnv, jwtEnv, oauthEnv]
 		}),
-		AppsModule
+		AppsModule,
+		ParserModule
 	]
 })
 export class AppModule {}
