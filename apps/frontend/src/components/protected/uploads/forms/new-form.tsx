@@ -4,12 +4,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import gsap from 'gsap';
-import { Files, Send } from 'lucide-react';
+import { Files } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { availableModels } from '@/api/snapshots/ai/mock.data';
+import { type PresetsData, usePresets } from '@/api/hooks/usePresets.hook';
+import { useUploadResume } from '@/api/hooks/useUploadResume.hook';
 import { buttonVariants } from '@/components/ui/button';
 import { ROUTES } from '@/constants/routes';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
@@ -17,16 +18,16 @@ import { cn } from '@/lib/utils';
 import { useAIStore } from '@/states/useAiStorage.hook';
 import { AiModels } from '../ai-models-dropdown/ai-model-dropdown';
 import { DynamicGreeting } from './greeting';
-import { type NewFormSchemaValue, newFormSchema } from './new-form.schema';
+import { type NewFormSchemaValue, newFormSchema, type UploadResumeData } from './new-form.schema';
 import { ThinkingScreen } from './thinking-screen';
 
-function FormLogic() {
+function FormLogic({ presets }: { presets: PresetsData | undefined }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
   const { onOpen } = useBillingDialog();
   const aiStorage = useAIStore();
+  const { mutateAsync: uploadResume, isPending } = useUploadResume();
 
   const activeJobId = searchParams.get('jobId');
   const [isThinking, setIsThinking] = useState(!!activeJobId);
@@ -57,28 +58,35 @@ function FormLogic() {
   }, [activeJobId]);
 
   async function onSubmit(values: NewFormSchemaValue) {
+    const data: UploadResumeData = {
+      presetId: presets?.available.find((f) => f.name === values.aiModel)?.id || '',
+      file: values.document,
+    };
     if (contentRef.current) contentRef.current.style.pointerEvents = 'none';
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        setIsThinking(true);
-        const mockJobId = 'job_' + Math.random().toString(36).substring(7);
-        router.push(`${pathname}?jobId=${mockJobId}`);
-      },
-    });
+    await uploadResume(data, {
+      onSuccess: (data) => {
+        const tl = gsap.timeline({
+          onComplete: () => {
+            setIsThinking(true);
+            router.push(`${pathname}?jobId=${data}`);
+          },
+        });
 
-    tl.to(contentRef.current, {
-      y: -15,
-      scale: 1.03,
-      duration: 0.25,
-      ease: 'circ.out',
-      opacity: 0.98,
-    }).to(contentRef.current, {
-      y: 100,
-      scale: 0.7,
-      opacity: 0,
-      duration: 0.5,
-      ease: 'expo.in',
+        tl.to(contentRef.current, {
+          y: -15,
+          scale: 1.03,
+          duration: 0.25,
+          ease: 'circ.out',
+          opacity: 0.98,
+        }).to(contentRef.current, {
+          y: 100,
+          scale: 0.7,
+          opacity: 0,
+          duration: 0.5,
+          ease: 'expo.in',
+        });
+      },
     });
   }
 
@@ -123,23 +131,25 @@ function FormLogic() {
                   <Files className='text-neutral-500 size-7 hover:bg-neutral-300 rounded-sm transition-all p-1' />
                 </Link>
                 <div className='flex items-center gap-3'>
-                  <Controller
-                    control={control}
-                    name='aiModel'
-                    render={({ field }) => (
-                      <AiModels
-                        models={[...availableModels.filter((f) => f.id !== aiStorage.id).slice(0, 3)]}
-                        currentSelectedModel={availableModels.find((f) => f.name === field.value)}
-                        onSelectModel={(model) => {
-                          field.onChange(model.name);
-                          const findModel = availableModels.find((f) => f.name === model.name);
-                          if (findModel) aiStorage.setModel(findModel);
-                        }}
-                        onUpgradeAction={onOpen}
-                        isError={!!formState.errors.aiModel}
-                      />
-                    )}
-                  />
+                  {presets?.available && (
+                    <Controller
+                      control={control}
+                      name='aiModel'
+                      render={({ field }) => (
+                        <AiModels
+                          models={[...presets.available.filter((f) => f.id !== aiStorage.id).slice(0, 3)]}
+                          currentSelectedModel={presets.available.find((f) => f.name === field.value)}
+                          onSelectModel={(model) => {
+                            field.onChange(model.name);
+                            const findModel = presets.available.find((f) => f.name === model.name);
+                            if (findModel) aiStorage.setModel(findModel);
+                          }}
+                          onUpgradeAction={onOpen}
+                          isError={!!formState.errors.aiModel}
+                        />
+                      )}
+                    />
+                  )}
                   <button
                     type='submit'
                     disabled={!formState.isValid}
@@ -150,7 +160,7 @@ function FormLogic() {
                         ? 'border-primary text-primary hover:text-primary hover:bg-primary/10'
                         : 'border-neutral-500 text-neutral-600',
                     )}>
-                    <span>Analyse</span>
+                    <span>{isPending ? 'Analysing...' : 'Analyse'}</span>
                   </button>
                 </div>
               </div>
@@ -176,9 +186,11 @@ function FormLogic() {
 }
 
 export default function NewForm() {
+  const { data: presets } = usePresets();
+
   return (
     <Suspense fallback={<></>}>
-      <FormLogic />
+      <FormLogic presets={presets} />
     </Suspense>
   );
 }

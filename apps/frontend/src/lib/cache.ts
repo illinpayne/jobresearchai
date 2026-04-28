@@ -1,15 +1,16 @@
-import type { AccountResponse } from '@/api/generated';
+import type { AccountResponse } from "@/api/generated";
 
-const fiveMinutes = 5 * 60 * 1000;
-const twoMinutes = 2 * 60 * 1000;
+export const fiveMinutes = 5 * 60 * 1000;
+export const twoMinutes = 2 * 60 * 1000;
 
 export const accountCacheStaleTime = fiveMinutes;
 export const changePasswordCacheStaleTime = twoMinutes;
 
-export const accountCacheKey = 'account_cache';
-export const changePasswordCacheKey = 'change_password_cache';
-export const changeEmailCacheKey = 'change_email_cache';
-export const aiModelCacheKey = 'ai-cache';
+export const accountCacheKey = "account_cache";
+export const changePasswordCacheKey = "change_password_cache";
+export const changeEmailCacheKey = "change_email_cache";
+export const aiModelCacheKey = "ai-cache";
+export const presetsCacheKey = "presets_data";
 
 export type BaseCache = {
   createdAt: number;
@@ -28,7 +29,10 @@ export function MakeCacheAccount(response: AccountResponse): CachedAccount {
     createdAt: Date.now(),
   };
 }
-export function InvalidateAccountCache(response: AccountResponse): CachedAccount {
+
+export function InvalidateAccountCache(
+  response: AccountResponse,
+): CachedAccount {
   const cache = localStorage.getItem(accountCacheKey);
   let new_cache = null;
   if (!cache) {
@@ -84,12 +88,42 @@ export function SetEmailChangeCache(): EmailChangeCache {
   return newCache;
 }
 
-export function DisposeCache(key: string) {
+export function RemoveCache(key: string) {
   localStorage.removeItem(key);
+}
+
+export function DisposeCache() {
+  const cache_to_remove = [
+    accountCacheKey,
+    changePasswordCacheKey,
+    changeEmailCacheKey,
+    aiModelCacheKey,
+    presetsCacheKey,
+  ];
+  cache_to_remove.forEach((key) => {
+    RemoveCache(key);
+  });
 }
 
 export function isCacheExpired(createdAt: number) {
   const age = Date.now() - createdAt;
   if (age > accountCacheStaleTime) return true;
   return false;
+}
+
+export function SetCache(key: string, value: any) {
+  const cacheObject = {
+    data: value,
+    createdAt: Date.now(),
+  };
+  localStorage.setItem(key, JSON.stringify(cacheObject));
+}
+
+export function GetCache<T>(key: string): T | null {
+  const cache = localStorage.getItem(key);
+  if (cache) {
+    const cacheObject = JSON.parse(cache) as { data: T; createdAt: number };
+    return cacheObject.data;
+  }
+  return null;
 }

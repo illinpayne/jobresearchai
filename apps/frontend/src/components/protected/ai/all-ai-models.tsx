@@ -1,15 +1,27 @@
 'use client';
 
-import type { AiModelResponse } from '@/api/snapshots/ai/ai.dto';
+import { useQueryClient } from '@tanstack/react-query';
+import type { AiPresetResponse } from '@/api/generated';
+import { useGetModel } from '@/api/hooks/useGetModel.hook';
 import AiModelCard from '@/components/shared/ai-model-card';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
+import { presetsCacheKey, RemoveCache } from '@/lib/cache';
 
 interface Props {
-  models: AiModelResponse[];
+  models: AiPresetResponse[];
 }
 
 export default function AllAiModels({ ...props }: Props) {
   const billing = useBillingDialog();
+  const queryClient = useQueryClient();
+  const { mutateAsync: getModelAsync } = useGetModel({
+    onSuccess: async (data, variables) => {
+      RemoveCache(presetsCacheKey);
+      queryClient.invalidateQueries({ queryKey: ['presets'] });
+      const { toast } = await import('sonner');
+      toast.success(`Model ${variables.name} added to your library`);
+    },
+  });
 
   if (!props.models || props.models.length === 0) {
     return <></>;
@@ -24,17 +36,18 @@ export default function AllAiModels({ ...props }: Props) {
             key={f.id}
             name={f.name}
             description={f.description}
-            billing={f.billing}
+            paidTier={f.paidTier}
             stars={f.stars}
             id={f.id}
-            usage={f.usage}
-            onAdd={(model) => {
-              if (model.billing.toLowerCase() !== 'free') {
-                billing.onOpen();
-                return;
-              }
-              console.log(model);
+            usageTokens={f.usageTokens}
+            onAdd={async (model) => {
+              // if (model.paidTier.toLowerCase() !== 'free') {
+              //   billing.onOpen();
+              //   return;
+              // }
+              await getModelAsync(model);
             }}
+            temperature={f.temperature}
           />
         ))}
       </div>

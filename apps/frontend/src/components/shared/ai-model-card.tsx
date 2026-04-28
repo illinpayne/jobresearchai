@@ -1,15 +1,15 @@
 'use client';
 
 import { Check, Star } from 'lucide-react';
-import type { AiModelResponse } from '@/api/snapshots/ai/ai.dto';
+import type { AiPresetResponse } from '@/api/generated';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 
-interface Props extends AiModelResponse {
+interface Props extends AiPresetResponse {
   isSelected?: boolean;
   isAlreadyAvailable?: boolean;
-  onSelect?: (model: AiModelResponse) => void;
-  onAdd?: (model: AiModelResponse) => void;
+  onSelect?: (model: AiPresetResponse) => void;
+  onAdd?: (model: AiPresetResponse) => void;
 }
 
 export default function AiModelCard({ ...props }: Props) {
@@ -29,7 +29,7 @@ export default function AiModelCard({ ...props }: Props) {
         ) : (
           !props.isAlreadyAvailable && (
             <div className='text-sm border border-primary rounded px-2 bg-primary/5 text-primary capitalize max-md:mb-3'>
-              {props.billing}
+              {props.paidTier}
             </div>
           )
         )}
@@ -44,14 +44,14 @@ export default function AiModelCard({ ...props }: Props) {
           ))}
         </div>
         <p className='text-neutral-600 font-nunito-sans mt-3'>{props.description}</p>
-        <p className='text-neutral-600 text-sm font-nunito-sans mt-3'>{props.usage ?? 0} tokens per analyse</p>
+        <p className='text-neutral-600 text-sm font-nunito-sans mt-3'>{props.usageTokens ?? 0} tokens per analyse</p>
         {!props.isSelected && (
           <div className='transition-all duration-400 group-hover:h-12 group-hover:opacity-100 h-0 opacity-0'>
             <div className='mt-3 flex justify-end gap-2'>
               {!props.isAlreadyAvailable && (
                 <Button
                   onClick={() => {
-                    props.onAdd && props.onAdd(props as AiModelResponse);
+                    props.onAdd && props.onAdd(props as AiPresetResponse);
                   }}>
                   Get model
                 </Button>

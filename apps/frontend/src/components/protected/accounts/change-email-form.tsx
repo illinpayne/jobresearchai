@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants';
-import { changeEmailCacheKey, DisposeCache, GetEmailChangeCache, isCacheExpired, SetEmailChangeCache } from '@/lib/cache';
+import { changeEmailCacheKey, GetEmailChangeCache, isCacheExpired, RemoveCache, SetEmailChangeCache } from '@/lib/cache';
 import { cleanSession } from '@/lib/client/session-persist';
 
 const changeEmailSchema = z.object({
@@ -56,7 +56,7 @@ export default function ChangeEmailForm() {
       const { toast } = await import('sonner');
       reset({ email: '', code: '' });
       setOTPSubmitted(false);
-      DisposeCache(changeEmailCacheKey);
+      RemoveCache(changeEmailCacheKey);
       cleanSession(queryClient);
       toast.info('Email changed successfully, re-login to continue');
       router.replace(ROUTES.AUTH.SIGNIN(pathname));
@@ -66,7 +66,7 @@ export default function ChangeEmailForm() {
       const { toast } = await import('sonner');
       if (message === 'Expired code') {
         setOTPSubmitted(false);
-        DisposeCache(changeEmailCacheKey);
+        RemoveCache(changeEmailCacheKey);
         toast.warning('Code expired, please resend code again');
         return;
       }

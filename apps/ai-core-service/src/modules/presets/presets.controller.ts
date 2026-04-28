@@ -3,7 +3,7 @@ import {
 	AiPresetsResponse,
 	type AssignPresetToUserRequest,
 	AssignStatusResponse,
-	type GetAvailablePresetsRequest
+	type GetPresetsRequest
 } from '@jrai/contracts/gen/aicore'
 import { Controller } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
@@ -14,16 +14,11 @@ import { PresetsService } from './presets.service'
 export class PresetsController {
 	constructor(private readonly presetsService: PresetsService) {}
 
-	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetAiPresets')
-	public async getAiPresets(): Promise<AiPresetsResponse> {
-		return this.presetsService.getAllPresets()
-	}
-
-	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetAvailablePresets')
-	public async getAvailablePresets(
-		request: GetAvailablePresetsRequest
+	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetPresets')
+	public async getAiPresets(
+		request: GetPresetsRequest
 	): Promise<AiPresetsResponse> {
-		return this.presetsService.getUserPresets(request)
+		return this.presetsService.getAllPresets(request)
 	}
 
 	@GrpcMethod(AI_CORE_SERVICE_NAME, 'AssignPresetToUser')

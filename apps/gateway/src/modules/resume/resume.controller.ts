@@ -1,6 +1,7 @@
 import {
 	BadGatewayException,
 	BadRequestException,
+	Body,
 	Controller,
 	FileTypeValidator,
 	HttpCode,
@@ -23,6 +24,7 @@ import {
 	ApiOperation,
 	ApiUnauthorizedResponse
 } from '@nestjs/swagger'
+import { nanoid } from 'nanoid'
 
 import { CurrentUser, Protected } from '@/common/decorators'
 import { ResumeParser } from '@/common/parsers/common/parser.abstract'
@@ -31,6 +33,8 @@ import {
 	WORD_PARSER
 } from '@/infrastructure/parser/parser.inject-keys'
 import { TextCleaner } from '@/utils/text-cleaner.util'
+
+import { UploadResumeDto } from './dtos/upload-resume.dto'
 
 @Controller('resume')
 export class ResumeController {
@@ -44,7 +48,8 @@ export class ResumeController {
 		description: 'Provides analysed resume to find jobs'
 	})
 	@ApiOkResponse({
-		description: 'Returns metadata about resume'
+		description: 'Returns metadata about resume',
+		type: String
 	})
 	@ApiUnauthorizedResponse({ description: 'Unauthorized' })
 	@ApiInternalServerErrorResponse({
@@ -80,7 +85,8 @@ export class ResumeController {
 				]
 			})
 		)
-		file: Express.Multer.File
+		file: Express.Multer.File,
+		@Body() dto: UploadResumeDto
 	) {
 		if (!file) {
 			throw new NotFoundException('Resume file not found')
@@ -90,23 +96,14 @@ export class ResumeController {
 		}
 
 		try {
+			const jobId = nanoid()
 			if (file.mimetype.includes('pdf')) {
 				const text = await this.pdfParser.parse(file.buffer)
 				const sanitized = TextCleaner.sanitize(text)
-				return {
-					user,
-					text,
-					nl: this.nl(text),
-					cleaned: sanitized,
-					lenght: `${text.length} / ${this.nl(text).length} / ${sanitized.length}`
-				}
+			} else {
+				const text = await this.wordParser.parse(file.buffer)
 			}
-			const text = await this.wordParser.parse(file.buffer)
-			return {
-				user,
-				text,
-				cleaned: TextCleaner.sanitize(text)
-			}
+			return jobId
 		} catch (error: any) {
 			throw new BadRequestException(
 				error.message ?? 'Unable to upload resume'

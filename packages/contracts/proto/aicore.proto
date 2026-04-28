@@ -1,12 +1,10 @@
 syntax = "proto3";
 
 package aicore.v1;
-import "google/protobuf/empty.proto";
 
 // AI Core rpc
 service AICoreService {
-	rpc GetAiPresets(google.protobuf.Empty) returns (AiPresetsResponse);
-	rpc GetAvailablePresets(GetAvailablePresetsRequest) returns (AiPresetsResponse);
+	rpc GetPresets(GetPresetsRequest) returns (AiPresetsResponse);
 	rpc AssignPresetToUser(AssignPresetToUserRequest) returns (AssignStatusResponse);
 }
 
@@ -22,9 +20,10 @@ message AiPreset {
 
 message AiPresetsResponse {
 	repeated AiPreset presets = 1;
+	repeated string owned_preset_ids = 2;
 }
 
-message GetAvailablePresetsRequest {
+message GetPresetsRequest {
 	string user_id = 1;
 }
 

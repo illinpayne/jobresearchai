@@ -22,6 +22,9 @@ export class PresetRepository {
 		id: true
 		name: true
 	}
+	public readonly onlyIds: {
+		id: true
+	}
 	public constructor(private readonly prismaService: PrismaService) {}
 
 	public async getAllPresets() {
@@ -31,14 +34,13 @@ export class PresetRepository {
 		return presets
 	}
 
-	public async getUserPresets(accountId: string) {
+	public async getOwnedPresets(
+		accountId: string,
+		select?: AiModelPresetSelect
+	) {
 		const presets = await this.prismaService.userPreset.findMany({
 			where: { accountId },
-			select: {
-				preset: {
-					select: this.presetSelect
-				}
-			}
+			select
 		})
 		return presets
 	}

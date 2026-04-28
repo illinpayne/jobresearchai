@@ -1,11 +1,11 @@
 'use client';
 
-import type { AiModelResponse } from '@/api/snapshots/ai/ai.dto';
+import type { AiPresetResponse } from '@/api/generated';
 import AiModelCard from '@/components/shared/ai-model-card';
 import { useAIStore } from '@/states/useAiStorage.hook';
 
 interface Props {
-  availableModels: AiModelResponse[];
+  availableModels: AiPresetResponse[];
   hideTitle?: boolean;
 }
 
@@ -31,12 +31,13 @@ export default function AvailableAiModels({ ...props }: Props) {
             id={f.id}
             name={f.name}
             description={f.description}
-            usage={f.usage}
+            usageTokens={f.usageTokens}
             stars={f.stars}
-            billing={f.billing}
+            paidTier={f.paidTier}
             isSelected={f.id === aiStorage.id}
             isAlreadyAvailable
             onSelect={() => aiStorage.setModel(f)}
+            temperature={f.temperature}
           />
         ))}
       </div>

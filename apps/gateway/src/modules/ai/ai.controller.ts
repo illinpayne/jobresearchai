@@ -1,9 +1,13 @@
 import {
+	BadRequestException,
+	Body,
 	Controller,
 	Get,
 	HttpCode,
 	HttpStatus,
-	NotFoundException
+	NotFoundException,
+	Post,
+	Query
 } from '@nestjs/common'
 import {
 	ApiBearerAuth,
@@ -15,19 +19,23 @@ import {
 import { CurrentUser, Protected } from '@/common/decorators'
 
 import { AicoreClientGrpc } from './aicore.grpc'
-import { AiPresetResponse } from './responses/ai-preset.response'
+import { GetModelDto } from './dtos/get-model.dto'
+import {
+	AiPresetsResponse,
+	AssignPresetResponse
+} from './responses/ai-preset.response'
 
 @Controller('ai')
 export class AiController {
 	public constructor(private readonly aiClient: AicoreClientGrpc) {}
 
 	@ApiOperation({
-		summary: 'Gets all models',
-		description: 'Gets all ai models for user'
+		summary: 'Gets ai models',
+		description: 'Gets all ai models'
 	})
 	@ApiOkResponse({
 		description: 'Returns ai models',
-		type: [AiPresetResponse]
+		type: AiPresetsResponse
 	})
 	@ApiNotFoundResponse({
 		description: 'No ai models found'
@@ -36,8 +44,10 @@ export class AiController {
 	@Protected()
 	@Get('models')
 	@HttpCode(HttpStatus.OK)
-	public async getAiModels() {
-		const response = await this.aiClient.call('getAiPresets', {})
+	public async getModelList(@CurrentUser('id') id: string) {
+		const response = await this.aiClient.call('getPresets', {
+			userId: id
+		})
 		if (!response.presets) {
 			throw new NotFoundException('No AI models found')
 		}
@@ -45,26 +55,30 @@ export class AiController {
 	}
 
 	@ApiOperation({
-		summary: 'Gets available models',
-		description: 'Gets available ai models for user'
+		summary: 'Get model to use',
+		description: 'Adding model for using in generation'
 	})
 	@ApiOkResponse({
-		description: 'Returns ai models',
-		type: [AiPresetResponse]
+		description: 'Adding ai model to library',
+		type: AssignPresetResponse
 	})
 	@ApiNotFoundResponse({
 		description: 'No ai models found'
 	})
 	@ApiBearerAuth()
 	@Protected()
-	@Get('available-models')
+	@Post('get-model')
 	@HttpCode(HttpStatus.OK)
-	public async getAvailableModels(@CurrentUser('id') id: string) {
-		const response = await this.aiClient.call('getAvailablePresets', {
-			userId: id
+	public async getModelToUser(
+		@CurrentUser('id') id: string,
+		@Body() dto: GetModelDto
+	) {
+		const response = await this.aiClient.call('assignPresetToUser', {
+			userId: id,
+			presetId: dto.presetId
 		})
-		if (!response.presets) {
-			throw new NotFoundException('No AI models found')
+		if (!response.status) {
+			throw new NotFoundException('Cannot get this model.')
 		}
 		return response
 	}

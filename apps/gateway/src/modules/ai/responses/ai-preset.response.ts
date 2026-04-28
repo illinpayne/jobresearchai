@@ -13,6 +13,18 @@ export class AiPresetResponse {
 	usageTokens: number
 	@ApiProperty({ type: String, default: 'Free/Pro' })
 	paidTier: string
-	@ApiProperty({ type: Float32Array, default: 0.5 })
-	temperature: Float32Array
+	@ApiProperty({ type: Number, default: 0.5 })
+	temperature: number
+}
+
+export class AiPresetsResponse {
+	@ApiProperty({ type: [AiPresetResponse] })
+	presets: AiPresetResponse[]
+	@ApiProperty({ type: [String], default: ['presetId1', 'presetId2'] })
+	ownedPresetIds: string[]
+}
+
+export class AssignPresetResponse {
+	@ApiProperty({ type: Boolean, default: true })
+	status: boolean
 }

@@ -3,7 +3,7 @@ import {
 	AiPresetsResponse,
 	AssignPresetToUserRequest,
 	AssignStatusResponse,
-	GetAvailablePresetsRequest
+	GetPresetsRequest
 } from '@jrai/contracts/gen/aicore'
 import { GrpcException, RpcStatus } from '@jrai/contracts/grpc'
 import { Injectable } from '@nestjs/common'
@@ -14,26 +14,18 @@ import { PresetRepository } from './preset.repository'
 export class PresetsService {
 	public constructor(private readonly presetRepository: PresetRepository) {}
 
-	public async getAllPresets(): Promise<AiPresetsResponse> {
+	public async getAllPresets(
+		request: GetPresetsRequest
+	): Promise<AiPresetsResponse> {
 		try {
 			const presets = await this.presetRepository.getAllPresets()
+			const ownedIds = await this.presetRepository.getOwnedPresets(
+				request.userId,
+				this.presetRepository.onlyIds
+			)
 			return {
-				presets: presets as AiPreset[]
-			}
-		} catch (error) {
-			throw new GrpcException(RpcStatus.NOT_FOUND, 'Presets not found')
-		}
-	}
-
-	public async getUserPresets(
-		request: GetAvailablePresetsRequest
-	): Promise<AiPresetsResponse> {
-		const { userId } = request
-		try {
-			const userPresets =
-				await this.presetRepository.getUserPresets(userId)
-			return {
-				presets: userPresets.map(up => up.preset) as AiPreset[]
+				presets: presets as AiPreset[],
+				ownedPresetIds: ownedIds.map(p => p.presetId) ?? []
 			}
 		} catch (error) {
 			throw new GrpcException(RpcStatus.NOT_FOUND, 'Presets not found')

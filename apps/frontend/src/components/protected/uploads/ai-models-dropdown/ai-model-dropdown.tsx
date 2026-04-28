@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import type { AiPresetResponse } from '@/api/generated';
 import type { AiModelResponse } from '@/api/snapshots/ai/ai.dto';
 import {
   DropdownMenu,
@@ -15,15 +16,15 @@ import { cn } from '@/lib/utils';
 import AiModelRow, { type AiModel } from './ai-model-row';
 
 interface Props {
-  currentSelectedModel?: AiModelResponse;
-  models: AiModelResponse[];
+  currentSelectedModel?: AiPresetResponse;
+  models: AiPresetResponse[];
   onSelectModel: (model: AiModel) => void;
   onUpgradeAction: () => void;
   isError?: boolean;
 }
 
 export function AiModels({ ...props }: Props) {
-  function renderModels(models?: AiModelResponse[], selectedModel?: AiModelResponse) {
+  function renderModels(models?: AiPresetResponse[], selectedModel?: AiPresetResponse) {
     if (models) {
       return props.models.map((model, i) => (
         <AiModelRow
@@ -43,7 +44,7 @@ export function AiModels({ ...props }: Props) {
     );
   }
 
-  function renderSelectedModel(selectedModel?: AiModelResponse) {
+  function renderSelectedModel(selectedModel?: AiPresetResponse) {
     if (selectedModel) {
       return (
         <>

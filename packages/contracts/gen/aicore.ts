@@ -7,7 +7,6 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Empty } from "./google/protobuf/empty";
 
 export const protobufPackage = "aicore.v1";
 
@@ -23,9 +22,10 @@ export interface AiPreset {
 
 export interface AiPresetsResponse {
   presets: AiPreset[];
+  ownedPresetIds: string[];
 }
 
-export interface GetAvailablePresetsRequest {
+export interface GetPresetsRequest {
   userId: string;
 }
 
@@ -43,9 +43,7 @@ export const AICORE_V1_PACKAGE_NAME = "aicore.v1";
 /** AI Core rpc */
 
 export interface AICoreServiceClient {
-  getAiPresets(request: Empty): Observable<AiPresetsResponse>;
-
-  getAvailablePresets(request: GetAvailablePresetsRequest): Observable<AiPresetsResponse>;
+  getPresets(request: GetPresetsRequest): Observable<AiPresetsResponse>;
 
   assignPresetToUser(request: AssignPresetToUserRequest): Observable<AssignStatusResponse>;
 }
@@ -53,10 +51,8 @@ export interface AICoreServiceClient {
 /** AI Core rpc */
 
 export interface AICoreServiceController {
-  getAiPresets(request: Empty): Promise<AiPresetsResponse> | Observable<AiPresetsResponse> | AiPresetsResponse;
-
-  getAvailablePresets(
-    request: GetAvailablePresetsRequest,
+  getPresets(
+    request: GetPresetsRequest,
   ): Promise<AiPresetsResponse> | Observable<AiPresetsResponse> | AiPresetsResponse;
 
   assignPresetToUser(
@@ -66,7 +62,7 @@ export interface AICoreServiceController {
 
 export function AICoreServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getAiPresets", "getAvailablePresets", "assignPresetToUser"];
+    const grpcMethods: string[] = ["getPresets", "assignPresetToUser"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AICoreService", method)(constructor.prototype[method], method, descriptor);

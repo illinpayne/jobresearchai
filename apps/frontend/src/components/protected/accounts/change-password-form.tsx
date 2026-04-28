@@ -13,7 +13,7 @@ import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Skeleton } from '@/components/ui/skeleton';
-import { changePasswordCacheKey, DisposeCache, GetPasswordChangeCache, isCacheExpired, SetPasswordChangeCache } from '@/lib/cache';
+import { changePasswordCacheKey, GetPasswordChangeCache, isCacheExpired, RemoveCache, SetPasswordChangeCache } from '@/lib/cache';
 
 const changePasswordSchema = z
   .object({
@@ -58,7 +58,7 @@ export default function ChangePasswordForm() {
     async onSuccess() {
       const { toast } = await import('sonner');
       setOTPSubmitted(false);
-      DisposeCache(changePasswordCacheKey);
+      RemoveCache(changePasswordCacheKey);
       reset({ password: '', passwordConfirmation: '', code: '' });
       toast.info('Password reset successfully!');
     },
@@ -67,7 +67,7 @@ export default function ChangePasswordForm() {
       const { toast } = await import('sonner');
       if (message === 'Expired code') {
         setOTPSubmitted(false);
-        DisposeCache(changePasswordCacheKey);
+        RemoveCache(changePasswordCacheKey);
         toast.warning('Code expired, please resend code again');
         return;
       }

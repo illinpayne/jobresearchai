@@ -1,9 +1,15 @@
-import axios from 'axios';
-import { redirect } from 'next/navigation';
-import { accountCacheKey } from '@/lib/cache';
-import { getSessionToken, removeSessionToken, setSessionToken } from '@/lib/cookies';
-import { APP_CONFIG } from '../constants/app';
-import { logout, refresh } from './requests/auth.req';
+"use client";
+
+import axios from "axios";
+
+import { accountCacheKey, DisposeCache } from "@/lib/cache";
+import {
+  getSessionToken,
+  removeSessionToken,
+  setSessionToken,
+} from "@/lib/cookies";
+import { APP_CONFIG } from "../constants/app";
+import { logout, refresh } from "./requests/auth.req";
 
 export const api = axios.create({
   baseURL: APP_CONFIG.apiUrl,
@@ -16,10 +22,10 @@ export const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = getSessionToken();
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
@@ -41,12 +47,12 @@ instance.interceptors.response.use(
           const newAccessToken = resp.accessToken;
           setSessionToken(newAccessToken);
 
-          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return instance(originalRequest);
         } catch (error) {
           removeSessionToken();
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem(accountCacheKey);
+          if (typeof window !== "undefined") {
+            DisposeCache();
           }
           await logout();
           // const { toast } = await import("sonner");
@@ -55,7 +61,7 @@ instance.interceptors.response.use(
           // setTimeout(() => {
           //   redirect('/signin');
           // }, 1000);
-          return Promise.reject('Session expired');
+          return Promise.reject("Session expired");
         }
       }
     }
