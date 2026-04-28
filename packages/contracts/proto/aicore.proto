@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package aicore.v1;
+import "google/protobuf/empty.proto";
+
+// AI Core rpc
+service AICoreService {
+	rpc GetAiPresets(google.protobuf.Empty) returns (AiPresetsResponse);
+	rpc GetAvailablePresets(GetAvailablePresetsRequest) returns (AiPresetsResponse);
+	rpc AssignPresetToUser(AssignPresetToUserRequest) returns (AssignStatusResponse);
+}
+
+message AiPreset {
+	string id = 1;
+	string name = 2;
+	string description = 3;
+	int32 stars = 4;
+	int32 usage_tokens = 5;
+	optional string paid_tier = 6;
+	float temperature = 7;
+}
+
+message AiPresetsResponse {
+	repeated AiPreset presets = 1;
+}
+
+message GetAvailablePresetsRequest {
+	string user_id = 1;
+}
+
+message AssignPresetToUserRequest {
+  string user_id = 1;
+  string preset_id = 2;
+}
+
+message AssignStatusResponse {
+  bool status = 1;
+}

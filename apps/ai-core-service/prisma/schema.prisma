@@ -1,0 +1,53 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "./generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AiModelPreset {
+  id          String  @id @default(nanoid())
+  name        String  @unique
+  description String
+  stars       Int     @default(1)
+  usageTokens Int     @default(10) @map("usage_tokens")
+  paidTier    String? @map("paid_tier")
+  temperature Float   @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  aiExternalModel   AiExternalModel @relation(fields: [aiExternalModelId], references: [id])
+  aiExternalModelId String          @map("ai_external_model_id")
+  userPresets       UserPreset[]
+
+  @@map("ai_model_presets")
+}
+
+model AiExternalModel {
+  id   String @id @default(nanoid())
+  name String @unique
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  presets AiModelPreset[]
+
+  @@map("ai_external_models")
+}
+
+model UserPreset {
+  accountId String @map("account_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  preset   AiModelPreset @relation(fields: [presetId], references: [id], onDelete: Cascade)
+  presetId String        @map("preset_id")
+
+  @@id([accountId, presetId])
+  @@map("user_presets")
+}

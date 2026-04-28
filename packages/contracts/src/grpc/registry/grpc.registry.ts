@@ -16,4 +16,9 @@ export const GRPC_CLIENT = {
     protoPath: protoPaths.STORAGE,
     env: "STORAGE_GRPC_URL",
   },
+  AICORE_PACKAGE: {
+    package: "aicore.v1",
+    protoPath: protoPaths.AICORE,
+    env: "AICORE_GRPC_URL",
+  },
 } as const;

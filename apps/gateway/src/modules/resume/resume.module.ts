@@ -6,6 +6,7 @@ import { ResumeController } from './resume.controller'
 
 @Module({
 	imports: [ParserModule],
+	providers: [],
 	controllers: [ResumeController]
 })
 export class ResumeModule {}
