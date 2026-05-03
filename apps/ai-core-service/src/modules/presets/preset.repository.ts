@@ -9,22 +9,22 @@ import { PrismaService } from '@/infrastructure/prisma/prisma.service'
 
 @Injectable()
 export class PresetRepository {
-	public readonly presetSelect: {
-		id: true
-		name: true
-		description: true
-		stars: true
-		usageTokens: true
-		paidTier: true
+	public readonly presetSelect = {
+		id: true,
+		name: true,
+		description: true,
+		stars: true,
+		usageTokens: true,
+		paidTier: true,
 		temperature: true
-	}
-	public readonly externalModelSelect: {
-		id: true
+	} as const
+	public readonly externalModelSelect = {
+		id: true,
 		name: true
-	}
-	public readonly onlyIds: {
+	} as const
+	public readonly onlyIds = {
 		id: true
-	}
+	} as const
 	public constructor(private readonly prismaService: PrismaService) {}
 
 	public async getAllPresets() {
@@ -45,10 +45,23 @@ export class PresetRepository {
 		return presets
 	}
 
-	public async getPresetById(id: string, select: AiModelPresetSelect) {
+	public async getPresetById(id: string, select?: AiModelPresetSelect) {
 		const preset = await this.prismaService.aiModelPreset.findUnique({
 			where: { id },
 			select
+		})
+		return preset
+	}
+
+	public async getExtendedPresetById(id: string) {
+		const preset = await this.prismaService.aiModelPreset.findUnique({
+			where: { id },
+			select: {
+				aiExternalModel: {
+					select: this.externalModelSelect
+				},
+				...this.presetSelect
+			}
 		})
 		return preset
 	}

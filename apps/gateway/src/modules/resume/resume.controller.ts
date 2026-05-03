@@ -1,3 +1,4 @@
+import { ExtendedAiPreset } from '@jrai/contracts/gen/aicore'
 import {
 	BadGatewayException,
 	BadRequestException,
@@ -32,7 +33,10 @@ import {
 	PDF_PARSER,
 	WORD_PARSER
 } from '@/infrastructure/parser/parser.inject-keys'
+import { QueueService } from '@/infrastructure/queue/queue.service'
 import { TextCleaner } from '@/utils/text-cleaner.util'
+
+import { AicoreClientGrpc } from '../ai/aicore.grpc'
 
 import { UploadResumeDto } from './dtos/upload-resume.dto'
 
@@ -40,7 +44,9 @@ import { UploadResumeDto } from './dtos/upload-resume.dto'
 export class ResumeController {
 	public constructor(
 		@Inject(PDF_PARSER) private readonly pdfParser: ResumeParser,
-		@Inject(WORD_PARSER) private readonly wordParser: ResumeParser
+		@Inject(WORD_PARSER) private readonly wordParser: ResumeParser,
+		private readonly aiClient: AicoreClientGrpc,
+		private readonly queueService: QueueService
 	) {}
 
 	@ApiOperation({
@@ -97,23 +103,35 @@ export class ResumeController {
 
 		try {
 			const jobId = nanoid()
+			let extractedText = ''
 			if (file.mimetype.includes('pdf')) {
 				const text = await this.pdfParser.parse(file.buffer)
-				const sanitized = TextCleaner.sanitize(text)
+				extractedText = TextCleaner.sanitize(text)
 			} else {
-				const text = await this.wordParser.parse(file.buffer)
+				extractedText = await this.wordParser.parse(file.buffer)
 			}
+			const extendedPreset: ExtendedAiPreset = await this.aiClient.call(
+				'getLlmByPresetId',
+				{
+					presetId: dto.presetId
+				}
+			)
+			if (!extendedPreset.preset || !extendedPreset.aiExternalModel) {
+				throw new BadRequestException(
+					'Invalid preset or LLM configuration'
+				)
+			}
+			await this.queueService.sendResumeToProcess({
+				extractedText,
+				temperature: extendedPreset.preset.temperature,
+				llm: extendedPreset.aiExternalModel.name
+			})
+
 			return jobId
 		} catch (error: any) {
 			throw new BadRequestException(
-				error.message ?? 'Unable to upload resume'
+				error.details ?? error.message ?? 'Unable to upload resume'
 			)
 		}
-	}
-
-	nl(text: string): string {
-		if (!text) return ''
-
-		return text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
 	}
 }

@@ -14,7 +14,11 @@ interface Props {
 export default function AllAiModels({ ...props }: Props) {
   const billing = useBillingDialog();
   const queryClient = useQueryClient();
-  const { mutateAsync: getModelAsync } = useGetModel({
+  const {
+    mutateAsync: getModelAsync,
+    isPending: isAddingModel,
+    variables: model,
+  } = useGetModel({
     onSuccess: async (data, variables) => {
       RemoveCache(presetsCacheKey);
       queryClient.invalidateQueries({ queryKey: ['presets'] });
@@ -39,6 +43,7 @@ export default function AllAiModels({ ...props }: Props) {
             paidTier={f.paidTier}
             stars={f.stars}
             id={f.id}
+            isLoading={isAddingModel && model?.id === f.id}
             usageTokens={f.usageTokens}
             onAdd={async (model) => {
               // if (model.paidTier.toLowerCase() !== 'free') {

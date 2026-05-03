@@ -82,22 +82,28 @@ body {
   @apply overflow-y-visible;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d1d1 transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px; /* Very thin width */
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent; /* Keeps the gutter clean */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 5px;
+  background-color: #d1d1d1; /* Minimalist light gray */
+  border-radius: 10px;
+  border: 1px solid transparent; /* Acts as padding */
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a3a3a3; /* Subtle darkening on hover */
 }
 
 html,
@@ -108,6 +114,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  scrollbar-gutter: stable;
 }
 
 svg {

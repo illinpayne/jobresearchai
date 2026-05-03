@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  fiveMinutes,
   presetsCacheKey,
+  presetsCacheStaleTime,
   RemoveCache,
   SetCache,
 } from "@/lib/cache";
@@ -26,7 +26,7 @@ export const usePresets = () => {
         };
         const age = Date.now() - cacheObject.createdAt;
 
-        if (age <= fiveMinutes) {
+        if (age <= presetsCacheStaleTime) {
           return cacheObject.data;
         } else {
           RemoveCache(presetsCacheKey);
@@ -38,13 +38,14 @@ export const usePresets = () => {
 
       return data;
     },
-    staleTime: fiveMinutes,
-    select: (data) => {
+    staleTime: presetsCacheStaleTime,
+    select: (data: any) => {
       const ownedSet = new Set(data.ownedPresetIds);
       return {
-        available: data.presets.filter((p) => ownedSet.has(p.id)),
-        notOwned: data.presets.filter((p) => !ownedSet.has(p.id)),
+        available: data.presets.filter((p: any) => ownedSet.has(p.id)),
+        notOwned: data.presets.filter((p: any) => !ownedSet.has(p.id)),
       } as PresetsData;
     },
+    retry: 0,
   });
 };

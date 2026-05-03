@@ -15,7 +15,8 @@ export const fetchModels = async () => {
     .then((response) => response.data);
 };
 
-export const getModel = async (dto: GetModelDto) =>
-  await instance
+export const getModel = async (dto: GetModelDto) => {
+  return await instance
     .post<AssignPresetResponse>(AiEndpoints.GET_MODEL, dto)
     .then((response) => response.data);
+};

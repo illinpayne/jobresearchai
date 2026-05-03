@@ -11,7 +11,7 @@ export function createRmqServer(
 	app.connectMicroservice<MicroserviceOptions>({
 		transport: Transport.RMQ,
 		options: {
-			urls: [config.get('rmq.url', { infer: true })],
+			urls: config.get('rmq.url', { infer: true }),
 			queue: config.get('rmq.queue', { infer: true }),
 			queueOptions: {
 				durable: true

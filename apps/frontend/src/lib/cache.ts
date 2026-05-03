@@ -5,6 +5,7 @@ export const twoMinutes = 2 * 60 * 1000;
 
 export const accountCacheStaleTime = fiveMinutes;
 export const changePasswordCacheStaleTime = twoMinutes;
+export const presetsCacheStaleTime = 1000; //fiveMinutes;
 
 export const accountCacheKey = "account_cache";
 export const changePasswordCacheKey = "change_password_cache";

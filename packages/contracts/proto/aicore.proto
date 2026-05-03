@@ -6,6 +6,8 @@ package aicore.v1;
 service AICoreService {
 	rpc GetPresets(GetPresetsRequest) returns (AiPresetsResponse);
 	rpc AssignPresetToUser(AssignPresetToUserRequest) returns (AssignStatusResponse);
+	rpc GetPresetById(GetPresetsByIdRequest) returns (AiPreset);
+	rpc GetLLMByPresetId(GetPresetsByIdRequest) returns (ExtendedAiPreset);
 }
 
 message AiPreset {
@@ -18,6 +20,16 @@ message AiPreset {
 	float temperature = 7;
 }
 
+message ExternalAi {
+	string id = 1;
+	string name = 2;
+}
+
+message ExtendedAiPreset {
+	AiPreset preset = 1;
+	ExternalAi aiExternalModel = 2;
+}
+
 message AiPresetsResponse {
 	repeated AiPreset presets = 1;
 	repeated string owned_preset_ids = 2;
@@ -25,6 +37,10 @@ message AiPresetsResponse {
 
 message GetPresetsRequest {
 	string user_id = 1;
+}
+
+message GetPresetsByIdRequest {
+	string preset_id = 1;
 }
 
 message AssignPresetToUserRequest {

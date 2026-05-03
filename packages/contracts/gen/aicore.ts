@@ -20,6 +20,16 @@ export interface AiPreset {
   temperature: number;
 }
 
+export interface ExternalAi {
+  id: string;
+  name: string;
+}
+
+export interface ExtendedAiPreset {
+  preset: AiPreset | undefined;
+  aiExternalModel: ExternalAi | undefined;
+}
+
 export interface AiPresetsResponse {
   presets: AiPreset[];
   ownedPresetIds: string[];
@@ -27,6 +37,10 @@ export interface AiPresetsResponse {
 
 export interface GetPresetsRequest {
   userId: string;
+}
+
+export interface GetPresetsByIdRequest {
+  presetId: string;
 }
 
 export interface AssignPresetToUserRequest {
@@ -46,6 +60,10 @@ export interface AICoreServiceClient {
   getPresets(request: GetPresetsRequest): Observable<AiPresetsResponse>;
 
   assignPresetToUser(request: AssignPresetToUserRequest): Observable<AssignStatusResponse>;
+
+  getPresetById(request: GetPresetsByIdRequest): Observable<AiPreset>;
+
+  getLlmByPresetId(request: GetPresetsByIdRequest): Observable<ExtendedAiPreset>;
 }
 
 /** AI Core rpc */
@@ -58,11 +76,17 @@ export interface AICoreServiceController {
   assignPresetToUser(
     request: AssignPresetToUserRequest,
   ): Promise<AssignStatusResponse> | Observable<AssignStatusResponse> | AssignStatusResponse;
+
+  getPresetById(request: GetPresetsByIdRequest): Promise<AiPreset> | Observable<AiPreset> | AiPreset;
+
+  getLlmByPresetId(
+    request: GetPresetsByIdRequest,
+  ): Promise<ExtendedAiPreset> | Observable<ExtendedAiPreset> | ExtendedAiPreset;
 }
 
 export function AICoreServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getPresets", "assignPresetToUser"];
+    const grpcMethods: string[] = ["getPresets", "assignPresetToUser", "getPresetById", "getLlmByPresetId"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AICoreService", method)(constructor.prototype[method], method, descriptor);

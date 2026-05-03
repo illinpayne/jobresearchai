@@ -9,6 +9,7 @@ import { getCorsConfig, getValidationPipeConfig } from '@/config/loaders'
 
 import { AppModule } from './app.module'
 import { AllConfigs, AppConfig } from './config/interfaces'
+import { createRmqAiServer } from './infrastructure/rmq/rmq-ai.server'
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
@@ -42,7 +43,10 @@ async function bootstrap() {
 	app.useGlobalPipes(new ValidationPipe(getValidationPipeConfig()))
 	app.enableCors(getCorsConfig(config))
 
+	createRmqAiServer(app, config)
+
 	try {
+		await app.startAllMicroservices()
 		await app.listen(app_environments.port ?? 5000)
 		logger.log(
 			`🚀 Server is running at: ${app_environments.host}:${app_environments.port}`

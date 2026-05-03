@@ -6,7 +6,7 @@ import AvailableAiModels from '@/components/protected/ai/available-ai-models';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AiDataWrapper() {
-  const { data: presets, isLoading } = usePresets();
+  const { data: presets, isLoading, isError } = usePresets();
 
   if (isLoading) {
     return (
@@ -21,6 +21,15 @@ export default function AiDataWrapper() {
           <Skeleton className='w-full h-40 rounded-md' />
           <Skeleton className='w-full h-40 rounded-md' />
         </div>
+      </div>
+    );
+  }
+
+  if (isError || !presets) {
+    return (
+      <div>
+        <h1 className='text-3xl font-bold mb-5'>Cannot get models</h1>
+        <p className='text-neutral-600'>Service temporary unavailable, please retry again in 1 hour time.</p>
       </div>
     );
   }

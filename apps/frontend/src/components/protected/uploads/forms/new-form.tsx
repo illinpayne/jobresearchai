@@ -150,6 +150,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
                       )}
                     />
                   )}
+                  {/* TODO: Make not Analysing..., run animation immediately, then just show error or realtime thinking */}
                   <button
                     type='submit'
                     disabled={!formState.isValid}
