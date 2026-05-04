@@ -1,4 +1,4 @@
-import type { AiResumeUploadEvent } from '@jrai/contracts'
+import { AiResumeUploadEventType } from '@jrai/contracts'
 import { Inject, Injectable } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
 
@@ -10,7 +10,7 @@ export class QueueService {
 		@Inject(QueueClientName) private readonly client: ClientProxy
 	) {}
 
-	public async sendResumeToProcess(data: AiResumeUploadEvent) {
+	public async sendResumeToProcess(data: AiResumeUploadEventType) {
 		return this.client.emit('ai.resume.upload', data)
 	}
 }

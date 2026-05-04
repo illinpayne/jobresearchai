@@ -28,14 +28,16 @@ export type AggregateAiModelPreset = {
 
 export type AiModelPresetAvgAggregateOutputType = {
   stars: number | null
-  usageTokens: number | null
+  usageCredits: number | null
   temperature: number | null
+  maxTokens: number | null
 }
 
 export type AiModelPresetSumAggregateOutputType = {
   stars: number | null
-  usageTokens: number | null
+  usageCredits: number | null
   temperature: number | null
+  maxTokens: number | null
 }
 
 export type AiModelPresetMinAggregateOutputType = {
@@ -43,9 +45,11 @@ export type AiModelPresetMinAggregateOutputType = {
   name: string | null
   description: string | null
   stars: number | null
-  usageTokens: number | null
+  usageCredits: number | null
   paidTier: string | null
   temperature: number | null
+  systemPrompt: string | null
+  maxTokens: number | null
   createdAt: Date | null
   updatedAt: Date | null
   aiExternalModelId: string | null
@@ -56,9 +60,11 @@ export type AiModelPresetMaxAggregateOutputType = {
   name: string | null
   description: string | null
   stars: number | null
-  usageTokens: number | null
+  usageCredits: number | null
   paidTier: string | null
   temperature: number | null
+  systemPrompt: string | null
+  maxTokens: number | null
   createdAt: Date | null
   updatedAt: Date | null
   aiExternalModelId: string | null
@@ -69,9 +75,11 @@ export type AiModelPresetCountAggregateOutputType = {
   name: number
   description: number
   stars: number
-  usageTokens: number
+  usageCredits: number
   paidTier: number
   temperature: number
+  systemPrompt: number
+  maxTokens: number
   createdAt: number
   updatedAt: number
   aiExternalModelId: number
@@ -81,14 +89,16 @@ export type AiModelPresetCountAggregateOutputType = {
 
 export type AiModelPresetAvgAggregateInputType = {
   stars?: true
-  usageTokens?: true
+  usageCredits?: true
   temperature?: true
+  maxTokens?: true
 }
 
 export type AiModelPresetSumAggregateInputType = {
   stars?: true
-  usageTokens?: true
+  usageCredits?: true
   temperature?: true
+  maxTokens?: true
 }
 
 export type AiModelPresetMinAggregateInputType = {
@@ -96,9 +106,11 @@ export type AiModelPresetMinAggregateInputType = {
   name?: true
   description?: true
   stars?: true
-  usageTokens?: true
+  usageCredits?: true
   paidTier?: true
   temperature?: true
+  systemPrompt?: true
+  maxTokens?: true
   createdAt?: true
   updatedAt?: true
   aiExternalModelId?: true
@@ -109,9 +121,11 @@ export type AiModelPresetMaxAggregateInputType = {
   name?: true
   description?: true
   stars?: true
-  usageTokens?: true
+  usageCredits?: true
   paidTier?: true
   temperature?: true
+  systemPrompt?: true
+  maxTokens?: true
   createdAt?: true
   updatedAt?: true
   aiExternalModelId?: true
@@ -122,9 +136,11 @@ export type AiModelPresetCountAggregateInputType = {
   name?: true
   description?: true
   stars?: true
-  usageTokens?: true
+  usageCredits?: true
   paidTier?: true
   temperature?: true
+  systemPrompt?: true
+  maxTokens?: true
   createdAt?: true
   updatedAt?: true
   aiExternalModelId?: true
@@ -222,9 +238,11 @@ export type AiModelPresetGroupByOutputType = {
   name: string
   description: string
   stars: number
-  usageTokens: number
+  usageCredits: number
   paidTier: string | null
   temperature: number
+  systemPrompt: string
+  maxTokens: number
   createdAt: Date
   updatedAt: Date
   aiExternalModelId: string
@@ -258,14 +276,17 @@ export type AiModelPresetWhereInput = {
   name?: Prisma.StringFilter<"AiModelPreset"> | string
   description?: Prisma.StringFilter<"AiModelPreset"> | string
   stars?: Prisma.IntFilter<"AiModelPreset"> | number
-  usageTokens?: Prisma.IntFilter<"AiModelPreset"> | number
+  usageCredits?: Prisma.IntFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatFilter<"AiModelPreset"> | number
+  systemPrompt?: Prisma.StringFilter<"AiModelPreset"> | string
+  maxTokens?: Prisma.IntFilter<"AiModelPreset"> | number
   createdAt?: Prisma.DateTimeFilter<"AiModelPreset"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AiModelPreset"> | Date | string
   aiExternalModelId?: Prisma.StringFilter<"AiModelPreset"> | string
   aiExternalModel?: Prisma.XOR<Prisma.AiExternalModelScalarRelationFilter, Prisma.AiExternalModelWhereInput>
   userPresets?: Prisma.UserPresetListRelationFilter
+  aiAnalyseJobs?: Prisma.AiAnalyseJobListRelationFilter
 }
 
 export type AiModelPresetOrderByWithRelationInput = {
@@ -273,14 +294,17 @@ export type AiModelPresetOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   stars?: Prisma.SortOrder
-  usageTokens?: Prisma.SortOrder
+  usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrderInput | Prisma.SortOrder
   temperature?: Prisma.SortOrder
+  systemPrompt?: Prisma.SortOrder
+  maxTokens?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   aiExternalModelId?: Prisma.SortOrder
   aiExternalModel?: Prisma.AiExternalModelOrderByWithRelationInput
   userPresets?: Prisma.UserPresetOrderByRelationAggregateInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobOrderByRelationAggregateInput
 }
 
 export type AiModelPresetWhereUniqueInput = Prisma.AtLeast<{
@@ -291,14 +315,17 @@ export type AiModelPresetWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AiModelPresetWhereInput | Prisma.AiModelPresetWhereInput[]
   description?: Prisma.StringFilter<"AiModelPreset"> | string
   stars?: Prisma.IntFilter<"AiModelPreset"> | number
-  usageTokens?: Prisma.IntFilter<"AiModelPreset"> | number
+  usageCredits?: Prisma.IntFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatFilter<"AiModelPreset"> | number
+  systemPrompt?: Prisma.StringFilter<"AiModelPreset"> | string
+  maxTokens?: Prisma.IntFilter<"AiModelPreset"> | number
   createdAt?: Prisma.DateTimeFilter<"AiModelPreset"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AiModelPreset"> | Date | string
   aiExternalModelId?: Prisma.StringFilter<"AiModelPreset"> | string
   aiExternalModel?: Prisma.XOR<Prisma.AiExternalModelScalarRelationFilter, Prisma.AiExternalModelWhereInput>
   userPresets?: Prisma.UserPresetListRelationFilter
+  aiAnalyseJobs?: Prisma.AiAnalyseJobListRelationFilter
 }, "id" | "name">
 
 export type AiModelPresetOrderByWithAggregationInput = {
@@ -306,9 +333,11 @@ export type AiModelPresetOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   stars?: Prisma.SortOrder
-  usageTokens?: Prisma.SortOrder
+  usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrderInput | Prisma.SortOrder
   temperature?: Prisma.SortOrder
+  systemPrompt?: Prisma.SortOrder
+  maxTokens?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   aiExternalModelId?: Prisma.SortOrder
@@ -327,9 +356,11 @@ export type AiModelPresetScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"AiModelPreset"> | string
   description?: Prisma.StringWithAggregatesFilter<"AiModelPreset"> | string
   stars?: Prisma.IntWithAggregatesFilter<"AiModelPreset"> | number
-  usageTokens?: Prisma.IntWithAggregatesFilter<"AiModelPreset"> | number
+  usageCredits?: Prisma.IntWithAggregatesFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableWithAggregatesFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatWithAggregatesFilter<"AiModelPreset"> | number
+  systemPrompt?: Prisma.StringWithAggregatesFilter<"AiModelPreset"> | string
+  maxTokens?: Prisma.IntWithAggregatesFilter<"AiModelPreset"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AiModelPreset"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AiModelPreset"> | Date | string
   aiExternalModelId?: Prisma.StringWithAggregatesFilter<"AiModelPreset"> | string
@@ -340,13 +371,16 @@ export type AiModelPresetCreateInput = {
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   aiExternalModel: Prisma.AiExternalModelCreateNestedOneWithoutPresetsInput
   userPresets?: Prisma.UserPresetCreateNestedManyWithoutPresetInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobCreateNestedManyWithoutPresetInput
 }
 
 export type AiModelPresetUncheckedCreateInput = {
@@ -354,13 +388,16 @@ export type AiModelPresetUncheckedCreateInput = {
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   aiExternalModelId: string
   userPresets?: Prisma.UserPresetUncheckedCreateNestedManyWithoutPresetInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUncheckedCreateNestedManyWithoutPresetInput
 }
 
 export type AiModelPresetUpdateInput = {
@@ -368,13 +405,16 @@ export type AiModelPresetUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   aiExternalModel?: Prisma.AiExternalModelUpdateOneRequiredWithoutPresetsNestedInput
   userPresets?: Prisma.UserPresetUpdateManyWithoutPresetNestedInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUpdateManyWithoutPresetNestedInput
 }
 
 export type AiModelPresetUncheckedUpdateInput = {
@@ -382,13 +422,16 @@ export type AiModelPresetUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   aiExternalModelId?: Prisma.StringFieldUpdateOperationsInput | string
   userPresets?: Prisma.UserPresetUncheckedUpdateManyWithoutPresetNestedInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUncheckedUpdateManyWithoutPresetNestedInput
 }
 
 export type AiModelPresetCreateManyInput = {
@@ -396,9 +439,11 @@ export type AiModelPresetCreateManyInput = {
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   aiExternalModelId: string
@@ -409,9 +454,11 @@ export type AiModelPresetUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -421,9 +468,11 @@ export type AiModelPresetUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   aiExternalModelId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -434,9 +483,11 @@ export type AiModelPresetCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   stars?: Prisma.SortOrder
-  usageTokens?: Prisma.SortOrder
+  usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
+  systemPrompt?: Prisma.SortOrder
+  maxTokens?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   aiExternalModelId?: Prisma.SortOrder
@@ -444,8 +495,9 @@ export type AiModelPresetCountOrderByAggregateInput = {
 
 export type AiModelPresetAvgOrderByAggregateInput = {
   stars?: Prisma.SortOrder
-  usageTokens?: Prisma.SortOrder
+  usageCredits?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
+  maxTokens?: Prisma.SortOrder
 }
 
 export type AiModelPresetMaxOrderByAggregateInput = {
@@ -453,9 +505,11 @@ export type AiModelPresetMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   stars?: Prisma.SortOrder
-  usageTokens?: Prisma.SortOrder
+  usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
+  systemPrompt?: Prisma.SortOrder
+  maxTokens?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   aiExternalModelId?: Prisma.SortOrder
@@ -466,9 +520,11 @@ export type AiModelPresetMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   stars?: Prisma.SortOrder
-  usageTokens?: Prisma.SortOrder
+  usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
+  systemPrompt?: Prisma.SortOrder
+  maxTokens?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   aiExternalModelId?: Prisma.SortOrder
@@ -476,8 +532,9 @@ export type AiModelPresetMinOrderByAggregateInput = {
 
 export type AiModelPresetSumOrderByAggregateInput = {
   stars?: Prisma.SortOrder
-  usageTokens?: Prisma.SortOrder
+  usageCredits?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
+  maxTokens?: Prisma.SortOrder
 }
 
 export type AiModelPresetListRelationFilter = {
@@ -579,17 +636,34 @@ export type AiModelPresetUpdateOneRequiredWithoutUserPresetsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AiModelPresetUpdateToOneWithWhereWithoutUserPresetsInput, Prisma.AiModelPresetUpdateWithoutUserPresetsInput>, Prisma.AiModelPresetUncheckedUpdateWithoutUserPresetsInput>
 }
 
+export type AiModelPresetCreateNestedOneWithoutAiAnalyseJobsInput = {
+  create?: Prisma.XOR<Prisma.AiModelPresetCreateWithoutAiAnalyseJobsInput, Prisma.AiModelPresetUncheckedCreateWithoutAiAnalyseJobsInput>
+  connectOrCreate?: Prisma.AiModelPresetCreateOrConnectWithoutAiAnalyseJobsInput
+  connect?: Prisma.AiModelPresetWhereUniqueInput
+}
+
+export type AiModelPresetUpdateOneRequiredWithoutAiAnalyseJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.AiModelPresetCreateWithoutAiAnalyseJobsInput, Prisma.AiModelPresetUncheckedCreateWithoutAiAnalyseJobsInput>
+  connectOrCreate?: Prisma.AiModelPresetCreateOrConnectWithoutAiAnalyseJobsInput
+  upsert?: Prisma.AiModelPresetUpsertWithoutAiAnalyseJobsInput
+  connect?: Prisma.AiModelPresetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AiModelPresetUpdateToOneWithWhereWithoutAiAnalyseJobsInput, Prisma.AiModelPresetUpdateWithoutAiAnalyseJobsInput>, Prisma.AiModelPresetUncheckedUpdateWithoutAiAnalyseJobsInput>
+}
+
 export type AiModelPresetCreateWithoutAiExternalModelInput = {
   id?: string
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   userPresets?: Prisma.UserPresetCreateNestedManyWithoutPresetInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobCreateNestedManyWithoutPresetInput
 }
 
 export type AiModelPresetUncheckedCreateWithoutAiExternalModelInput = {
@@ -597,12 +671,15 @@ export type AiModelPresetUncheckedCreateWithoutAiExternalModelInput = {
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   userPresets?: Prisma.UserPresetUncheckedCreateNestedManyWithoutPresetInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUncheckedCreateNestedManyWithoutPresetInput
 }
 
 export type AiModelPresetCreateOrConnectWithoutAiExternalModelInput = {
@@ -639,9 +716,11 @@ export type AiModelPresetScalarWhereInput = {
   name?: Prisma.StringFilter<"AiModelPreset"> | string
   description?: Prisma.StringFilter<"AiModelPreset"> | string
   stars?: Prisma.IntFilter<"AiModelPreset"> | number
-  usageTokens?: Prisma.IntFilter<"AiModelPreset"> | number
+  usageCredits?: Prisma.IntFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatFilter<"AiModelPreset"> | number
+  systemPrompt?: Prisma.StringFilter<"AiModelPreset"> | string
+  maxTokens?: Prisma.IntFilter<"AiModelPreset"> | number
   createdAt?: Prisma.DateTimeFilter<"AiModelPreset"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AiModelPreset"> | Date | string
   aiExternalModelId?: Prisma.StringFilter<"AiModelPreset"> | string
@@ -652,12 +731,15 @@ export type AiModelPresetCreateWithoutUserPresetsInput = {
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   aiExternalModel: Prisma.AiExternalModelCreateNestedOneWithoutPresetsInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobCreateNestedManyWithoutPresetInput
 }
 
 export type AiModelPresetUncheckedCreateWithoutUserPresetsInput = {
@@ -665,12 +747,15 @@ export type AiModelPresetUncheckedCreateWithoutUserPresetsInput = {
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   aiExternalModelId: string
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUncheckedCreateNestedManyWithoutPresetInput
 }
 
 export type AiModelPresetCreateOrConnectWithoutUserPresetsInput = {
@@ -694,12 +779,15 @@ export type AiModelPresetUpdateWithoutUserPresetsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   aiExternalModel?: Prisma.AiExternalModelUpdateOneRequiredWithoutPresetsNestedInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUpdateManyWithoutPresetNestedInput
 }
 
 export type AiModelPresetUncheckedUpdateWithoutUserPresetsInput = {
@@ -707,12 +795,95 @@ export type AiModelPresetUncheckedUpdateWithoutUserPresetsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   aiExternalModelId?: Prisma.StringFieldUpdateOperationsInput | string
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUncheckedUpdateManyWithoutPresetNestedInput
+}
+
+export type AiModelPresetCreateWithoutAiAnalyseJobsInput = {
+  id?: string
+  name: string
+  description: string
+  stars?: number
+  usageCredits?: number
+  paidTier?: string | null
+  temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  aiExternalModel: Prisma.AiExternalModelCreateNestedOneWithoutPresetsInput
+  userPresets?: Prisma.UserPresetCreateNestedManyWithoutPresetInput
+}
+
+export type AiModelPresetUncheckedCreateWithoutAiAnalyseJobsInput = {
+  id?: string
+  name: string
+  description: string
+  stars?: number
+  usageCredits?: number
+  paidTier?: string | null
+  temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  aiExternalModelId: string
+  userPresets?: Prisma.UserPresetUncheckedCreateNestedManyWithoutPresetInput
+}
+
+export type AiModelPresetCreateOrConnectWithoutAiAnalyseJobsInput = {
+  where: Prisma.AiModelPresetWhereUniqueInput
+  create: Prisma.XOR<Prisma.AiModelPresetCreateWithoutAiAnalyseJobsInput, Prisma.AiModelPresetUncheckedCreateWithoutAiAnalyseJobsInput>
+}
+
+export type AiModelPresetUpsertWithoutAiAnalyseJobsInput = {
+  update: Prisma.XOR<Prisma.AiModelPresetUpdateWithoutAiAnalyseJobsInput, Prisma.AiModelPresetUncheckedUpdateWithoutAiAnalyseJobsInput>
+  create: Prisma.XOR<Prisma.AiModelPresetCreateWithoutAiAnalyseJobsInput, Prisma.AiModelPresetUncheckedCreateWithoutAiAnalyseJobsInput>
+  where?: Prisma.AiModelPresetWhereInput
+}
+
+export type AiModelPresetUpdateToOneWithWhereWithoutAiAnalyseJobsInput = {
+  where?: Prisma.AiModelPresetWhereInput
+  data: Prisma.XOR<Prisma.AiModelPresetUpdateWithoutAiAnalyseJobsInput, Prisma.AiModelPresetUncheckedUpdateWithoutAiAnalyseJobsInput>
+}
+
+export type AiModelPresetUpdateWithoutAiAnalyseJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  stars?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
+  paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  aiExternalModel?: Prisma.AiExternalModelUpdateOneRequiredWithoutPresetsNestedInput
+  userPresets?: Prisma.UserPresetUpdateManyWithoutPresetNestedInput
+}
+
+export type AiModelPresetUncheckedUpdateWithoutAiAnalyseJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  stars?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
+  paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  aiExternalModelId?: Prisma.StringFieldUpdateOperationsInput | string
+  userPresets?: Prisma.UserPresetUncheckedUpdateManyWithoutPresetNestedInput
 }
 
 export type AiModelPresetCreateManyAiExternalModelInput = {
@@ -720,9 +891,11 @@ export type AiModelPresetCreateManyAiExternalModelInput = {
   name: string
   description: string
   stars?: number
-  usageTokens?: number
+  usageCredits?: number
   paidTier?: string | null
   temperature?: number
+  systemPrompt?: string
+  maxTokens?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -732,12 +905,15 @@ export type AiModelPresetUpdateWithoutAiExternalModelInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPresets?: Prisma.UserPresetUpdateManyWithoutPresetNestedInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUpdateManyWithoutPresetNestedInput
 }
 
 export type AiModelPresetUncheckedUpdateWithoutAiExternalModelInput = {
@@ -745,12 +921,15 @@ export type AiModelPresetUncheckedUpdateWithoutAiExternalModelInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPresets?: Prisma.UserPresetUncheckedUpdateManyWithoutPresetNestedInput
+  aiAnalyseJobs?: Prisma.AiAnalyseJobUncheckedUpdateManyWithoutPresetNestedInput
 }
 
 export type AiModelPresetUncheckedUpdateManyWithoutAiExternalModelInput = {
@@ -758,9 +937,11 @@ export type AiModelPresetUncheckedUpdateManyWithoutAiExternalModelInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   stars?: Prisma.IntFieldUpdateOperationsInput | number
-  usageTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
+  maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -772,10 +953,12 @@ export type AiModelPresetUncheckedUpdateManyWithoutAiExternalModelInput = {
 
 export type AiModelPresetCountOutputType = {
   userPresets: number
+  aiAnalyseJobs: number
 }
 
 export type AiModelPresetCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userPresets?: boolean | AiModelPresetCountOutputTypeCountUserPresetsArgs
+  aiAnalyseJobs?: boolean | AiModelPresetCountOutputTypeCountAiAnalyseJobsArgs
 }
 
 /**
@@ -795,20 +978,30 @@ export type AiModelPresetCountOutputTypeCountUserPresetsArgs<ExtArgs extends run
   where?: Prisma.UserPresetWhereInput
 }
 
+/**
+ * AiModelPresetCountOutputType without action
+ */
+export type AiModelPresetCountOutputTypeCountAiAnalyseJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiAnalyseJobWhereInput
+}
+
 
 export type AiModelPresetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   description?: boolean
   stars?: boolean
-  usageTokens?: boolean
+  usageCredits?: boolean
   paidTier?: boolean
   temperature?: boolean
+  systemPrompt?: boolean
+  maxTokens?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   aiExternalModelId?: boolean
   aiExternalModel?: boolean | Prisma.AiExternalModelDefaultArgs<ExtArgs>
   userPresets?: boolean | Prisma.AiModelPreset$userPresetsArgs<ExtArgs>
+  aiAnalyseJobs?: boolean | Prisma.AiModelPreset$aiAnalyseJobsArgs<ExtArgs>
   _count?: boolean | Prisma.AiModelPresetCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["aiModelPreset"]>
 
@@ -817,9 +1010,11 @@ export type AiModelPresetSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   description?: boolean
   stars?: boolean
-  usageTokens?: boolean
+  usageCredits?: boolean
   paidTier?: boolean
   temperature?: boolean
+  systemPrompt?: boolean
+  maxTokens?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   aiExternalModelId?: boolean
@@ -831,9 +1026,11 @@ export type AiModelPresetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   description?: boolean
   stars?: boolean
-  usageTokens?: boolean
+  usageCredits?: boolean
   paidTier?: boolean
   temperature?: boolean
+  systemPrompt?: boolean
+  maxTokens?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   aiExternalModelId?: boolean
@@ -845,18 +1042,21 @@ export type AiModelPresetSelectScalar = {
   name?: boolean
   description?: boolean
   stars?: boolean
-  usageTokens?: boolean
+  usageCredits?: boolean
   paidTier?: boolean
   temperature?: boolean
+  systemPrompt?: boolean
+  maxTokens?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   aiExternalModelId?: boolean
 }
 
-export type AiModelPresetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "stars" | "usageTokens" | "paidTier" | "temperature" | "createdAt" | "updatedAt" | "aiExternalModelId", ExtArgs["result"]["aiModelPreset"]>
+export type AiModelPresetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "stars" | "usageCredits" | "paidTier" | "temperature" | "systemPrompt" | "maxTokens" | "createdAt" | "updatedAt" | "aiExternalModelId", ExtArgs["result"]["aiModelPreset"]>
 export type AiModelPresetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   aiExternalModel?: boolean | Prisma.AiExternalModelDefaultArgs<ExtArgs>
   userPresets?: boolean | Prisma.AiModelPreset$userPresetsArgs<ExtArgs>
+  aiAnalyseJobs?: boolean | Prisma.AiModelPreset$aiAnalyseJobsArgs<ExtArgs>
   _count?: boolean | Prisma.AiModelPresetCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AiModelPresetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -871,15 +1071,18 @@ export type $AiModelPresetPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     aiExternalModel: Prisma.$AiExternalModelPayload<ExtArgs>
     userPresets: Prisma.$UserPresetPayload<ExtArgs>[]
+    aiAnalyseJobs: Prisma.$AiAnalyseJobPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     description: string
     stars: number
-    usageTokens: number
+    usageCredits: number
     paidTier: string | null
     temperature: number
+    systemPrompt: string
+    maxTokens: number
     createdAt: Date
     updatedAt: Date
     aiExternalModelId: string
@@ -1279,6 +1482,7 @@ export interface Prisma__AiModelPresetClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   aiExternalModel<T extends Prisma.AiExternalModelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiExternalModelDefaultArgs<ExtArgs>>): Prisma.Prisma__AiExternalModelClient<runtime.Types.Result.GetResult<Prisma.$AiExternalModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   userPresets<T extends Prisma.AiModelPreset$userPresetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiModelPreset$userPresetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPresetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiAnalyseJobs<T extends Prisma.AiModelPreset$aiAnalyseJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiModelPreset$aiAnalyseJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiAnalyseJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1312,9 +1516,11 @@ export interface AiModelPresetFieldRefs {
   readonly name: Prisma.FieldRef<"AiModelPreset", 'String'>
   readonly description: Prisma.FieldRef<"AiModelPreset", 'String'>
   readonly stars: Prisma.FieldRef<"AiModelPreset", 'Int'>
-  readonly usageTokens: Prisma.FieldRef<"AiModelPreset", 'Int'>
+  readonly usageCredits: Prisma.FieldRef<"AiModelPreset", 'Int'>
   readonly paidTier: Prisma.FieldRef<"AiModelPreset", 'String'>
   readonly temperature: Prisma.FieldRef<"AiModelPreset", 'Float'>
+  readonly systemPrompt: Prisma.FieldRef<"AiModelPreset", 'String'>
+  readonly maxTokens: Prisma.FieldRef<"AiModelPreset", 'Int'>
   readonly createdAt: Prisma.FieldRef<"AiModelPreset", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AiModelPreset", 'DateTime'>
   readonly aiExternalModelId: Prisma.FieldRef<"AiModelPreset", 'String'>
@@ -1735,6 +1941,30 @@ export type AiModelPreset$userPresetsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.UserPresetScalarFieldEnum | Prisma.UserPresetScalarFieldEnum[]
+}
+
+/**
+ * AiModelPreset.aiAnalyseJobs
+ */
+export type AiModelPreset$aiAnalyseJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiAnalyseJob
+   */
+  select?: Prisma.AiAnalyseJobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiAnalyseJob
+   */
+  omit?: Prisma.AiAnalyseJobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiAnalyseJobInclude<ExtArgs> | null
+  where?: Prisma.AiAnalyseJobWhereInput
+  orderBy?: Prisma.AiAnalyseJobOrderByWithRelationInput | Prisma.AiAnalyseJobOrderByWithRelationInput[]
+  cursor?: Prisma.AiAnalyseJobWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiAnalyseJobScalarFieldEnum | Prisma.AiAnalyseJobScalarFieldEnum[]
 }
 
 /**

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common'
 
 import { QueueModule } from './queue/queue.module'
+import { RedisModule } from './redis/redis.module'
 import { RmqModule } from './rmq/rmq.module'
 
 @Module({
-	imports: [QueueModule, RmqModule]
+	imports: [QueueModule, RmqModule, RedisModule]
 })
 export class InfrastructureModule {}

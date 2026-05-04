@@ -53,7 +53,9 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   AiModelPreset: 'AiModelPreset',
   AiExternalModel: 'AiExternalModel',
-  UserPreset: 'UserPreset'
+  UserPreset: 'UserPreset',
+  CustomerProfile: 'CustomerProfile',
+  AiAnalyseJob: 'AiAnalyseJob'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,9 +79,11 @@ export const AiModelPresetScalarFieldEnum = {
   name: 'name',
   description: 'description',
   stars: 'stars',
-  usageTokens: 'usageTokens',
+  usageCredits: 'usageCredits',
   paidTier: 'paidTier',
   temperature: 'temperature',
+  systemPrompt: 'systemPrompt',
+  maxTokens: 'maxTokens',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   aiExternalModelId: 'aiExternalModelId'
@@ -106,6 +110,45 @@ export const UserPresetScalarFieldEnum = {
 } as const
 
 export type UserPresetScalarFieldEnum = (typeof UserPresetScalarFieldEnum)[keyof typeof UserPresetScalarFieldEnum]
+
+
+export const CustomerProfileScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  yearsOld: 'yearsOld',
+  location: 'location',
+  predicatedPosition: 'predicatedPosition',
+  currentPosition: 'currentPosition',
+  resumeScore: 'resumeScore',
+  summary: 'summary',
+  achivements: 'achivements',
+  level: 'level',
+  expectedSalaryFrom: 'expectedSalaryFrom',
+  expectedSalaryTo: 'expectedSalaryTo',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerProfileScalarFieldEnum = (typeof CustomerProfileScalarFieldEnum)[keyof typeof CustomerProfileScalarFieldEnum]
+
+
+export const AiAnalyseJobScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  totalTokens: 'totalTokens',
+  completionTokens: 'completionTokens',
+  promptTokens: 'promptTokens',
+  spentCredits: 'spentCredits',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  presetId: 'presetId'
+} as const
+
+export type AiAnalyseJobScalarFieldEnum = (typeof AiAnalyseJobScalarFieldEnum)[keyof typeof AiAnalyseJobScalarFieldEnum]
 
 
 export const SortOrder = {

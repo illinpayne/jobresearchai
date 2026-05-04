@@ -7,17 +7,32 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { BoolValue, StringValue } from "./google/protobuf/wrappers";
 
 export const protobufPackage = "aicore.v1";
+
+export enum AnalyseStatus {
+  WAITING = 0,
+  DONE = 1,
+  CANCELLED = 2,
+  UNRECOGNIZED = -1,
+}
 
 export interface AiPreset {
   id: string;
   name: string;
   description: string;
   stars: number;
-  usageTokens: number;
+  usageCredits: number;
   paidTier?: string | undefined;
   temperature: number;
+  systemPrompt: string;
+  maxTokens: number;
+}
+
+export interface AiPresetSimplified {
+  id: string;
+  name: string;
 }
 
 export interface ExternalAi {
@@ -43,6 +58,11 @@ export interface GetPresetsByIdRequest {
   presetId: string;
 }
 
+export interface GetPresetsByAccountRequest {
+  presetId: string;
+  accountId: string;
+}
+
 export interface AssignPresetToUserRequest {
   userId: string;
   presetId: string;
@@ -52,23 +72,100 @@ export interface AssignStatusResponse {
   status: boolean;
 }
 
+export interface CustomerProfile {
+  id?: string | undefined;
+  accountId: string;
+  firstName: string;
+  lastName: string;
+  yearsOld: number;
+  location: string;
+  predicatedPosition: string;
+  currentPosition: string;
+  resumeScore: number;
+  summary: string;
+  achivements: string[];
+  level: string;
+  expectedSalaryFrom: number;
+  expectedSalaryTo: number;
+  tags: string[];
+}
+
+export interface AiAnalyseJobSimplified {
+  id: string;
+  accountId: string;
+  status: AnalyseStatus;
+}
+
+export interface AiAnalyseJob {
+  id: string;
+  accountId: string;
+  totalTokens: number;
+  completionTokens: number;
+  promptTokens: number;
+  spentCredits: number;
+  status: AnalyseStatus;
+  preset: AiPresetSimplified | undefined;
+}
+
+export interface CreateAnalyseJobRequest {
+  id: string;
+  accountId: string;
+  presetId: string;
+  status: AnalyseStatus;
+}
+
+export interface UpdateAnalyseJobRequest {
+  id: string;
+  accountId: string;
+  totalTokens?: number | undefined;
+  completionTokens?: number | undefined;
+  promptTokens?: number | undefined;
+  spentCredits?: number | undefined;
+  status?: AnalyseStatus | undefined;
+}
+
+export interface GetAnalyseJobRequest {
+  id: string;
+  accountId: string;
+}
+
 export const AICORE_V1_PACKAGE_NAME = "aicore.v1";
 
 /** AI Core rpc */
 
 export interface AICoreServiceClient {
+  /** Presets */
+
   getPresets(request: GetPresetsRequest): Observable<AiPresetsResponse>;
 
   assignPresetToUser(request: AssignPresetToUserRequest): Observable<AssignStatusResponse>;
 
   getPresetById(request: GetPresetsByIdRequest): Observable<AiPreset>;
 
-  getLlmByPresetId(request: GetPresetsByIdRequest): Observable<ExtendedAiPreset>;
+  getExtendedPresetById(request: GetPresetsByIdRequest): Observable<ExtendedAiPreset>;
+
+  getExtendedPresetByAccount(request: GetPresetsByAccountRequest): Observable<ExtendedAiPreset>;
+
+  createProfile(request: CustomerProfile): Observable<BoolValue>;
+
+  getProfileById(request: StringValue): Observable<CustomerProfile>;
+
+  /** Jobs */
+
+  createAnalyseJob(request: CreateAnalyseJobRequest): Observable<AiAnalyseJobSimplified>;
+
+  updateAnalyseJob(request: UpdateAnalyseJobRequest): Observable<AiAnalyseJobSimplified>;
+
+  getFullAnalyseJob(request: GetAnalyseJobRequest): Observable<AiAnalyseJob>;
+
+  getSimpleAnalyseJob(request: GetAnalyseJobRequest): Observable<AiAnalyseJobSimplified>;
 }
 
 /** AI Core rpc */
 
 export interface AICoreServiceController {
+  /** Presets */
+
   getPresets(
     request: GetPresetsRequest,
   ): Promise<AiPresetsResponse> | Observable<AiPresetsResponse> | AiPresetsResponse;
@@ -79,14 +176,50 @@ export interface AICoreServiceController {
 
   getPresetById(request: GetPresetsByIdRequest): Promise<AiPreset> | Observable<AiPreset> | AiPreset;
 
-  getLlmByPresetId(
+  getExtendedPresetById(
     request: GetPresetsByIdRequest,
   ): Promise<ExtendedAiPreset> | Observable<ExtendedAiPreset> | ExtendedAiPreset;
+
+  getExtendedPresetByAccount(
+    request: GetPresetsByAccountRequest,
+  ): Promise<ExtendedAiPreset> | Observable<ExtendedAiPreset> | ExtendedAiPreset;
+
+  createProfile(request: CustomerProfile): Promise<BoolValue> | Observable<BoolValue> | BoolValue;
+
+  getProfileById(request: StringValue): Promise<CustomerProfile> | Observable<CustomerProfile> | CustomerProfile;
+
+  /** Jobs */
+
+  createAnalyseJob(
+    request: CreateAnalyseJobRequest,
+  ): Promise<AiAnalyseJobSimplified> | Observable<AiAnalyseJobSimplified> | AiAnalyseJobSimplified;
+
+  updateAnalyseJob(
+    request: UpdateAnalyseJobRequest,
+  ): Promise<AiAnalyseJobSimplified> | Observable<AiAnalyseJobSimplified> | AiAnalyseJobSimplified;
+
+  getFullAnalyseJob(request: GetAnalyseJobRequest): Promise<AiAnalyseJob> | Observable<AiAnalyseJob> | AiAnalyseJob;
+
+  getSimpleAnalyseJob(
+    request: GetAnalyseJobRequest,
+  ): Promise<AiAnalyseJobSimplified> | Observable<AiAnalyseJobSimplified> | AiAnalyseJobSimplified;
 }
 
 export function AICoreServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getPresets", "assignPresetToUser", "getPresetById", "getLlmByPresetId"];
+    const grpcMethods: string[] = [
+      "getPresets",
+      "assignPresetToUser",
+      "getPresetById",
+      "getExtendedPresetById",
+      "getExtendedPresetByAccount",
+      "createProfile",
+      "getProfileById",
+      "createAnalyseJob",
+      "updateAnalyseJob",
+      "getFullAnalyseJob",
+      "getSimpleAnalyseJob",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AICoreService", method)(constructor.prototype[method], method, descriptor);

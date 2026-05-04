@@ -386,7 +386,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   AiModelPreset: 'AiModelPreset',
   AiExternalModel: 'AiExternalModel',
-  UserPreset: 'UserPreset'
+  UserPreset: 'UserPreset',
+  CustomerProfile: 'CustomerProfile',
+  AiAnalyseJob: 'AiAnalyseJob'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -402,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "aiModelPreset" | "aiExternalModel" | "userPreset"
+    modelProps: "aiModelPreset" | "aiExternalModel" | "userPreset" | "customerProfile" | "aiAnalyseJob"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -628,6 +630,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CustomerProfile: {
+      payload: Prisma.$CustomerProfilePayload<ExtArgs>
+      fields: Prisma.CustomerProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CustomerProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CustomerProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.CustomerProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CustomerProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>
+        }
+        findMany: {
+          args: Prisma.CustomerProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>[]
+        }
+        create: {
+          args: Prisma.CustomerProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>
+        }
+        createMany: {
+          args: Prisma.CustomerProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CustomerProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.CustomerProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>
+        }
+        update: {
+          args: Prisma.CustomerProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.CustomerProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CustomerProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CustomerProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.CustomerProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.CustomerProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCustomerProfile>
+        }
+        groupBy: {
+          args: Prisma.CustomerProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CustomerProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    AiAnalyseJob: {
+      payload: Prisma.$AiAnalyseJobPayload<ExtArgs>
+      fields: Prisma.AiAnalyseJobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AiAnalyseJobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AiAnalyseJobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>
+        }
+        findFirst: {
+          args: Prisma.AiAnalyseJobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AiAnalyseJobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>
+        }
+        findMany: {
+          args: Prisma.AiAnalyseJobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>[]
+        }
+        create: {
+          args: Prisma.AiAnalyseJobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>
+        }
+        createMany: {
+          args: Prisma.AiAnalyseJobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AiAnalyseJobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>[]
+        }
+        delete: {
+          args: Prisma.AiAnalyseJobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>
+        }
+        update: {
+          args: Prisma.AiAnalyseJobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>
+        }
+        deleteMany: {
+          args: Prisma.AiAnalyseJobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AiAnalyseJobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AiAnalyseJobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>[]
+        }
+        upsert: {
+          args: Prisma.AiAnalyseJobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiAnalyseJobPayload>
+        }
+        aggregate: {
+          args: Prisma.AiAnalyseJobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAiAnalyseJob>
+        }
+        groupBy: {
+          args: Prisma.AiAnalyseJobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiAnalyseJobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AiAnalyseJobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiAnalyseJobCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -672,9 +822,11 @@ export const AiModelPresetScalarFieldEnum = {
   name: 'name',
   description: 'description',
   stars: 'stars',
-  usageTokens: 'usageTokens',
+  usageCredits: 'usageCredits',
   paidTier: 'paidTier',
   temperature: 'temperature',
+  systemPrompt: 'systemPrompt',
+  maxTokens: 'maxTokens',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   aiExternalModelId: 'aiExternalModelId'
@@ -701,6 +853,45 @@ export const UserPresetScalarFieldEnum = {
 } as const
 
 export type UserPresetScalarFieldEnum = (typeof UserPresetScalarFieldEnum)[keyof typeof UserPresetScalarFieldEnum]
+
+
+export const CustomerProfileScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  yearsOld: 'yearsOld',
+  location: 'location',
+  predicatedPosition: 'predicatedPosition',
+  currentPosition: 'currentPosition',
+  resumeScore: 'resumeScore',
+  summary: 'summary',
+  achivements: 'achivements',
+  level: 'level',
+  expectedSalaryFrom: 'expectedSalaryFrom',
+  expectedSalaryTo: 'expectedSalaryTo',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerProfileScalarFieldEnum = (typeof CustomerProfileScalarFieldEnum)[keyof typeof CustomerProfileScalarFieldEnum]
+
+
+export const AiAnalyseJobScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  totalTokens: 'totalTokens',
+  completionTokens: 'completionTokens',
+  promptTokens: 'promptTokens',
+  spentCredits: 'spentCredits',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  presetId: 'presetId'
+} as const
+
+export type AiAnalyseJobScalarFieldEnum = (typeof AiAnalyseJobScalarFieldEnum)[keyof typeof AiAnalyseJobScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -786,6 +977,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AnalyseStatus'
+ */
+export type EnumAnalyseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalyseStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AnalyseStatus[]'
+ */
+export type ListEnumAnalyseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnalyseStatus[]'>
     
 
 /**
@@ -886,6 +1091,8 @@ export type GlobalOmitConfig = {
   aiModelPreset?: Prisma.AiModelPresetOmit
   aiExternalModel?: Prisma.AiExternalModelOmit
   userPreset?: Prisma.UserPresetOmit
+  customerProfile?: Prisma.CustomerProfileOmit
+  aiAnalyseJob?: Prisma.AiAnalyseJobOmit
 }
 
 /* Types for Logging */

@@ -1,4 +1,4 @@
-import type { AiResumeUploadEvent } from '@jrai/contracts'
+import type { AiResumeUploadEventType } from '@jrai/contracts'
 import { Controller } from '@nestjs/common'
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices'
 
@@ -15,7 +15,7 @@ export class ResumeController {
 
 	@EventPattern('ai.resume.upload')
 	public async Register(
-		@Payload() data: AiResumeUploadEvent,
+		@Payload() data: AiResumeUploadEventType,
 		@Ctx() ctx: RmqContext
 	) {
 		try {

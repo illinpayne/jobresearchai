@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common'
 import {
 	AiExternalModelCreateInput,
 	AiModelPresetCreateInput,
-	AiModelPresetSelect
+	AiModelPresetSelect,
+	UserPresetSelect
 } from '@prisma/generated/models'
 
 import { PrismaService } from '@/infrastructure/prisma/prisma.service'
@@ -14,9 +15,11 @@ export class PresetRepository {
 		name: true,
 		description: true,
 		stars: true,
-		usageTokens: true,
+		usageCredits: true,
 		paidTier: true,
-		temperature: true
+		temperature: true,
+		systemPrompt: true,
+		maxTokens: true
 	} as const
 	public readonly externalModelSelect = {
 		id: true,
@@ -24,6 +27,9 @@ export class PresetRepository {
 	} as const
 	public readonly onlyIds = {
 		id: true
+	} as const
+	public readonly onlyPresetIds = {
+		presetId: true
 	} as const
 	public constructor(private readonly prismaService: PrismaService) {}
 
@@ -34,12 +40,9 @@ export class PresetRepository {
 		return presets
 	}
 
-	public async getOwnedPresets(
-		accountId: string,
-		select?: AiModelPresetSelect
-	) {
+	public async getOwnedPresets(accountId: string, select?: UserPresetSelect) {
 		const presets = await this.prismaService.userPreset.findMany({
-			where: { accountId },
+			where: { accountId: accountId },
 			select
 		})
 		return presets
@@ -64,6 +67,28 @@ export class PresetRepository {
 			}
 		})
 		return preset
+	}
+
+	public async getExtendedPresetByAccount(id: string, accountId: string) {
+		const userPreset = await this.prismaService.userPreset.findUnique({
+			where: {
+				accountId_presetId: {
+					accountId: accountId,
+					presetId: id
+				}
+			},
+			select: {
+				preset: {
+					select: {
+						aiExternalModel: {
+							select: this.externalModelSelect
+						},
+						...this.presetSelect
+					}
+				}
+			}
+		})
+		return userPreset
 	}
 
 	public async addExternalModel(model: AiExternalModelCreateInput) {

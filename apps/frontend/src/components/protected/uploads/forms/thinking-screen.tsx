@@ -4,35 +4,51 @@
 import gsap from 'gsap';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
+import { io, type Socket } from 'socket.io-client';
 import { ROUTES } from '@/constants';
 
 interface ThinkingScreenProps {
   activeJobId: string | null;
   animateEntrance?: boolean;
+  accountId: string | null;
 }
-export const ThinkingScreen = React.memo(function ThinkingScreen({ activeJobId, animateEntrance = false }: ThinkingScreenProps) {
+
+export const ThinkingScreen = React.memo(function ThinkingScreen({ activeJobId, accountId, animateEntrance = false }: ThinkingScreenProps) {
   const thinkingRef = useRef<HTMLDivElement>(null);
-  const [progressStatus, setProgressStatus] = useState('Initializing AI Engine...');
+  const [progressStatus, setProgressStatus] = useState('Connecting to service...');
   const router = useRouter();
 
   useEffect(() => {
-    if (!activeJobId) return;
+    if (!activeJobId || !accountId) return;
 
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 25;
-      if (progress === 25) setProgressStatus('Extracting Document Vectors...');
-      if (progress === 50) setProgressStatus('Running Semantic Analysis...');
-      if (progress === 75) setProgressStatus('Synthesizing Final Output...');
-      if (progress === 100) {
+    const socket: Socket = io('http://localhost:5000/progress', {
+      transports: ['websocket'],
+    });
+
+    socket.on('connect', () => {
+      socket.emit('joinJobRoom', { jobId: activeJobId, accountId });
+    });
+
+    socket.on('progressUpdate', (statusMessage: string) => {
+      if (statusMessage === 'Done') {
         setProgressStatus('Complete!');
-        clearInterval(interval);
-        setTimeout(() => router.push(ROUTES.OVERVIEW.RESUMES), 1000);
-      }
-    }, 2000);
+        socket.disconnect();
 
-    return () => clearInterval(interval);
-  }, [activeJobId]);
+        setTimeout(() => router.push(ROUTES.OVERVIEW.RESUMES), 1000);
+      } else {
+        setProgressStatus(statusMessage);
+      }
+    });
+
+    socket.on('error', (err: { message: string }) => {
+      setProgressStatus(`Malformed request`);
+      router.push(ROUTES.OVERVIEW.RESUMES);
+      socket.disconnect();
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [activeJobId, accountId, router]);
 
   useEffect(() => {
     if (!animateEntrance) return;

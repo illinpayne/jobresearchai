@@ -1,13 +1,23 @@
 syntax = "proto3";
 
 package aicore.v1;
+import "google/protobuf/wrappers.proto";
 
 // AI Core rpc
 service AICoreService {
+	// Presets
 	rpc GetPresets(GetPresetsRequest) returns (AiPresetsResponse);
 	rpc AssignPresetToUser(AssignPresetToUserRequest) returns (AssignStatusResponse);
 	rpc GetPresetById(GetPresetsByIdRequest) returns (AiPreset);
-	rpc GetLLMByPresetId(GetPresetsByIdRequest) returns (ExtendedAiPreset);
+	rpc GetExtendedPresetById(GetPresetsByIdRequest) returns (ExtendedAiPreset);
+	rpc GetExtendedPresetByAccount(GetPresetsByAccountRequest) returns (ExtendedAiPreset);
+	rpc CreateProfile(CustomerProfile) returns (google.protobuf.BoolValue);
+	rpc GetProfileById(google.protobuf.StringValue) returns (CustomerProfile);
+	// Jobs
+	rpc CreateAnalyseJob(CreateAnalyseJobRequest) returns (AiAnalyseJobSimplified);
+	rpc UpdateAnalyseJob(UpdateAnalyseJobRequest) returns (AiAnalyseJobSimplified);
+	rpc GetFullAnalyseJob(GetAnalyseJobRequest) returns (AiAnalyseJob);
+	rpc GetSimpleAnalyseJob(GetAnalyseJobRequest) returns (AiAnalyseJobSimplified);
 }
 
 message AiPreset {
@@ -15,9 +25,16 @@ message AiPreset {
 	string name = 2;
 	string description = 3;
 	int32 stars = 4;
-	int32 usage_tokens = 5;
+	int32 usage_credits = 5;
 	optional string paid_tier = 6;
 	float temperature = 7;
+	string system_prompt = 8;
+	int32 max_tokens = 9;
+}
+
+message AiPresetSimplified {
+	string id = 1;
+	string name = 2;
 }
 
 message ExternalAi {
@@ -43,6 +60,11 @@ message GetPresetsByIdRequest {
 	string preset_id = 1;
 }
 
+message GetPresetsByAccountRequest {
+	string preset_id = 1;
+	string account_id = 2;
+}
+
 message AssignPresetToUserRequest {
   string user_id = 1;
   string preset_id = 2;
@@ -51,3 +73,71 @@ message AssignPresetToUserRequest {
 message AssignStatusResponse {
   bool status = 1;
 }
+
+message CustomerProfile {
+  optional string id = 1;
+  string account_id = 2;
+
+  string first_name = 3;
+  string last_name = 4;
+  int32 years_old = 5;
+  string location = 6;
+  string predicated_position = 7;
+  string current_position = 8;
+
+  int32 resume_score = 9;
+  string summary = 10;
+  repeated string achivements = 11;
+
+  string level = 12;
+  int32 expected_salary_from = 13;
+  int32 expected_salary_to = 14;
+
+  repeated string tags = 15;
+}
+
+enum AnalyseStatus {
+	WAITING = 0;
+	DONE = 1;
+	CANCELLED = 2;
+}
+
+message AiAnalyseJobSimplified {
+	string id = 1;
+	string account_id = 2;
+	AnalyseStatus status = 3;
+}
+
+message AiAnalyseJob {
+	string id = 1;
+	string account_id = 2;
+	int32 total_tokens = 4;
+	int32 completion_tokens = 5;
+	int32 prompt_tokens = 6;
+	int32 spent_credits = 7;
+	AnalyseStatus status = 8;
+	AiPresetSimplified preset = 9;
+}
+
+message CreateAnalyseJobRequest {
+	string id = 1;
+	string account_id = 2;
+	string preset_id = 3;
+	AnalyseStatus status = 4;
+}
+
+message UpdateAnalyseJobRequest {
+	string id = 1;
+	string account_id = 2;
+	optional int32 total_tokens = 4;
+	optional int32 completion_tokens = 5;
+	optional int32 prompt_tokens = 6;
+	optional int32 spent_credits = 7;
+	optional AnalyseStatus status = 8;
+}
+
+message GetAnalyseJobRequest {
+	string id = 1;
+	string account_id = 2;
+}
+

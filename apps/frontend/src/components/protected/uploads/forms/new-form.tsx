@@ -27,7 +27,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
   const searchParams = useSearchParams();
   const { onOpen } = useBillingDialog();
   const aiStorage = useAIStore();
-  const { mutateAsync: uploadResume, isPending } = useUploadResume();
+  const { mutateAsync: uploadResume, isPending, isSuccess } = useUploadResume();
 
   const activeJobId = searchParams.get('jobId');
   const [isThinking, setIsThinking] = useState(!!activeJobId);
@@ -153,7 +153,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
                   {/* TODO: Make not Analysing..., run animation immediately, then just show error or realtime thinking */}
                   <button
                     type='submit'
-                    disabled={!formState.isValid}
+                    disabled={!formState.isValid || isSuccess}
                     className={cn(
                       'cursor-pointer disabled:cursor-default disabled:opacity-50 transition-opacity flex items-center p-0',
                       buttonVariants({ variant: 'outline' }),
@@ -161,7 +161,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
                         ? 'border-primary text-primary hover:text-primary hover:bg-primary/10'
                         : 'border-neutral-500 text-neutral-600',
                     )}>
-                    <span>{isPending ? 'Analysing...' : 'Analyse'}</span>
+                    <span>{isPending ? 'Analysing...' : isSuccess ? 'Pushed' : 'Analyse'}</span>
                   </button>
                 </div>
               </div>
@@ -179,6 +179,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
       {isThinking && (
         <ThinkingScreen
           activeJobId={activeJobId}
+          accountId={'UB3j5H8IBo4E9eEZt1lm4'}
           animateEntrance={!initialJobId}
         />
       )}

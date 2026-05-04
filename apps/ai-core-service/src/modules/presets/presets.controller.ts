@@ -5,6 +5,7 @@ import {
 	type AssignPresetToUserRequest,
 	AssignStatusResponse,
 	ExtendedAiPreset,
+	type GetPresetsByAccountRequest,
 	type GetPresetsByIdRequest,
 	type GetPresetsRequest
 } from '@jrai/contracts/gen/aicore'
@@ -31,6 +32,7 @@ export class PresetsController {
 		return await this.presetsService.assignPresetToUser(request)
 	}
 
+	// Not used anywhere
 	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetPresetById')
 	public async getAiPresetById(
 		request: GetPresetsByIdRequest
@@ -38,10 +40,18 @@ export class PresetsController {
 		return this.presetsService.getPresetById(request)
 	}
 
-	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetLLMByPresetId')
+	// Not used anywhere
+	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetExtendedPresetById')
 	public async getAiLLMByPresetId(
 		request: GetPresetsByIdRequest
 	): Promise<ExtendedAiPreset> {
-		return this.presetsService.getLLMByPresetId(request)
+		return this.presetsService.getExtendedPresetById(request)
+	}
+
+	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetExtendedPresetByAccount')
+	public async getAiLLMByPresetAndAccountId(
+		request: GetPresetsByAccountRequest
+	): Promise<ExtendedAiPreset> {
+		return this.presetsService.getExtendedPresetByAccount(request)
 	}
 }

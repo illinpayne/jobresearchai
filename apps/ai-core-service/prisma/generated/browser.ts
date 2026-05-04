@@ -32,3 +32,13 @@ export type AiExternalModel = Prisma.AiExternalModelModel
  * 
  */
 export type UserPreset = Prisma.UserPresetModel
+/**
+ * Model CustomerProfile
+ * 
+ */
+export type CustomerProfile = Prisma.CustomerProfileModel
+/**
+ * Model AiAnalyseJob
+ * 
+ */
+export type AiAnalyseJob = Prisma.AiAnalyseJobModel

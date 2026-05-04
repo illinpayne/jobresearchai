@@ -5,6 +5,7 @@ import {
 	AssignStatusResponse,
 	ExtendedAiPreset,
 	ExternalAi,
+	GetPresetsByAccountRequest,
 	GetPresetsByIdRequest,
 	GetPresetsRequest
 } from '@jrai/contracts/gen/aicore'
@@ -24,7 +25,7 @@ export class PresetsService {
 			const presets = await this.presetRepository.getAllPresets()
 			const ownedIds = await this.presetRepository.getOwnedPresets(
 				request.userId,
-				this.presetRepository.onlyIds
+				this.presetRepository.onlyPresetIds
 			)
 			return {
 				presets: presets as AiPreset[],
@@ -39,6 +40,12 @@ export class PresetsService {
 		request: AssignPresetToUserRequest
 	): Promise<AssignStatusResponse> {
 		const { userId, presetId } = request
+
+		const findPreset = await this.presetRepository.getPresetById(presetId)
+
+		if (!findPreset) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Preset not found')
+		}
 
 		try {
 			await this.presetRepository.assignPresetToUser(userId, presetId)
@@ -70,7 +77,7 @@ export class PresetsService {
 		}
 	}
 
-	public async getLLMByPresetId(
+	public async getExtendedPresetById(
 		request: GetPresetsByIdRequest
 	): Promise<ExtendedAiPreset> {
 		try {
@@ -82,6 +89,35 @@ export class PresetsService {
 				throw new GrpcException(RpcStatus.NOT_FOUND, 'Preset not found')
 			}
 			const { aiExternalModel, ...preset } = extendedPreset
+
+			return {
+				preset: preset as AiPreset,
+				aiExternalModel: aiExternalModel as ExternalAi
+			} as ExtendedAiPreset
+		} catch (error) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Presets not found')
+		}
+	}
+
+	public async getExtendedPresetByAccount(
+		request: GetPresetsByAccountRequest
+	): Promise<ExtendedAiPreset> {
+		try {
+			const userPreset =
+				await this.presetRepository.getExtendedPresetByAccount(
+					request.presetId,
+					request.accountId
+				)
+			if (!userPreset) {
+				throw new GrpcException(
+					RpcStatus.NOT_FOUND,
+					`You don't have this preset`
+				)
+			}
+			if (!userPreset.preset) {
+				throw new GrpcException(RpcStatus.NOT_FOUND, 'Preset not found')
+			}
+			const { aiExternalModel, ...preset } = userPreset.preset
 
 			return {
 				preset: preset as AiPreset,

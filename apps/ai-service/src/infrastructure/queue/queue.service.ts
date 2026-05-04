@@ -1,3 +1,4 @@
+import { AiProgressExchangeEventType } from '@jrai/contracts'
 import { Inject, Injectable } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
 
@@ -9,7 +10,7 @@ export class QueueService {
 		@Inject(QueueClientName) private readonly client: ClientProxy
 	) {}
 
-	public sendAnalysisProgress(message: string) {
-		return this.client.emit('ai.exchange-resume.progress', message)
+	public sendAnalysisProgress(eventPayload: AiProgressExchangeEventType) {
+		return this.client.emit('ai.exchange-resume.progress', eventPayload)
 	}
 }

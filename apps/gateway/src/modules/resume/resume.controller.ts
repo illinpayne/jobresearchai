@@ -1,3 +1,4 @@
+import { AiResumeUploadEventType } from '@jrai/contracts'
 import { ExtendedAiPreset } from '@jrai/contracts/gen/aicore'
 import {
 	BadGatewayException,
@@ -34,6 +35,8 @@ import {
 	WORD_PARSER
 } from '@/infrastructure/parser/parser.inject-keys'
 import { QueueService } from '@/infrastructure/queue/queue.service'
+import { RedisService } from '@/infrastructure/redis/redis.service'
+import { jobNameCacheKey } from '@/shared/websockets'
 import { TextCleaner } from '@/utils/text-cleaner.util'
 
 import { AicoreClientGrpc } from '../ai/aicore.grpc'
@@ -46,12 +49,13 @@ export class ResumeController {
 		@Inject(PDF_PARSER) private readonly pdfParser: ResumeParser,
 		@Inject(WORD_PARSER) private readonly wordParser: ResumeParser,
 		private readonly aiClient: AicoreClientGrpc,
-		private readonly queueService: QueueService
+		private readonly queueService: QueueService,
+		private readonly redisService: RedisService
 	) {}
 
 	@ApiOperation({
 		summary: 'Upload resume for analyse',
-		description: 'Provides analysed resume to find jobs'
+		description: 'Provides analysed resume to find jobsss'
 	})
 	@ApiOkResponse({
 		description: 'Returns metadata about resume',
@@ -79,7 +83,7 @@ export class ResumeController {
 	@Post('upload')
 	@HttpCode(HttpStatus.CREATED)
 	public async uploadResume(
-		@CurrentUser() user: any,
+		@CurrentUser('id') accountId: string,
 		@UploadedFile(
 			new ParseFilePipe({
 				validators: [
@@ -111,9 +115,10 @@ export class ResumeController {
 				extractedText = await this.wordParser.parse(file.buffer)
 			}
 			const extendedPreset: ExtendedAiPreset = await this.aiClient.call(
-				'getLlmByPresetId',
+				'getExtendedPresetByAccount',
 				{
-					presetId: dto.presetId
+					presetId: dto.presetId,
+					accountId
 				}
 			)
 			if (!extendedPreset.preset || !extendedPreset.aiExternalModel) {
@@ -121,11 +126,27 @@ export class ResumeController {
 					'Invalid preset or LLM configuration'
 				)
 			}
+
+			await this.redisService.set(
+				`${jobNameCacheKey}:${jobId}`,
+				accountId,
+				'EX',
+				3600
+			)
 			await this.queueService.sendResumeToProcess({
-				extractedText,
-				temperature: extendedPreset.preset.temperature,
-				llm: extendedPreset.aiExternalModel.name
-			})
+				preset: {
+					presetId: extendedPreset.preset.id,
+					temperature: extendedPreset.preset.temperature,
+					maxTokens: extendedPreset.preset.maxTokens,
+					systemPrompt: extendedPreset.preset.systemPrompt,
+					usageCredits: extendedPreset.preset.usageCredits,
+					llmName: extendedPreset.aiExternalModel.name,
+					paidTier: extendedPreset.preset.paidTier
+				},
+				jobId,
+				accountId,
+				extractedText
+			} as AiResumeUploadEventType)
 
 			return jobId
 		} catch (error: any) {

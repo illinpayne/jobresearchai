@@ -11,4 +11,6 @@
 export type * from './models/AiModelPreset.js'
 export type * from './models/AiExternalModel.js'
 export type * from './models/UserPreset.js'
+export type * from './models/CustomerProfile.js'
+export type * from './models/AiAnalyseJob.js'
 export type * from './commonInputTypes.js'

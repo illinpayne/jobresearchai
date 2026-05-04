@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
+import 'reflect-metadata'
 
 import { AppModule } from './app.module'
 import { AllConfigs } from './config/interfaces'

@@ -8,14 +8,25 @@ datasource db {
   provider = "postgresql"
 }
 
+enum AnalyseStatus {
+  WAITING
+  DONE
+  CANCELLED
+
+  @@map("analyse_statuses")
+}
+
 model AiModelPreset {
-  id          String  @id @default(nanoid())
-  name        String  @unique
-  description String
-  stars       Int     @default(1)
-  usageTokens Int     @default(10) @map("usage_tokens")
-  paidTier    String? @map("paid_tier")
-  temperature Float   @default(0)
+  id           String  @id @default(nanoid())
+  name         String  @unique
+  description  String
+  stars        Int     @default(1)
+  usageCredits Int     @default(10) @map("usage_credits")
+  paidTier     String? @default("Free") @map("paid_tier")
+
+  temperature  Float  @default(0)
+  systemPrompt String @default("") @db.Text
+  maxTokens    Int    @default(0) @map("max_tokens")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -23,6 +34,7 @@ model AiModelPreset {
   aiExternalModel   AiExternalModel @relation(fields: [aiExternalModelId], references: [id])
   aiExternalModelId String          @map("ai_external_model_id")
   userPresets       UserPreset[]
+  aiAnalyseJobs     AiAnalyseJob[]
 
   @@map("ai_model_presets")
 }
@@ -50,4 +62,55 @@ model UserPreset {
 
   @@id([accountId, presetId])
   @@map("user_presets")
+}
+
+model CustomerProfile {
+  id        String @id @default(nanoid())
+  accountId String @map("account_id")
+
+  firstName          String? @map("first_name")
+  lastName           String? @map("last_name")
+  yearsOld           Int?    @map("years_old")
+  location           String? @default("Not specified")
+  predicatedPosition String? @map("predicated_position")
+  currentPosition    String? @map("current_position")
+
+  resumeScore Int?    @map("resume_score")
+  summary     String? @db.Text
+
+  // Формат: "проф досвід=5 років;Сертифікація=диплом бакалавра;"
+  achivements String[] @default([])
+
+  level              String? // intern, junior, middle, senior
+  expectedSalaryFrom Int?    @default(0) @map("expected_salary_from")
+  expectedSalaryTo   Int?    @default(0) @map("expected_salary_to")
+
+  tags String[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([tags], type: Gin)
+  @@index([currentPosition])
+  @@map("customer_profiles")
+}
+
+model AiAnalyseJob {
+  id        String @id @default(nanoid())
+  accountId String @map("account_id")
+
+  totalTokens      Int @default(0) @map("total_tokens")
+  completionTokens Int @default(0) @map("completion_tokens")
+  promptTokens     Int @default(0) @map("prompt_tokens")
+  spentCredits     Int @default(0) @map("spent_credits")
+
+  status AnalyseStatus @default(WAITING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  preset   AiModelPreset @relation(fields: [presetId], references: [id])
+  presetId String        @map("preset_id")
+
+  @@map("ai_analyse_job")
 }
