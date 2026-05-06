@@ -13,6 +13,7 @@ import type {
 
 import type {
   AccountControllerChangeProfileAvatarV1Body,
+  AccountProfilesResponse,
   AccountResponse,
   AiPresetsResponse,
   AssignPresetResponse,
@@ -28,6 +29,7 @@ import type {
   ResumeControllerUploadResumeV1Body,
   SendOtpRegisterDto,
   SendOtpResponse,
+  SimplifiedAnalyseJobWithPresetResponse,
   VerifyOTPRegister
 } from './';
 
@@ -214,14 +216,27 @@ if(accountControllerChangeProfileAvatarV1Body.file !== undefined) {
  */
 export const resumeControllerUploadResumeV1 = (
     resumeControllerUploadResumeV1Body: ResumeControllerUploadResumeV1Body, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {const formData = new FormData();
+ ): Promise<AxiosResponse<string>> => {const formData = new FormData();
 if(resumeControllerUploadResumeV1Body.file !== undefined) {
  formData.append(`file`, resumeControllerUploadResumeV1Body.file);
  }
 
     return axios.post(
       `/v1/resume/upload`,
-      formData,options
+      formData,{
+    ...options,}
+    );
+  }
+
+/**
+ * Provides analysed resumes of user
+ * @summary Get account analysed profiles
+ */
+export const resumeControllerGetProfilesV1 = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<AccountProfilesResponse>> => {
+    return axios.get(
+      `/v1/resume/profiles`,options
     );
   }
 
@@ -250,6 +265,18 @@ export const aiControllerGetModelToUserV1 = (
     );
   }
 
+/**
+ * Gets all jobs in progress
+ * @summary Gets jobs in progress
+ */
+export const aiControllerGetJobsInProgressV1 = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<SimplifiedAnalyseJobWithPresetResponse>> => {
+    return axios.get(
+      `/v1/ai/jobs-in-progress`,options
+    );
+  }
+
 export type AuthControllerSendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>
 export type AuthControllerResendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>
 export type AuthControllerVerifyRegisterOTPV1Result = AxiosResponse<AuthResponse>
@@ -264,6 +291,8 @@ export type AuthControllerChangeEmailV1Result = AxiosResponse<SendOtpResponse>
 export type AccountControllerGetMeV1Result = AxiosResponse<AccountResponse>
 export type AccountControllerUpdatePersonalDataV1Result = AxiosResponse<AccountResponse>
 export type AccountControllerChangeProfileAvatarV1Result = AxiosResponse<AccountResponse>
-export type ResumeControllerUploadResumeV1Result = AxiosResponse<void>
+export type ResumeControllerUploadResumeV1Result = AxiosResponse<string>
+export type ResumeControllerGetProfilesV1Result = AxiosResponse<AccountProfilesResponse>
 export type AiControllerGetModelListV1Result = AxiosResponse<AiPresetsResponse>
 export type AiControllerGetModelToUserV1Result = AxiosResponse<AssignPresetResponse>
+export type AiControllerGetJobsInProgressV1Result = AxiosResponse<SimplifiedAnalyseJobWithPresetResponse>

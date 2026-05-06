@@ -1,10 +1,17 @@
+export enum EventStatusCode {
+  WAITING = 200,
+  DONE = 300,
+  INQUEUE = 100,
+  CANCELLED = 400,
+}
+
 export interface AiProgressExchangeEventType {
   jobId: string;
-  accountId: string;
-  statusMessage: string;
+  lastMessage: string;
+  status: EventStatusCode;
 }
 
 export interface AiJoinRoomEventType {
   jobId: string;
-  accountId: string;
+  accountEmail: string;
 }

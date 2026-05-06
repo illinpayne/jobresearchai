@@ -56,6 +56,7 @@ export type CustomerProfileMinAggregateOutputType = {
   expectedSalaryTo: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  jobId: string | null
 }
 
 export type CustomerProfileMaxAggregateOutputType = {
@@ -74,6 +75,7 @@ export type CustomerProfileMaxAggregateOutputType = {
   expectedSalaryTo: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  jobId: string | null
 }
 
 export type CustomerProfileCountAggregateOutputType = {
@@ -94,6 +96,7 @@ export type CustomerProfileCountAggregateOutputType = {
   tags: number
   createdAt: number
   updatedAt: number
+  jobId: number
   _all: number
 }
 
@@ -128,6 +131,7 @@ export type CustomerProfileMinAggregateInputType = {
   expectedSalaryTo?: true
   createdAt?: true
   updatedAt?: true
+  jobId?: true
 }
 
 export type CustomerProfileMaxAggregateInputType = {
@@ -146,6 +150,7 @@ export type CustomerProfileMaxAggregateInputType = {
   expectedSalaryTo?: true
   createdAt?: true
   updatedAt?: true
+  jobId?: true
 }
 
 export type CustomerProfileCountAggregateInputType = {
@@ -166,6 +171,7 @@ export type CustomerProfileCountAggregateInputType = {
   tags?: true
   createdAt?: true
   updatedAt?: true
+  jobId?: true
   _all?: true
 }
 
@@ -273,6 +279,7 @@ export type CustomerProfileGroupByOutputType = {
   tags: string[]
   createdAt: Date
   updatedAt: Date
+  jobId: string | null
   _count: CustomerProfileCountAggregateOutputType | null
   _avg: CustomerProfileAvgAggregateOutputType | null
   _sum: CustomerProfileSumAggregateOutputType | null
@@ -316,6 +323,8 @@ export type CustomerProfileWhereInput = {
   tags?: Prisma.StringNullableListFilter<"CustomerProfile">
   createdAt?: Prisma.DateTimeFilter<"CustomerProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CustomerProfile"> | Date | string
+  jobId?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  job?: Prisma.XOR<Prisma.AiAnalyseJobNullableScalarRelationFilter, Prisma.AiAnalyseJobWhereInput> | null
 }
 
 export type CustomerProfileOrderByWithRelationInput = {
@@ -336,6 +345,8 @@ export type CustomerProfileOrderByWithRelationInput = {
   tags?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  jobId?: Prisma.SortOrderInput | Prisma.SortOrder
+  job?: Prisma.AiAnalyseJobOrderByWithRelationInput
 }
 
 export type CustomerProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -359,6 +370,8 @@ export type CustomerProfileWhereUniqueInput = Prisma.AtLeast<{
   tags?: Prisma.StringNullableListFilter<"CustomerProfile">
   createdAt?: Prisma.DateTimeFilter<"CustomerProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CustomerProfile"> | Date | string
+  jobId?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  job?: Prisma.XOR<Prisma.AiAnalyseJobNullableScalarRelationFilter, Prisma.AiAnalyseJobWhereInput> | null
 }, "id">
 
 export type CustomerProfileOrderByWithAggregationInput = {
@@ -379,6 +392,7 @@ export type CustomerProfileOrderByWithAggregationInput = {
   tags?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  jobId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CustomerProfileCountOrderByAggregateInput
   _avg?: Prisma.CustomerProfileAvgOrderByAggregateInput
   _max?: Prisma.CustomerProfileMaxOrderByAggregateInput
@@ -407,6 +421,7 @@ export type CustomerProfileScalarWhereWithAggregatesInput = {
   tags?: Prisma.StringNullableListFilter<"CustomerProfile">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CustomerProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CustomerProfile"> | Date | string
+  jobId?: Prisma.StringNullableWithAggregatesFilter<"CustomerProfile"> | string | null
 }
 
 export type CustomerProfileCreateInput = {
@@ -427,6 +442,7 @@ export type CustomerProfileCreateInput = {
   tags?: Prisma.CustomerProfileCreatetagsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  job?: Prisma.AiAnalyseJobCreateNestedOneWithoutCustomerProfilesInput
 }
 
 export type CustomerProfileUncheckedCreateInput = {
@@ -447,6 +463,7 @@ export type CustomerProfileUncheckedCreateInput = {
   tags?: Prisma.CustomerProfileCreatetagsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  jobId?: string | null
 }
 
 export type CustomerProfileUpdateInput = {
@@ -467,6 +484,7 @@ export type CustomerProfileUpdateInput = {
   tags?: Prisma.CustomerProfileUpdatetagsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  job?: Prisma.AiAnalyseJobUpdateOneWithoutCustomerProfilesNestedInput
 }
 
 export type CustomerProfileUncheckedUpdateInput = {
@@ -487,6 +505,7 @@ export type CustomerProfileUncheckedUpdateInput = {
   tags?: Prisma.CustomerProfileUpdatetagsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CustomerProfileCreateManyInput = {
@@ -507,6 +526,7 @@ export type CustomerProfileCreateManyInput = {
   tags?: Prisma.CustomerProfileCreatetagsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  jobId?: string | null
 }
 
 export type CustomerProfileUpdateManyMutationInput = {
@@ -547,6 +567,7 @@ export type CustomerProfileUncheckedUpdateManyInput = {
   tags?: Prisma.CustomerProfileUpdatetagsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -575,6 +596,7 @@ export type CustomerProfileCountOrderByAggregateInput = {
   tags?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  jobId?: Prisma.SortOrder
 }
 
 export type CustomerProfileAvgOrderByAggregateInput = {
@@ -600,6 +622,7 @@ export type CustomerProfileMaxOrderByAggregateInput = {
   expectedSalaryTo?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  jobId?: Prisma.SortOrder
 }
 
 export type CustomerProfileMinOrderByAggregateInput = {
@@ -618,6 +641,7 @@ export type CustomerProfileMinOrderByAggregateInput = {
   expectedSalaryTo?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  jobId?: Prisma.SortOrder
 }
 
 export type CustomerProfileSumOrderByAggregateInput = {
@@ -625,6 +649,16 @@ export type CustomerProfileSumOrderByAggregateInput = {
   resumeScore?: Prisma.SortOrder
   expectedSalaryFrom?: Prisma.SortOrder
   expectedSalaryTo?: Prisma.SortOrder
+}
+
+export type CustomerProfileListRelationFilter = {
+  every?: Prisma.CustomerProfileWhereInput
+  some?: Prisma.CustomerProfileWhereInput
+  none?: Prisma.CustomerProfileWhereInput
+}
+
+export type CustomerProfileOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type CustomerProfileCreateachivementsInput = {
@@ -653,6 +687,218 @@ export type CustomerProfileUpdatetagsInput = {
   push?: string | string[]
 }
 
+export type CustomerProfileCreateNestedManyWithoutJobInput = {
+  create?: Prisma.XOR<Prisma.CustomerProfileCreateWithoutJobInput, Prisma.CustomerProfileUncheckedCreateWithoutJobInput> | Prisma.CustomerProfileCreateWithoutJobInput[] | Prisma.CustomerProfileUncheckedCreateWithoutJobInput[]
+  connectOrCreate?: Prisma.CustomerProfileCreateOrConnectWithoutJobInput | Prisma.CustomerProfileCreateOrConnectWithoutJobInput[]
+  createMany?: Prisma.CustomerProfileCreateManyJobInputEnvelope
+  connect?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+}
+
+export type CustomerProfileUncheckedCreateNestedManyWithoutJobInput = {
+  create?: Prisma.XOR<Prisma.CustomerProfileCreateWithoutJobInput, Prisma.CustomerProfileUncheckedCreateWithoutJobInput> | Prisma.CustomerProfileCreateWithoutJobInput[] | Prisma.CustomerProfileUncheckedCreateWithoutJobInput[]
+  connectOrCreate?: Prisma.CustomerProfileCreateOrConnectWithoutJobInput | Prisma.CustomerProfileCreateOrConnectWithoutJobInput[]
+  createMany?: Prisma.CustomerProfileCreateManyJobInputEnvelope
+  connect?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+}
+
+export type CustomerProfileUpdateManyWithoutJobNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerProfileCreateWithoutJobInput, Prisma.CustomerProfileUncheckedCreateWithoutJobInput> | Prisma.CustomerProfileCreateWithoutJobInput[] | Prisma.CustomerProfileUncheckedCreateWithoutJobInput[]
+  connectOrCreate?: Prisma.CustomerProfileCreateOrConnectWithoutJobInput | Prisma.CustomerProfileCreateOrConnectWithoutJobInput[]
+  upsert?: Prisma.CustomerProfileUpsertWithWhereUniqueWithoutJobInput | Prisma.CustomerProfileUpsertWithWhereUniqueWithoutJobInput[]
+  createMany?: Prisma.CustomerProfileCreateManyJobInputEnvelope
+  set?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  disconnect?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  delete?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  connect?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  update?: Prisma.CustomerProfileUpdateWithWhereUniqueWithoutJobInput | Prisma.CustomerProfileUpdateWithWhereUniqueWithoutJobInput[]
+  updateMany?: Prisma.CustomerProfileUpdateManyWithWhereWithoutJobInput | Prisma.CustomerProfileUpdateManyWithWhereWithoutJobInput[]
+  deleteMany?: Prisma.CustomerProfileScalarWhereInput | Prisma.CustomerProfileScalarWhereInput[]
+}
+
+export type CustomerProfileUncheckedUpdateManyWithoutJobNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerProfileCreateWithoutJobInput, Prisma.CustomerProfileUncheckedCreateWithoutJobInput> | Prisma.CustomerProfileCreateWithoutJobInput[] | Prisma.CustomerProfileUncheckedCreateWithoutJobInput[]
+  connectOrCreate?: Prisma.CustomerProfileCreateOrConnectWithoutJobInput | Prisma.CustomerProfileCreateOrConnectWithoutJobInput[]
+  upsert?: Prisma.CustomerProfileUpsertWithWhereUniqueWithoutJobInput | Prisma.CustomerProfileUpsertWithWhereUniqueWithoutJobInput[]
+  createMany?: Prisma.CustomerProfileCreateManyJobInputEnvelope
+  set?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  disconnect?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  delete?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  connect?: Prisma.CustomerProfileWhereUniqueInput | Prisma.CustomerProfileWhereUniqueInput[]
+  update?: Prisma.CustomerProfileUpdateWithWhereUniqueWithoutJobInput | Prisma.CustomerProfileUpdateWithWhereUniqueWithoutJobInput[]
+  updateMany?: Prisma.CustomerProfileUpdateManyWithWhereWithoutJobInput | Prisma.CustomerProfileUpdateManyWithWhereWithoutJobInput[]
+  deleteMany?: Prisma.CustomerProfileScalarWhereInput | Prisma.CustomerProfileScalarWhereInput[]
+}
+
+export type CustomerProfileCreateWithoutJobInput = {
+  id?: string
+  accountId: string
+  firstName?: string | null
+  lastName?: string | null
+  yearsOld?: number | null
+  location?: string | null
+  predicatedPosition?: string | null
+  currentPosition?: string | null
+  resumeScore?: number | null
+  summary?: string | null
+  achivements?: Prisma.CustomerProfileCreateachivementsInput | string[]
+  level?: string | null
+  expectedSalaryFrom?: number | null
+  expectedSalaryTo?: number | null
+  tags?: Prisma.CustomerProfileCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CustomerProfileUncheckedCreateWithoutJobInput = {
+  id?: string
+  accountId: string
+  firstName?: string | null
+  lastName?: string | null
+  yearsOld?: number | null
+  location?: string | null
+  predicatedPosition?: string | null
+  currentPosition?: string | null
+  resumeScore?: number | null
+  summary?: string | null
+  achivements?: Prisma.CustomerProfileCreateachivementsInput | string[]
+  level?: string | null
+  expectedSalaryFrom?: number | null
+  expectedSalaryTo?: number | null
+  tags?: Prisma.CustomerProfileCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CustomerProfileCreateOrConnectWithoutJobInput = {
+  where: Prisma.CustomerProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.CustomerProfileCreateWithoutJobInput, Prisma.CustomerProfileUncheckedCreateWithoutJobInput>
+}
+
+export type CustomerProfileCreateManyJobInputEnvelope = {
+  data: Prisma.CustomerProfileCreateManyJobInput | Prisma.CustomerProfileCreateManyJobInput[]
+  skipDuplicates?: boolean
+}
+
+export type CustomerProfileUpsertWithWhereUniqueWithoutJobInput = {
+  where: Prisma.CustomerProfileWhereUniqueInput
+  update: Prisma.XOR<Prisma.CustomerProfileUpdateWithoutJobInput, Prisma.CustomerProfileUncheckedUpdateWithoutJobInput>
+  create: Prisma.XOR<Prisma.CustomerProfileCreateWithoutJobInput, Prisma.CustomerProfileUncheckedCreateWithoutJobInput>
+}
+
+export type CustomerProfileUpdateWithWhereUniqueWithoutJobInput = {
+  where: Prisma.CustomerProfileWhereUniqueInput
+  data: Prisma.XOR<Prisma.CustomerProfileUpdateWithoutJobInput, Prisma.CustomerProfileUncheckedUpdateWithoutJobInput>
+}
+
+export type CustomerProfileUpdateManyWithWhereWithoutJobInput = {
+  where: Prisma.CustomerProfileScalarWhereInput
+  data: Prisma.XOR<Prisma.CustomerProfileUpdateManyMutationInput, Prisma.CustomerProfileUncheckedUpdateManyWithoutJobInput>
+}
+
+export type CustomerProfileScalarWhereInput = {
+  AND?: Prisma.CustomerProfileScalarWhereInput | Prisma.CustomerProfileScalarWhereInput[]
+  OR?: Prisma.CustomerProfileScalarWhereInput[]
+  NOT?: Prisma.CustomerProfileScalarWhereInput | Prisma.CustomerProfileScalarWhereInput[]
+  id?: Prisma.StringFilter<"CustomerProfile"> | string
+  accountId?: Prisma.StringFilter<"CustomerProfile"> | string
+  firstName?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  lastName?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  yearsOld?: Prisma.IntNullableFilter<"CustomerProfile"> | number | null
+  location?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  predicatedPosition?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  currentPosition?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  resumeScore?: Prisma.IntNullableFilter<"CustomerProfile"> | number | null
+  summary?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  achivements?: Prisma.StringNullableListFilter<"CustomerProfile">
+  level?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+  expectedSalaryFrom?: Prisma.IntNullableFilter<"CustomerProfile"> | number | null
+  expectedSalaryTo?: Prisma.IntNullableFilter<"CustomerProfile"> | number | null
+  tags?: Prisma.StringNullableListFilter<"CustomerProfile">
+  createdAt?: Prisma.DateTimeFilter<"CustomerProfile"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CustomerProfile"> | Date | string
+  jobId?: Prisma.StringNullableFilter<"CustomerProfile"> | string | null
+}
+
+export type CustomerProfileCreateManyJobInput = {
+  id?: string
+  accountId: string
+  firstName?: string | null
+  lastName?: string | null
+  yearsOld?: number | null
+  location?: string | null
+  predicatedPosition?: string | null
+  currentPosition?: string | null
+  resumeScore?: number | null
+  summary?: string | null
+  achivements?: Prisma.CustomerProfileCreateachivementsInput | string[]
+  level?: string | null
+  expectedSalaryFrom?: number | null
+  expectedSalaryTo?: number | null
+  tags?: Prisma.CustomerProfileCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CustomerProfileUpdateWithoutJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yearsOld?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  predicatedPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  achivements?: Prisma.CustomerProfileUpdateachivementsInput | string[]
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSalaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedSalaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tags?: Prisma.CustomerProfileUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CustomerProfileUncheckedUpdateWithoutJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yearsOld?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  predicatedPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  achivements?: Prisma.CustomerProfileUpdateachivementsInput | string[]
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSalaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedSalaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tags?: Prisma.CustomerProfileUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CustomerProfileUncheckedUpdateManyWithoutJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yearsOld?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  predicatedPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  achivements?: Prisma.CustomerProfileUpdateachivementsInput | string[]
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSalaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedSalaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tags?: Prisma.CustomerProfileUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type CustomerProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -673,6 +919,8 @@ export type CustomerProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   tags?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  jobId?: boolean
+  job?: boolean | Prisma.CustomerProfile$jobArgs<ExtArgs>
 }, ExtArgs["result"]["customerProfile"]>
 
 export type CustomerProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -693,6 +941,8 @@ export type CustomerProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   tags?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  jobId?: boolean
+  job?: boolean | Prisma.CustomerProfile$jobArgs<ExtArgs>
 }, ExtArgs["result"]["customerProfile"]>
 
 export type CustomerProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -713,6 +963,8 @@ export type CustomerProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   tags?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  jobId?: boolean
+  job?: boolean | Prisma.CustomerProfile$jobArgs<ExtArgs>
 }, ExtArgs["result"]["customerProfile"]>
 
 export type CustomerProfileSelectScalar = {
@@ -733,13 +985,25 @@ export type CustomerProfileSelectScalar = {
   tags?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  jobId?: boolean
 }
 
-export type CustomerProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "firstName" | "lastName" | "yearsOld" | "location" | "predicatedPosition" | "currentPosition" | "resumeScore" | "summary" | "achivements" | "level" | "expectedSalaryFrom" | "expectedSalaryTo" | "tags" | "createdAt" | "updatedAt", ExtArgs["result"]["customerProfile"]>
+export type CustomerProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "firstName" | "lastName" | "yearsOld" | "location" | "predicatedPosition" | "currentPosition" | "resumeScore" | "summary" | "achivements" | "level" | "expectedSalaryFrom" | "expectedSalaryTo" | "tags" | "createdAt" | "updatedAt" | "jobId", ExtArgs["result"]["customerProfile"]>
+export type CustomerProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  job?: boolean | Prisma.CustomerProfile$jobArgs<ExtArgs>
+}
+export type CustomerProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  job?: boolean | Prisma.CustomerProfile$jobArgs<ExtArgs>
+}
+export type CustomerProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  job?: boolean | Prisma.CustomerProfile$jobArgs<ExtArgs>
+}
 
 export type $CustomerProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CustomerProfile"
-  objects: {}
+  objects: {
+    job: Prisma.$AiAnalyseJobPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     accountId: string
@@ -758,6 +1022,7 @@ export type $CustomerProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     tags: string[]
     createdAt: Date
     updatedAt: Date
+    jobId: string | null
   }, ExtArgs["result"]["customerProfile"]>
   composites: {}
 }
@@ -1152,6 +1417,7 @@ readonly fields: CustomerProfileFieldRefs;
  */
 export interface Prisma__CustomerProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  job<T extends Prisma.CustomerProfile$jobArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerProfile$jobArgs<ExtArgs>>): Prisma.Prisma__AiAnalyseJobClient<runtime.Types.Result.GetResult<Prisma.$AiAnalyseJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1198,6 +1464,7 @@ export interface CustomerProfileFieldRefs {
   readonly tags: Prisma.FieldRef<"CustomerProfile", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"CustomerProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CustomerProfile", 'DateTime'>
+  readonly jobId: Prisma.FieldRef<"CustomerProfile", 'String'>
 }
     
 
@@ -1214,6 +1481,10 @@ export type CustomerProfileFindUniqueArgs<ExtArgs extends runtime.Types.Extensio
    * Omit specific fields from the CustomerProfile
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
   /**
    * Filter, which CustomerProfile to fetch.
    */
@@ -1233,6 +1504,10 @@ export type CustomerProfileFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.E
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
+  /**
    * Filter, which CustomerProfile to fetch.
    */
   where: Prisma.CustomerProfileWhereUniqueInput
@@ -1250,6 +1525,10 @@ export type CustomerProfileFindFirstArgs<ExtArgs extends runtime.Types.Extension
    * Omit specific fields from the CustomerProfile
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
   /**
    * Filter, which CustomerProfile to fetch.
    */
@@ -1299,6 +1578,10 @@ export type CustomerProfileFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Ex
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
+  /**
    * Filter, which CustomerProfile to fetch.
    */
   where?: Prisma.CustomerProfileWhereInput
@@ -1347,6 +1630,10 @@ export type CustomerProfileFindManyArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
+  /**
    * Filter, which CustomerProfiles to fetch.
    */
   where?: Prisma.CustomerProfileWhereInput
@@ -1390,6 +1677,10 @@ export type CustomerProfileCreateArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
+  /**
    * The data needed to create a CustomerProfile.
    */
   data: Prisma.XOR<Prisma.CustomerProfileCreateInput, Prisma.CustomerProfileUncheckedCreateInput>
@@ -1423,6 +1714,10 @@ export type CustomerProfileCreateManyAndReturnArgs<ExtArgs extends runtime.Types
    */
   data: Prisma.CustomerProfileCreateManyInput | Prisma.CustomerProfileCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1437,6 +1732,10 @@ export type CustomerProfileUpdateArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the CustomerProfile
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
   /**
    * The data needed to update a CustomerProfile.
    */
@@ -1489,6 +1788,10 @@ export type CustomerProfileUpdateManyAndReturnArgs<ExtArgs extends runtime.Types
    * Limit how many CustomerProfiles to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1503,6 +1806,10 @@ export type CustomerProfileUpsertArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the CustomerProfile
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
   /**
    * The filter to search for the CustomerProfile to update in case it exists.
    */
@@ -1530,6 +1837,10 @@ export type CustomerProfileDeleteArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
+  /**
    * Filter which CustomerProfile to delete.
    */
   where: Prisma.CustomerProfileWhereUniqueInput
@@ -1550,6 +1861,25 @@ export type CustomerProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
 }
 
 /**
+ * CustomerProfile.job
+ */
+export type CustomerProfile$jobArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiAnalyseJob
+   */
+  select?: Prisma.AiAnalyseJobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiAnalyseJob
+   */
+  omit?: Prisma.AiAnalyseJobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiAnalyseJobInclude<ExtArgs> | null
+  where?: Prisma.AiAnalyseJobWhereInput
+}
+
+/**
  * CustomerProfile without action
  */
 export type CustomerProfileDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1561,4 +1891,8 @@ export type CustomerProfileDefaultArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the CustomerProfile
    */
   omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
 }

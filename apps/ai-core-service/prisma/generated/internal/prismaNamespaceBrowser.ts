@@ -129,7 +129,8 @@ export const CustomerProfileScalarFieldEnum = {
   expectedSalaryTo: 'expectedSalaryTo',
   tags: 'tags',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  jobId: 'jobId'
 } as const
 
 export type CustomerProfileScalarFieldEnum = (typeof CustomerProfileScalarFieldEnum)[keyof typeof CustomerProfileScalarFieldEnum]

@@ -33,9 +33,8 @@ export interface RefetchSessionProps<T> extends Omit<
 
 export function persistSession(props: PersistSessionProps) {
   const { accessToken, account, queryClient } = props;
-
   setSessionToken(accessToken);
-  instance.defaults.headers["Authorization"] = accessToken;
+  instance.defaults.headers["Authorization"] = `Bearer ${accessToken}`;
   const cacheData = MakeCacheAccount(account);
 
   localStorage.setItem(accountCacheKey, JSON.stringify(cacheData));
@@ -50,7 +49,7 @@ export async function refetchSession<T extends AccountResponse>(
   const { accessToken, queryClient, refetch } = props;
 
   setSessionToken(accessToken);
-  instance.defaults.headers["Authorization"] = accessToken;
+  instance.defaults.headers["Authorization"] = `Bearer ${accessToken}`;
 
   const { data: userData, isSuccess } = await refetch();
 

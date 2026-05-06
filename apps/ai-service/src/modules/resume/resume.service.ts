@@ -1,10 +1,14 @@
-import type { AiResumeUploadEventType } from '@jrai/contracts'
-import { AnalyseStatus, CustomerProfile } from '@jrai/contracts/gen/aicore'
+import { type AiResumeUploadEventType, EventStatusCode } from '@jrai/contracts'
+import {
+	AnalyseStatus,
+	CreateCustomerProfileRequest
+} from '@jrai/contracts/gen/aicore'
 import { Injectable } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { validate } from 'class-validator'
 
 import { AiProvider } from '@/common/abstractions/ai-provider.abstract'
+import { PromptModel } from '@/infrastructure/ai-provider/models/prompt.model'
 import {
 	IProviderPromptResponse,
 	IProviderUsageTokens
@@ -15,8 +19,6 @@ import { AicoreClientGrpc } from '../aicore/aicore.grpc'
 
 import { CustomerProfileDto } from './models/customer-profile.dto'
 
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
-
 @Injectable()
 export class ResumeService {
 	public constructor(
@@ -26,12 +28,12 @@ export class ResumeService {
 	) {}
 
 	public async processResume(payload: AiResumeUploadEventType) {
-		const { jobId, accountId } = payload
-		await this.createJob(payload)
+		const { jobId } = payload
+		await this.putJobInWaiting(payload)
 		this.queue.sendAnalysisProgress({
-			statusMessage: 'Reasoning provided resume',
+			lastMessage: 'Reasoning provided resume',
 			jobId,
-			accountId
+			status: EventStatusCode.WAITING
 		})
 		const aiResponse = await this.providerPrompt(payload)
 
@@ -41,11 +43,10 @@ export class ResumeService {
 
 		try {
 			this.queue.sendAnalysisProgress({
-				statusMessage: 'Working on response',
+				lastMessage: 'Working on response',
 				jobId,
-				accountId
+				status: EventStatusCode.WAITING
 			})
-
 			const parsedRaw = JSON.parse(aiResponse.rawData)
 			const customerProfileDto = plainToInstance(
 				CustomerProfileDto,
@@ -55,9 +56,9 @@ export class ResumeService {
 			const validationErrors = await validate(customerProfileDto)
 			if (validationErrors.length > 0) {
 				this.queue.sendAnalysisProgress({
-					statusMessage: 'Failed to confirm response',
+					lastMessage: 'Failed to confirm response',
 					jobId,
-					accountId
+					status: EventStatusCode.CANCELLED
 				})
 				await this.cancellJob(payload)
 				return
@@ -69,33 +70,36 @@ export class ResumeService {
 				await this.completeJob(payload, usage)
 			}
 
-			const customerProfile: CustomerProfile = {
-				accountId: payload.accountId,
-				...customerProfileDto
+			const customerProfileRequest: CreateCustomerProfileRequest = {
+				profile: {
+					accountId: payload.accountId,
+					...customerProfileDto
+				},
+				jobId: payload.jobId
 			}
 
-			await this.aiClient.call('createProfile', customerProfile)
+			await this.aiClient.call('createProfile', customerProfileRequest)
 			this.queue.sendAnalysisProgress({
-				statusMessage: 'Done',
+				lastMessage: 'Done',
 				jobId,
-				accountId
+				status: EventStatusCode.DONE
 			})
 		} catch (error: any) {
 			if (
 				aiResponse.usage?.completionTokens === payload.preset.maxTokens
 			) {
 				this.queue.sendAnalysisProgress({
-					statusMessage:
+					lastMessage:
 						'Cannot analyse resume, resume is too large for this model',
 					jobId,
-					accountId
+					status: EventStatusCode.CANCELLED
 				})
 				return
 			} else {
 				this.queue.sendAnalysisProgress({
-					statusMessage: 'Failed to proceed the analysis',
+					lastMessage: 'Failed to proceed the analysis',
 					jobId,
-					accountId
+					status: EventStatusCode.CANCELLED
 				})
 			}
 
@@ -107,49 +111,48 @@ export class ResumeService {
 	async providerPrompt(
 		payload: AiResumeUploadEventType
 	): Promise<IProviderPromptResponse | null> {
-		const { jobId, accountId } = payload
+		const { jobId } = payload
 		try {
-			// return await this.aiProvider.waitablePrompt({
-			// 	extractedText: payload.extractedText,
-			// 	llmName: payload.preset.llmName,
-			// 	temperature: payload.preset.temperature,
-			// 	paidTier: payload.preset.paidTier,
-			// 	systemPrompt: payload.preset.systemPrompt,
-			// 	maxTokens: payload.preset.maxTokens
-			// } as PromptModel)
-			await delay(10000)
-			return {
-				usage: {
-					totalTokens: 1000,
-					promptTokens: 300,
-					completionTokens: 700
-				},
-				rawData:
-					'{"firstName": "STANISLAV", "lastName": "TARNOHURSKYI", "yearsOld": 20, "location": "Ukraine", "predicatedPosition": "Senior Full Stack Developer", "currentPosition": "Full Stack Developer", "resumeScore": 85, "summary": "A dedicated Full-Stack Developer with over 4 years of experience specializing in building robust web solutions for the healthcare sector. Proficient across the MERN/PERN stack, .NET Core, and modern frontend frameworks (React, NextJS). Proven ability to architect scalable systems and automate development processes.", "achivements": ["Developed over five full-stack applications contributing to healthcare digital solutions.", "Developed a comprehensive Node.js CLI tool that automates the full-stack development and deployment process, streamlining front-end and back-end scaffolding with cloud-agnostic deployment solutions."], "level": "Junior - Middle Full Stack", "expectedSalaryFrom": 18000, "expectedSalaryTo": 35000, "tags": ["Full Stack Development", "React", "Node.js", " .NET", "Backend Development", "API Development", "Cloud Deployment"]}'
-			}
+			return await this.aiProvider.waitablePrompt({
+				extractedText: payload.extractedText,
+				llmName: payload.preset.llmName,
+				temperature: payload.preset.temperature,
+				paidTier: payload.preset.paidTier,
+				systemPrompt: payload.preset.systemPrompt,
+				maxTokens: payload.preset.maxTokens
+			} as PromptModel)
 		} catch (error) {
 			this.queue.sendAnalysisProgress({
-				statusMessage: 'Failed to process the resume',
+				lastMessage: 'Failed to process the resume',
 				jobId,
-				accountId
+				status: EventStatusCode.CANCELLED
 			})
 			await this.cancellJob(payload)
 			return null
 		}
 	}
 
-	private async createJob(payload: AiResumeUploadEventType) {
+	private async putJobInWaiting(payload: AiResumeUploadEventType) {
 		try {
-			await this.aiClient.call('createAnalyseJob', {
+			await this.aiClient.call('updateAnalyseJob', {
 				id: payload.jobId,
 				accountId: payload.accountId,
-				presetId: payload.preset.presetId,
 				status: AnalyseStatus.WAITING
 			})
 		} catch (error) {}
 	}
 
 	private async cancellJob(payload: AiResumeUploadEventType) {
+		try {
+			await this.aiClient.call('updateAnalyseJob', {
+				id: payload.jobId,
+				accountId: payload.accountId,
+				status: AnalyseStatus.CANCELLED
+			})
+		} catch (error) {}
+	}
+
+	private async putJobInQueue(payload: AiResumeUploadEventType) {
 		try {
 			await this.aiClient.call('updateAnalyseJob', {
 				id: payload.jobId,

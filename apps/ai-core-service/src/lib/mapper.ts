@@ -5,11 +5,13 @@ export const statusMapper: Record<ProtoStatuses, PrismaStatuses> = {
 	[ProtoStatuses.WAITING]: PrismaStatuses.WAITING,
 	[ProtoStatuses.DONE]: PrismaStatuses.DONE,
 	[ProtoStatuses.CANCELLED]: PrismaStatuses.CANCELLED,
+	[ProtoStatuses.INQUEUE]: PrismaStatuses.INQUEUE,
 	[ProtoStatuses.UNRECOGNIZED]: PrismaStatuses.WAITING
 }
 
 export const statusMapperExchange: Record<PrismaStatuses, ProtoStatuses> = {
 	[PrismaStatuses.WAITING]: ProtoStatuses.WAITING,
 	[PrismaStatuses.DONE]: ProtoStatuses.DONE,
-	[PrismaStatuses.CANCELLED]: ProtoStatuses.CANCELLED
+	[PrismaStatuses.CANCELLED]: ProtoStatuses.CANCELLED,
+	[PrismaStatuses.INQUEUE]: ProtoStatuses.INQUEUE
 }

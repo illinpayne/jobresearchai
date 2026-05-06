@@ -31,7 +31,7 @@ export default function AvailableAiModels({ ...props }: Props) {
             id={f.id}
             name={f.name}
             description={f.description}
-            usageTokens={f.usageTokens}
+            usageCredits={f.usageCredits}
             stars={f.stars}
             paidTier={f.paidTier}
             isSelected={f.id === aiStorage.id}

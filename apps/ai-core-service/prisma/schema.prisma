@@ -9,6 +9,7 @@ datasource db {
 }
 
 enum AnalyseStatus {
+  INQUEUE
   WAITING
   DONE
   CANCELLED
@@ -90,6 +91,9 @@ model CustomerProfile {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  job   AiAnalyseJob? @relation(fields: [jobId], references: [id])
+  jobId String?       @map("job_id")
+
   @@index([tags], type: Gin)
   @@index([currentPosition])
   @@map("customer_profiles")
@@ -104,13 +108,14 @@ model AiAnalyseJob {
   promptTokens     Int @default(0) @map("prompt_tokens")
   spentCredits     Int @default(0) @map("spent_credits")
 
-  status AnalyseStatus @default(WAITING)
+  status AnalyseStatus @default(INQUEUE)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  preset   AiModelPreset @relation(fields: [presetId], references: [id])
-  presetId String        @map("preset_id")
+  preset           AiModelPreset     @relation(fields: [presetId], references: [id])
+  presetId         String            @map("preset_id")
+  customerProfiles CustomerProfile[]
 
   @@map("ai_analyse_job")
 }

@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common'
 import {
 	AiAnalyseJobCreateInput,
 	AiAnalyseJobSelect,
-	AiAnalyseJobUpdateInput
+	AiAnalyseJobUpdateInput,
+	AiAnalyseJobWhereInput
 } from '@prisma/generated/models'
 
 import { PrismaService } from '@/infrastructure/prisma/prisma.service'
@@ -53,6 +54,16 @@ export class AnalyseJobRepository {
 		}
 	}
 
+	public readonly jobInProgress: AiAnalyseJobSelect = {
+		id: true,
+		status: true,
+		preset: {
+			select: {
+				name: true
+			}
+		}
+	}
+
 	public constructor(private readonly prismaService: PrismaService) {}
 
 	public async newJob(
@@ -79,6 +90,17 @@ export class AnalyseJobRepository {
 			select: select
 		})
 		return job
+	}
+
+	public async getJobs(
+		filter: AiAnalyseJobWhereInput,
+		select: AiAnalyseJobSelect
+	) {
+		const foundJobs = await this.prismaService.aiAnalyseJob.findMany({
+			where: filter,
+			select
+		})
+		return foundJobs
 	}
 
 	public async updateJob(

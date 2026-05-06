@@ -1,7 +1,9 @@
+import type { GetMeRequest } from '@jrai/contracts/gen/account'
 import {
 	AI_CORE_SERVICE_NAME,
 	AiAnalyseJob,
 	type AiAnalyseJobSimplified,
+	AnalyseJobInProgressResponse,
 	type CreateAnalyseJobRequest,
 	type GetAnalyseJobRequest,
 	type UpdateAnalyseJobRequest
@@ -41,5 +43,12 @@ export class AnalyseJobsController {
 		request: GetAnalyseJobRequest
 	): Promise<AiAnalyseJobSimplified> {
 		return await this.analyseJobsService.getSimpleJob(request)
+	}
+
+	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetAccountJobInProgress')
+	public async getAccountJobInProgress(
+		request: GetMeRequest
+	): Promise<AnalyseJobInProgressResponse> {
+		return await this.analyseJobsService.getAccountJobsInProgress(request)
 	}
 }

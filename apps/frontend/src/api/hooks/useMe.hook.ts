@@ -1,12 +1,23 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
-import { type UseQueryOptions, useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
-import { QueryKeys } from '@/constants';
-import { accountCacheKey, accountCacheStaleTime, type CachedAccount, MakeCacheAccount } from '@/lib/cache';
-import type { AccountResponse } from '../generated';
-import { getMe } from '../requests/account.req';
+import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { QueryKeys } from "@/constants";
+import {
+  accountCacheKey,
+  accountCacheStaleTime,
+  type CachedAccount,
+  MakeCacheAccount,
+} from "@/lib/cache";
+import { getSessionToken } from "@/lib/cookies";
+import type { AccountResponse } from "../generated";
+import { getMe } from "../requests/account.req";
 
-export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 'queryKey' | 'queryFn'>) => {
+export const useMe = (
+  options?: Omit<
+    UseQueryOptions<AccountResponse, unknown>,
+    "queryKey" | "queryFn"
+  >,
+) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -14,7 +25,7 @@ export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 
   }, []);
 
   const cached = useMemo(() => {
-    if (!isMounted || typeof window === 'undefined') return null;
+    if (!isMounted || typeof window === "undefined") return null;
     try {
       const item = localStorage.getItem(accountCacheKey);
       if (!item) return null;
@@ -25,6 +36,8 @@ export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 
       return null;
     }
   }, [isMounted]);
+
+  const hasToken = !!getSessionToken();
 
   const query = useQuery({
     queryKey: [QueryKeys.MyAccount],
@@ -37,7 +50,7 @@ export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 
     initialData: cached?.data,
     initialDataUpdatedAt: cached?.createdAt,
     staleTime: accountCacheStaleTime,
-    enabled: isMounted && options?.enabled !== false,
+    enabled: isMounted && hasToken && options?.enabled !== false,
     retry: 0,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -47,6 +60,6 @@ export const useMe = (options?: Omit<UseQueryOptions<AccountResponse, unknown>, 
   return {
     ...query,
     data: isMounted ? query.data : undefined,
-    isLoading: !isMounted || query.isLoading,
+    isLoading: !isMounted || (hasToken && query.isLoading),
   };
 };

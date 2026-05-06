@@ -11,7 +11,7 @@ export interface AiPresetResponse {
   name: string;
   description: string;
   stars: number;
-  usageTokens: number;
+  usageCredits: number;
   paidTier: string;
   temperature: number;
 }

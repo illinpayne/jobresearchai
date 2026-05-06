@@ -1,6 +1,9 @@
+import type { GetMeRequest } from '@jrai/contracts/gen/account'
 import {
 	AI_CORE_SERVICE_NAME,
-	type CustomerProfile
+	type CreateCustomerProfileRequest,
+	type CustomerProfile,
+	CustomerProfiles
 } from '@jrai/contracts/gen/aicore'
 import { BoolValue } from '@jrai/contracts/gen/google/protobuf/wrappers'
 import { Controller } from '@nestjs/common'
@@ -14,7 +17,7 @@ export class ProfilesController {
 
 	@GrpcMethod(AI_CORE_SERVICE_NAME, 'CreateProfile')
 	public async createCustomerProfile(
-		request: CustomerProfile
+		request: CreateCustomerProfileRequest
 	): Promise<BoolValue> {
 		return this.profilesService.createProfile(request)
 	}
@@ -22,5 +25,12 @@ export class ProfilesController {
 	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetProfileById')
 	public async GetProfileById(request: string): Promise<CustomerProfile> {
 		return this.profilesService.getProfileById(request)
+	}
+
+	@GrpcMethod(AI_CORE_SERVICE_NAME, 'GetAccountProfiles')
+	public async GetAccountProfiles(
+		request: GetMeRequest
+	): Promise<CustomerProfiles> {
+		return this.profilesService.getProfilesByAccount(request)
 	}
 }

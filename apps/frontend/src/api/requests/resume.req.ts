@@ -1,8 +1,10 @@
 import type { UploadResumeData } from "@/components/protected/uploads/forms/new-form.schema";
+import type { AccountProfilesResponse } from "../generated";
 import { instance } from "../instance";
 
 export enum ResumeEndpoints {
   UPLOAD = "/resume/upload",
+  PROFILES = "/resume/profiles",
 }
 
 export const uploadResume = async (data: UploadResumeData) => {
@@ -15,5 +17,11 @@ export const uploadResume = async (data: UploadResumeData) => {
         "Content-Type": "multipart/form-data",
       },
     })
+    .then((response) => response.data);
+};
+
+export const getAccountProfiles = async () => {
+  return await instance
+    .get<AccountProfilesResponse>(ResumeEndpoints.PROFILES)
     .then((response) => response.data);
 };

@@ -10,7 +10,7 @@ export class AiPresetResponse {
 	@ApiProperty({ type: Number, default: 5 })
 	stars: number
 	@ApiProperty({ type: Number, default: 10 })
-	usageTokens: number
+	usageCredits: number
 	@ApiProperty({ type: String, default: 'Free/Pro' })
 	paidTier: string
 	@ApiProperty({ type: Number, default: 0.5 })

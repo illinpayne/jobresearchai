@@ -236,6 +236,7 @@ export class AuthController {
 	@Post('logout')
 	@HttpCode(HttpStatus.OK)
 	public logout(@Res({ passthrough: true }) res: Response) {
+		this.cookieService.removeCookie(res, CookieType.ACCESS_TOKEN)
 		this.cookieService.removeCookie(res, CookieType.REFRESH_TOKEN)
 		return { status: HttpStatus.OK }
 	}

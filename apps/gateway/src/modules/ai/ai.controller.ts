@@ -1,13 +1,11 @@
 import {
-	BadRequestException,
 	Body,
 	Controller,
 	Get,
 	HttpCode,
 	HttpStatus,
 	NotFoundException,
-	Post,
-	Query
+	Post
 } from '@nestjs/common'
 import {
 	ApiBearerAuth,
@@ -24,6 +22,7 @@ import {
 	AiPresetsResponse,
 	AssignPresetResponse
 } from './responses/ai-preset.response'
+import { SimplifiedAnalyseJobWithPresetResponse } from './responses/jobs-in-progress.response'
 
 @Controller('ai')
 export class AiController {
@@ -80,6 +79,28 @@ export class AiController {
 		if (!response.status) {
 			throw new NotFoundException('Cannot get this model.')
 		}
+		return response
+	}
+
+	@ApiOperation({
+		summary: 'Gets jobs in progress',
+		description: 'Gets all jobs in progress'
+	})
+	@ApiOkResponse({
+		description: 'Returns jobs in progress',
+		type: SimplifiedAnalyseJobWithPresetResponse
+	})
+	@ApiNotFoundResponse({
+		description: 'Jobs not found'
+	})
+	@ApiBearerAuth()
+	@Protected()
+	@Get('jobs-in-progress')
+	@HttpCode(HttpStatus.OK)
+	public async getJobsInProgress(@CurrentUser('id') id: string) {
+		const response = await this.aiClient.call('getAccountJobInProgress', {
+			id: id
+		})
 		return response
 	}
 }

@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import type { AiPresetResponse } from "@/api/generated";
 import { aiModelCacheKey } from "@/lib/cache";
 
-interface AIModelState extends AiPresetResponse {}
+export interface AIModelState extends AiPresetResponse {}
 
 interface AIModelActions {
   setModel: (model: AIModelState) => void;
@@ -16,7 +16,7 @@ const initialState: AIModelState = {
   name: "",
   description: "",
   id: "",
-  usageTokens: 0,
+  usageCredits: 0,
   stars: 0,
   paidTier: "free",
   temperature: 0,

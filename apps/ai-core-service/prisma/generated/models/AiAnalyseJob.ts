@@ -269,6 +269,7 @@ export type AiAnalyseJobWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"AiAnalyseJob"> | Date | string
   presetId?: Prisma.StringFilter<"AiAnalyseJob"> | string
   preset?: Prisma.XOR<Prisma.AiModelPresetScalarRelationFilter, Prisma.AiModelPresetWhereInput>
+  customerProfiles?: Prisma.CustomerProfileListRelationFilter
 }
 
 export type AiAnalyseJobOrderByWithRelationInput = {
@@ -283,6 +284,7 @@ export type AiAnalyseJobOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   presetId?: Prisma.SortOrder
   preset?: Prisma.AiModelPresetOrderByWithRelationInput
+  customerProfiles?: Prisma.CustomerProfileOrderByRelationAggregateInput
 }
 
 export type AiAnalyseJobWhereUniqueInput = Prisma.AtLeast<{
@@ -300,6 +302,7 @@ export type AiAnalyseJobWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"AiAnalyseJob"> | Date | string
   presetId?: Prisma.StringFilter<"AiAnalyseJob"> | string
   preset?: Prisma.XOR<Prisma.AiModelPresetScalarRelationFilter, Prisma.AiModelPresetWhereInput>
+  customerProfiles?: Prisma.CustomerProfileListRelationFilter
 }, "id">
 
 export type AiAnalyseJobOrderByWithAggregationInput = {
@@ -347,6 +350,7 @@ export type AiAnalyseJobCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   preset: Prisma.AiModelPresetCreateNestedOneWithoutAiAnalyseJobsInput
+  customerProfiles?: Prisma.CustomerProfileCreateNestedManyWithoutJobInput
 }
 
 export type AiAnalyseJobUncheckedCreateInput = {
@@ -360,6 +364,7 @@ export type AiAnalyseJobUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   presetId: string
+  customerProfiles?: Prisma.CustomerProfileUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type AiAnalyseJobUpdateInput = {
@@ -373,6 +378,7 @@ export type AiAnalyseJobUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   preset?: Prisma.AiModelPresetUpdateOneRequiredWithoutAiAnalyseJobsNestedInput
+  customerProfiles?: Prisma.CustomerProfileUpdateManyWithoutJobNestedInput
 }
 
 export type AiAnalyseJobUncheckedUpdateInput = {
@@ -386,6 +392,7 @@ export type AiAnalyseJobUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   presetId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerProfiles?: Prisma.CustomerProfileUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type AiAnalyseJobCreateManyInput = {
@@ -434,6 +441,11 @@ export type AiAnalyseJobListRelationFilter = {
 
 export type AiAnalyseJobOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type AiAnalyseJobNullableScalarRelationFilter = {
+  is?: Prisma.AiAnalyseJobWhereInput | null
+  isNot?: Prisma.AiAnalyseJobWhereInput | null
 }
 
 export type AiAnalyseJobCountOrderByAggregateInput = {
@@ -531,6 +543,22 @@ export type AiAnalyseJobUncheckedUpdateManyWithoutPresetNestedInput = {
   deleteMany?: Prisma.AiAnalyseJobScalarWhereInput | Prisma.AiAnalyseJobScalarWhereInput[]
 }
 
+export type AiAnalyseJobCreateNestedOneWithoutCustomerProfilesInput = {
+  create?: Prisma.XOR<Prisma.AiAnalyseJobCreateWithoutCustomerProfilesInput, Prisma.AiAnalyseJobUncheckedCreateWithoutCustomerProfilesInput>
+  connectOrCreate?: Prisma.AiAnalyseJobCreateOrConnectWithoutCustomerProfilesInput
+  connect?: Prisma.AiAnalyseJobWhereUniqueInput
+}
+
+export type AiAnalyseJobUpdateOneWithoutCustomerProfilesNestedInput = {
+  create?: Prisma.XOR<Prisma.AiAnalyseJobCreateWithoutCustomerProfilesInput, Prisma.AiAnalyseJobUncheckedCreateWithoutCustomerProfilesInput>
+  connectOrCreate?: Prisma.AiAnalyseJobCreateOrConnectWithoutCustomerProfilesInput
+  upsert?: Prisma.AiAnalyseJobUpsertWithoutCustomerProfilesInput
+  disconnect?: Prisma.AiAnalyseJobWhereInput | boolean
+  delete?: Prisma.AiAnalyseJobWhereInput | boolean
+  connect?: Prisma.AiAnalyseJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AiAnalyseJobUpdateToOneWithWhereWithoutCustomerProfilesInput, Prisma.AiAnalyseJobUpdateWithoutCustomerProfilesInput>, Prisma.AiAnalyseJobUncheckedUpdateWithoutCustomerProfilesInput>
+}
+
 export type EnumAnalyseStatusFieldUpdateOperationsInput = {
   set?: $Enums.AnalyseStatus
 }
@@ -545,6 +573,7 @@ export type AiAnalyseJobCreateWithoutPresetInput = {
   status?: $Enums.AnalyseStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  customerProfiles?: Prisma.CustomerProfileCreateNestedManyWithoutJobInput
 }
 
 export type AiAnalyseJobUncheckedCreateWithoutPresetInput = {
@@ -557,6 +586,7 @@ export type AiAnalyseJobUncheckedCreateWithoutPresetInput = {
   status?: $Enums.AnalyseStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  customerProfiles?: Prisma.CustomerProfileUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type AiAnalyseJobCreateOrConnectWithoutPresetInput = {
@@ -601,6 +631,74 @@ export type AiAnalyseJobScalarWhereInput = {
   presetId?: Prisma.StringFilter<"AiAnalyseJob"> | string
 }
 
+export type AiAnalyseJobCreateWithoutCustomerProfilesInput = {
+  id?: string
+  accountId: string
+  totalTokens?: number
+  completionTokens?: number
+  promptTokens?: number
+  spentCredits?: number
+  status?: $Enums.AnalyseStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preset: Prisma.AiModelPresetCreateNestedOneWithoutAiAnalyseJobsInput
+}
+
+export type AiAnalyseJobUncheckedCreateWithoutCustomerProfilesInput = {
+  id?: string
+  accountId: string
+  totalTokens?: number
+  completionTokens?: number
+  promptTokens?: number
+  spentCredits?: number
+  status?: $Enums.AnalyseStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  presetId: string
+}
+
+export type AiAnalyseJobCreateOrConnectWithoutCustomerProfilesInput = {
+  where: Prisma.AiAnalyseJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.AiAnalyseJobCreateWithoutCustomerProfilesInput, Prisma.AiAnalyseJobUncheckedCreateWithoutCustomerProfilesInput>
+}
+
+export type AiAnalyseJobUpsertWithoutCustomerProfilesInput = {
+  update: Prisma.XOR<Prisma.AiAnalyseJobUpdateWithoutCustomerProfilesInput, Prisma.AiAnalyseJobUncheckedUpdateWithoutCustomerProfilesInput>
+  create: Prisma.XOR<Prisma.AiAnalyseJobCreateWithoutCustomerProfilesInput, Prisma.AiAnalyseJobUncheckedCreateWithoutCustomerProfilesInput>
+  where?: Prisma.AiAnalyseJobWhereInput
+}
+
+export type AiAnalyseJobUpdateToOneWithWhereWithoutCustomerProfilesInput = {
+  where?: Prisma.AiAnalyseJobWhereInput
+  data: Prisma.XOR<Prisma.AiAnalyseJobUpdateWithoutCustomerProfilesInput, Prisma.AiAnalyseJobUncheckedUpdateWithoutCustomerProfilesInput>
+}
+
+export type AiAnalyseJobUpdateWithoutCustomerProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  totalTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  completionTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  promptTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  spentCredits?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumAnalyseStatusFieldUpdateOperationsInput | $Enums.AnalyseStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preset?: Prisma.AiModelPresetUpdateOneRequiredWithoutAiAnalyseJobsNestedInput
+}
+
+export type AiAnalyseJobUncheckedUpdateWithoutCustomerProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  totalTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  completionTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  promptTokens?: Prisma.IntFieldUpdateOperationsInput | number
+  spentCredits?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumAnalyseStatusFieldUpdateOperationsInput | $Enums.AnalyseStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  presetId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type AiAnalyseJobCreateManyPresetInput = {
   id?: string
   accountId: string
@@ -623,6 +721,7 @@ export type AiAnalyseJobUpdateWithoutPresetInput = {
   status?: Prisma.EnumAnalyseStatusFieldUpdateOperationsInput | $Enums.AnalyseStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customerProfiles?: Prisma.CustomerProfileUpdateManyWithoutJobNestedInput
 }
 
 export type AiAnalyseJobUncheckedUpdateWithoutPresetInput = {
@@ -635,6 +734,7 @@ export type AiAnalyseJobUncheckedUpdateWithoutPresetInput = {
   status?: Prisma.EnumAnalyseStatusFieldUpdateOperationsInput | $Enums.AnalyseStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customerProfiles?: Prisma.CustomerProfileUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type AiAnalyseJobUncheckedUpdateManyWithoutPresetInput = {
@@ -650,6 +750,35 @@ export type AiAnalyseJobUncheckedUpdateManyWithoutPresetInput = {
 }
 
 
+/**
+ * Count Type AiAnalyseJobCountOutputType
+ */
+
+export type AiAnalyseJobCountOutputType = {
+  customerProfiles: number
+}
+
+export type AiAnalyseJobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  customerProfiles?: boolean | AiAnalyseJobCountOutputTypeCountCustomerProfilesArgs
+}
+
+/**
+ * AiAnalyseJobCountOutputType without action
+ */
+export type AiAnalyseJobCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiAnalyseJobCountOutputType
+   */
+  select?: Prisma.AiAnalyseJobCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AiAnalyseJobCountOutputType without action
+ */
+export type AiAnalyseJobCountOutputTypeCountCustomerProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CustomerProfileWhereInput
+}
+
 
 export type AiAnalyseJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -663,6 +792,8 @@ export type AiAnalyseJobSelect<ExtArgs extends runtime.Types.Extensions.Internal
   updatedAt?: boolean
   presetId?: boolean
   preset?: boolean | Prisma.AiModelPresetDefaultArgs<ExtArgs>
+  customerProfiles?: boolean | Prisma.AiAnalyseJob$customerProfilesArgs<ExtArgs>
+  _count?: boolean | Prisma.AiAnalyseJobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["aiAnalyseJob"]>
 
 export type AiAnalyseJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -709,6 +840,8 @@ export type AiAnalyseJobSelectScalar = {
 export type AiAnalyseJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "totalTokens" | "completionTokens" | "promptTokens" | "spentCredits" | "status" | "createdAt" | "updatedAt" | "presetId", ExtArgs["result"]["aiAnalyseJob"]>
 export type AiAnalyseJobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   preset?: boolean | Prisma.AiModelPresetDefaultArgs<ExtArgs>
+  customerProfiles?: boolean | Prisma.AiAnalyseJob$customerProfilesArgs<ExtArgs>
+  _count?: boolean | Prisma.AiAnalyseJobCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AiAnalyseJobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   preset?: boolean | Prisma.AiModelPresetDefaultArgs<ExtArgs>
@@ -721,6 +854,7 @@ export type $AiAnalyseJobPayload<ExtArgs extends runtime.Types.Extensions.Intern
   name: "AiAnalyseJob"
   objects: {
     preset: Prisma.$AiModelPresetPayload<ExtArgs>
+    customerProfiles: Prisma.$CustomerProfilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1128,6 +1262,7 @@ readonly fields: AiAnalyseJobFieldRefs;
 export interface Prisma__AiAnalyseJobClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   preset<T extends Prisma.AiModelPresetDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiModelPresetDefaultArgs<ExtArgs>>): Prisma.Prisma__AiModelPresetClient<runtime.Types.Result.GetResult<Prisma.$AiModelPresetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  customerProfiles<T extends Prisma.AiAnalyseJob$customerProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiAnalyseJob$customerProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1560,6 +1695,30 @@ export type AiAnalyseJobDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many AiAnalyseJobs to delete.
    */
   limit?: number
+}
+
+/**
+ * AiAnalyseJob.customerProfiles
+ */
+export type AiAnalyseJob$customerProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CustomerProfile
+   */
+  select?: Prisma.CustomerProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CustomerProfile
+   */
+  omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
+  where?: Prisma.CustomerProfileWhereInput
+  orderBy?: Prisma.CustomerProfileOrderByWithRelationInput | Prisma.CustomerProfileOrderByWithRelationInput[]
+  cursor?: Prisma.CustomerProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CustomerProfileScalarFieldEnum | Prisma.CustomerProfileScalarFieldEnum[]
 }
 
 /**

@@ -4,7 +4,7 @@ import { type MicroserviceOptions, Transport } from '@nestjs/microservices'
 
 import { AllConfigs } from '@/config/interfaces'
 
-import { grpcPackages, grpcProtoPaths } from './grpc.options'
+import { grpcPackages, grpcProtoLoader, grpcProtoPaths } from './grpc.options'
 
 export function createGrpcServer(
 	app: INestApplication,
@@ -19,13 +19,7 @@ export function createGrpcServer(
 			package: grpcPackages,
 			protoPath: grpcProtoPaths,
 			url: `${host}:${port}`,
-			loader: {
-				keepCase: false,
-				longs: String,
-				enums: String,
-				defaults: true,
-				oneofs: true
-			}
+			loader: grpcProtoLoader
 		}
 	})
 }

@@ -1,0 +1,3 @@
+1. docker cp storage-cors.json storage-minio:/tmp/storage-cors.json
+2. docker exec storage-minio mc alias set local http://localhost:9000 jraiadmin jraipassword1447
+3. docker exec storage-minio mc anonymous set download local/jrai-storage

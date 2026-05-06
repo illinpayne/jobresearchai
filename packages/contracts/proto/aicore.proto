@@ -3,6 +3,8 @@ syntax = "proto3";
 package aicore.v1;
 import "google/protobuf/wrappers.proto";
 
+import "account.proto";
+
 // AI Core rpc
 service AICoreService {
 	// Presets
@@ -11,13 +13,16 @@ service AICoreService {
 	rpc GetPresetById(GetPresetsByIdRequest) returns (AiPreset);
 	rpc GetExtendedPresetById(GetPresetsByIdRequest) returns (ExtendedAiPreset);
 	rpc GetExtendedPresetByAccount(GetPresetsByAccountRequest) returns (ExtendedAiPreset);
-	rpc CreateProfile(CustomerProfile) returns (google.protobuf.BoolValue);
-	rpc GetProfileById(google.protobuf.StringValue) returns (CustomerProfile);
+	// Profiles
+	rpc CreateProfile(CreateCustomerProfileRequest) returns (google.protobuf.BoolValue);
+	rpc GetProfileById(google.protobuf.StringValue) returns (ExtendedCustomerProfile);
+	rpc GetAccountProfiles(account.v1.GetMeRequest) returns (CustomerProfiles);
 	// Jobs
 	rpc CreateAnalyseJob(CreateAnalyseJobRequest) returns (AiAnalyseJobSimplified);
 	rpc UpdateAnalyseJob(UpdateAnalyseJobRequest) returns (AiAnalyseJobSimplified);
 	rpc GetFullAnalyseJob(GetAnalyseJobRequest) returns (AiAnalyseJob);
 	rpc GetSimpleAnalyseJob(GetAnalyseJobRequest) returns (AiAnalyseJobSimplified);
+	rpc GetAccountJobInProgress(account.v1.GetMeRequest) returns (AnalyseJobInProgressResponse);
 }
 
 message AiPreset {
@@ -96,10 +101,26 @@ message CustomerProfile {
   repeated string tags = 15;
 }
 
+message ExtendedCustomerProfile {
+	CustomerProfile profile = 1;
+	string preset_name = 2;
+	int32 spent_credits = 3;
+}
+
+message CustomerProfiles {
+	repeated ExtendedCustomerProfile data = 1;
+}
+
+message CreateCustomerProfileRequest {
+	CustomerProfile profile = 1;
+	string job_id = 2;
+}
+
 enum AnalyseStatus {
 	WAITING = 0;
 	DONE = 1;
 	CANCELLED = 2;
+	INQUEUE = 3;
 }
 
 message AiAnalyseJobSimplified {
@@ -141,3 +162,12 @@ message GetAnalyseJobRequest {
 	string account_id = 2;
 }
 
+message SimplifiedAnalysedJobWithPreset {
+	string id = 1;
+	string status = 2;
+	string preset_name = 3;
+}
+
+message AnalyseJobInProgressResponse {
+	repeated SimplifiedAnalysedJobWithPreset jobs = 1;
+}

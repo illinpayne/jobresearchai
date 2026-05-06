@@ -53,7 +53,7 @@ export default function AiModelCard({ ...props }: Props) {
             ))}
           </div>
           <p className='text-neutral-600 font-nunito-sans mt-3'>{props.description}</p>
-          <p className='text-neutral-600 text-sm font-nunito-sans mt-3'>{props.usageTokens ?? 0} tokens per analyse</p>
+          <p className='text-neutral-600 text-sm font-nunito-sans mt-3'>{props.usageCredits ?? 0} tokens per analyse</p>
           {!props.isSelected && (
             <div className='transition-all duration-400 group-hover:h-12 group-hover:opacity-100 h-0 opacity-0'>
               <div className='mt-3 flex justify-end gap-2'>

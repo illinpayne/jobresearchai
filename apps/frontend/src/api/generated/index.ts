@@ -7,13 +7,18 @@
  */
 
 export * from './accountControllerChangeProfileAvatarV1Body';
+export * from './accountProfilesResponse';
 export * from './accountResponse';
 export * from './aiPresetResponse';
 export * from './aiPresetsResponse';
+export * from './analyseJobInProgressDto';
 export * from './assignPresetResponse';
 export * from './authResponse';
 export * from './changeEmailDto';
 export * from './changePersonalDataDto';
+export * from './customerProfileDto';
+export * from './customerProfileResponse';
+export * from './extendedCustomerProfileDto';
 export * from './forgotPasswordDto';
 export * from './getModelDto';
 export * from './loginDto';
@@ -23,4 +28,5 @@ export * from './resetPasswordDto';
 export * from './resumeControllerUploadResumeV1Body';
 export * from './sendOtpRegisterDto';
 export * from './sendOtpResponse';
+export * from './simplifiedAnalyseJobWithPresetResponse';
 export * from './verifyOTPRegister';

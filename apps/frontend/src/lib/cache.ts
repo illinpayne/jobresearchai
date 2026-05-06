@@ -1,17 +1,24 @@
 import type { AccountResponse } from "@/api/generated";
 
 export const fiveMinutes = 5 * 60 * 1000;
+export const day = 24 * 60 * 1000;
+export const tenMinutes = 10 * 60 * 1000;
 export const twoMinutes = 2 * 60 * 1000;
+export const fiveSeconds = 5000;
 
 export const accountCacheStaleTime = fiveMinutes;
 export const changePasswordCacheStaleTime = twoMinutes;
-export const presetsCacheStaleTime = 1000; //fiveMinutes;
+export const presetsCacheStaleTime = day;
+export const profilesCacheStaleTime = tenMinutes;
+export const jobsCacheStaleTime = fiveSeconds;
 
 export const accountCacheKey = "account_cache";
 export const changePasswordCacheKey = "change_password_cache";
 export const changeEmailCacheKey = "change_email_cache";
 export const aiModelCacheKey = "ai-cache";
 export const presetsCacheKey = "presets_data";
+export const profilesCacheKey = "profiles_data";
+export const jobsCacheKey = "jobs_data";
 
 export type BaseCache = {
   createdAt: number;

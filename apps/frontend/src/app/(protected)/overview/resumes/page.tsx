@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { allResumes, recentResumes } from '@/api/snapshots/resumes/resumes';
 import AllResumeUploads from './all-uploads';
 import RecentResumeUploads from './recents';
 
@@ -17,8 +16,8 @@ export default function ResumesPage() {
           <p className='text-xl text-neutral-600 mt-3'>Improve your resume to find a new job faster</p>
         </div>
         <div className='grid gap-20'>
-          <RecentResumeUploads resumes={recentResumes} />
-          <AllResumeUploads resumes={allResumes} />
+          <RecentResumeUploads />
+          <AllResumeUploads />
         </div>
       </section>
     </div>

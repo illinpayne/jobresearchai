@@ -1,9 +1,12 @@
+import { GetMeRequest } from '@jrai/contracts/gen/account'
 import {
 	AiAnalyseJob,
 	AiAnalyseJobSimplified,
+	AnalyseJobInProgressResponse,
 	CreateAnalyseJobRequest,
 	GetAnalyseJobRequest,
 	AnalyseStatus as ProtoStatus,
+	SimplifiedAnalysedJobWithPreset,
 	UpdateAnalyseJobRequest
 } from '@jrai/contracts/gen/aicore'
 import { GrpcException, RpcStatus } from '@jrai/contracts/grpc'
@@ -144,5 +147,33 @@ export class AnalyseJobsService {
 			accountId: findJob.accountId,
 			status: mappedStatus
 		} as AiAnalyseJobSimplified
+	}
+
+	public async getAccountJobsInProgress(
+		request: GetMeRequest
+	): Promise<AnalyseJobInProgressResponse> {
+		const jobsInProgress = await this.repository.getJobs(
+			{
+				accountId: request.id,
+				status: {
+					in: ['WAITING', 'INQUEUE']
+				}
+			},
+			this.repository.jobInProgress
+		)
+
+		if (!jobsInProgress || jobsInProgress.length === 0) {
+			throw new GrpcException(RpcStatus.NOT_FOUND, 'Jobs not found')
+		}
+
+		return {
+			jobs: jobsInProgress.map(j => {
+				return {
+					id: j.id,
+					status: j.status,
+					presetName: j.preset.name
+				} as SimplifiedAnalysedJobWithPreset
+			})
+		}
 	}
 }

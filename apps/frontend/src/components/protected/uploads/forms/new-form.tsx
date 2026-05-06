@@ -9,24 +9,36 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useMe } from '@/api/hooks/useMe.hook';
 import { type PresetsData, usePresets } from '@/api/hooks/usePresets.hook';
 import { useUploadResume } from '@/api/hooks/useUploadResume.hook';
 import { buttonVariants } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants/routes';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 import { cn } from '@/lib/utils';
-import { useAIStore } from '@/states/useAiStorage.hook';
+import { type AIModelState, useAIStore } from '@/states/useAiStorage.hook';
 import { AiModels } from '../ai-models-dropdown/ai-model-dropdown';
 import { DynamicGreeting } from './greeting';
 import { type NewFormSchemaValue, newFormSchema, type UploadResumeData } from './new-form.schema';
 import { ThinkingScreen } from './thinking-screen';
 
-function FormLogic({ presets }: { presets: PresetsData | undefined }) {
+interface Props {
+  presets?: PresetsData;
+  email?: string;
+  aiStorage: {
+    id: string;
+    selectedLmName: string;
+    setModel: (modelState: AIModelState) => void;
+  };
+}
+
+function FormLogic({ presets, email, aiStorage }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { onOpen } = useBillingDialog();
-  const aiStorage = useAIStore();
+  // const aiStorage = useAIStore();
   const { mutateAsync: uploadResume, isPending, isSuccess } = useUploadResume();
 
   const activeJobId = searchParams.get('jobId');
@@ -36,22 +48,22 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { control, handleSubmit, watch, formState, setValue, getValues } = useForm<NewFormSchemaValue>({
+  const { control, handleSubmit, watch, formState, setValue, getValues, reset } = useForm<NewFormSchemaValue>({
     resolver: zodResolver(newFormSchema),
     defaultValues: {
-      aiModel: aiStorage.name,
+      aiModel: aiStorage.selectedLmName,
     },
   });
 
   const selectedFile = watch('document');
 
   useEffect(() => {
-    if (aiStorage) {
-      if (getValues('aiModel') !== aiStorage.name) {
-        setValue('aiModel', aiStorage.name);
+    if (aiStorage.selectedLmName) {
+      if (getValues('aiModel') !== aiStorage.selectedLmName) {
+        setValue('aiModel', aiStorage.selectedLmName);
       }
     }
-  }, [aiStorage]);
+  }, [aiStorage.selectedLmName]);
 
   useEffect(() => {
     setIsThinking(!!activeJobId);
@@ -69,6 +81,10 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
         const tl = gsap.timeline({
           onComplete: () => {
             setIsThinking(true);
+            reset({
+              aiModel: aiStorage.selectedLmName,
+              document: undefined,
+            });
             router.push(`${pathname}?jobId=${data}`);
           },
         });
@@ -131,7 +147,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
                   <Files className='text-neutral-500 size-7 hover:bg-neutral-300 rounded-sm transition-all p-1' />
                 </Link>
                 <div className='flex items-center gap-3'>
-                  {presets?.available && (
+                  {presets?.available ? (
                     <Controller
                       control={control}
                       name='aiModel'
@@ -149,11 +165,13 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
                         />
                       )}
                     />
+                  ) : (
+                    <Skeleton className='h-full w-40 bg-neutral-200' />
                   )}
                   {/* TODO: Make not Analysing..., run animation immediately, then just show error or realtime thinking */}
                   <button
                     type='submit'
-                    disabled={!formState.isValid || isSuccess}
+                    disabled={!formState.isValid || (formState.isSubmitted && isSuccess)}
                     className={cn(
                       'cursor-pointer disabled:cursor-default disabled:opacity-50 transition-opacity flex items-center p-0',
                       buttonVariants({ variant: 'outline' }),
@@ -161,7 +179,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
                         ? 'border-primary text-primary hover:text-primary hover:bg-primary/10'
                         : 'border-neutral-500 text-neutral-600',
                     )}>
-                    <span>{isPending ? 'Analysing...' : isSuccess ? 'Pushed' : 'Analyse'}</span>
+                    <span>{isPending ? 'Analysing...' : formState.isSubmitted && isSuccess ? 'Pushed' : 'Analyse'}</span>
                   </button>
                 </div>
               </div>
@@ -179,7 +197,7 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
       {isThinking && (
         <ThinkingScreen
           activeJobId={activeJobId}
-          accountId={'UB3j5H8IBo4E9eEZt1lm4'}
+          accountEmail={email}
           animateEntrance={!initialJobId}
         />
       )}
@@ -189,10 +207,16 @@ function FormLogic({ presets }: { presets: PresetsData | undefined }) {
 
 export default function NewForm() {
   const { data: presets } = usePresets();
+  const { data: me } = useMe();
+  const { name: selectedLmName, id, setModel } = useAIStore();
 
   return (
     <Suspense fallback={<></>}>
-      <FormLogic presets={presets} />
+      <FormLogic
+        presets={presets}
+        email={me?.email}
+        aiStorage={{ selectedLmName: selectedLmName, id: id, setModel: setModel }}
+      />
     </Suspense>
   );
 }

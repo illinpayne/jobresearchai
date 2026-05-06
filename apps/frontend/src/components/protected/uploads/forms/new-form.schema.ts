@@ -1,7 +1,10 @@
 import z from "zod";
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;
-export const ACCEPTED_FILE_TYPES = ["application/pdf"];
+export const ACCEPTED_FILE_TYPES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 
 export const newFormSchema = z.object({
   aiModel: z.string().nonempty(),

@@ -12,6 +12,7 @@ import {
 import { Server, Socket } from 'socket.io'
 
 import { RedisService } from '@/infrastructure/redis/redis.service'
+import { JobStatusCacheValue } from '@/shared/job-status.cache'
 import { jobNameCacheKey } from '@/shared/websockets'
 
 @WebSocketGateway({ namespace: '/progress', cors: true })
@@ -26,14 +27,21 @@ export class ProgressGateway {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() data: AiJoinRoomEventType
 	) {
-		const { jobId, accountId } = data
+		const { jobId, accountEmail } = data
 
-		const ownerId = await this.redisService.get(
+		const jobCacheValue = await this.redisService.get(
 			`${jobNameCacheKey}:${jobId}`
 		)
 
-		if (!ownerId || ownerId !== accountId) {
-			client.emit('error', { message: 'Malformed job access' })
+		const jobCacheParsedValue = jobCacheValue
+			? (JSON.parse(jobCacheValue) as JobStatusCacheValue)
+			: null
+
+		if (
+			!jobCacheParsedValue ||
+			jobCacheParsedValue.email !== accountEmail
+		) {
+			client.emit('error', { message: 'Malformed access' })
 			client.disconnect()
 			return
 		}
@@ -41,12 +49,13 @@ export class ProgressGateway {
 		await client.join(jobId)
 
 		client.emit('roomJoined', {
-			status: 'Initializing job',
-			jobId
-		})
+			lastMessage: jobCacheParsedValue.lastMessage ?? 'Reasoning resume',
+			jobId,
+			status: jobCacheParsedValue.status
+		} as AiProgressExchangeEventType)
 	}
 
 	public broadcastProgress(data: AiProgressExchangeEventType) {
-		this.server.to(data.jobId).emit('progressUpdate', data.statusMessage)
+		this.server.to(data.jobId).emit('progressUpdate', data)
 	}
 }

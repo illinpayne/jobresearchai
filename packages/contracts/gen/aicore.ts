@@ -7,6 +7,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { GetMeRequest } from "./account";
 import { BoolValue, StringValue } from "./google/protobuf/wrappers";
 
 export const protobufPackage = "aicore.v1";
@@ -15,6 +16,7 @@ export enum AnalyseStatus {
   WAITING = 0,
   DONE = 1,
   CANCELLED = 2,
+  INQUEUE = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -90,6 +92,21 @@ export interface CustomerProfile {
   tags: string[];
 }
 
+export interface ExtendedCustomerProfile {
+  profile: CustomerProfile | undefined;
+  presetName: string;
+  spentCredits: number;
+}
+
+export interface CustomerProfiles {
+  data: ExtendedCustomerProfile[];
+}
+
+export interface CreateCustomerProfileRequest {
+  profile: CustomerProfile | undefined;
+  jobId: string;
+}
+
 export interface AiAnalyseJobSimplified {
   id: string;
   accountId: string;
@@ -129,6 +146,16 @@ export interface GetAnalyseJobRequest {
   accountId: string;
 }
 
+export interface SimplifiedAnalysedJobWithPreset {
+  id: string;
+  status: string;
+  presetName: string;
+}
+
+export interface AnalyseJobInProgressResponse {
+  jobs: SimplifiedAnalysedJobWithPreset[];
+}
+
 export const AICORE_V1_PACKAGE_NAME = "aicore.v1";
 
 /** AI Core rpc */
@@ -146,9 +173,13 @@ export interface AICoreServiceClient {
 
   getExtendedPresetByAccount(request: GetPresetsByAccountRequest): Observable<ExtendedAiPreset>;
 
-  createProfile(request: CustomerProfile): Observable<BoolValue>;
+  /** Profiles */
 
-  getProfileById(request: StringValue): Observable<CustomerProfile>;
+  createProfile(request: CreateCustomerProfileRequest): Observable<BoolValue>;
+
+  getProfileById(request: StringValue): Observable<ExtendedCustomerProfile>;
+
+  getAccountProfiles(request: GetMeRequest): Observable<CustomerProfiles>;
 
   /** Jobs */
 
@@ -159,6 +190,8 @@ export interface AICoreServiceClient {
   getFullAnalyseJob(request: GetAnalyseJobRequest): Observable<AiAnalyseJob>;
 
   getSimpleAnalyseJob(request: GetAnalyseJobRequest): Observable<AiAnalyseJobSimplified>;
+
+  getAccountJobInProgress(request: GetMeRequest): Observable<AnalyseJobInProgressResponse>;
 }
 
 /** AI Core rpc */
@@ -184,9 +217,17 @@ export interface AICoreServiceController {
     request: GetPresetsByAccountRequest,
   ): Promise<ExtendedAiPreset> | Observable<ExtendedAiPreset> | ExtendedAiPreset;
 
-  createProfile(request: CustomerProfile): Promise<BoolValue> | Observable<BoolValue> | BoolValue;
+  /** Profiles */
 
-  getProfileById(request: StringValue): Promise<CustomerProfile> | Observable<CustomerProfile> | CustomerProfile;
+  createProfile(request: CreateCustomerProfileRequest): Promise<BoolValue> | Observable<BoolValue> | BoolValue;
+
+  getProfileById(
+    request: StringValue,
+  ): Promise<ExtendedCustomerProfile> | Observable<ExtendedCustomerProfile> | ExtendedCustomerProfile;
+
+  getAccountProfiles(
+    request: GetMeRequest,
+  ): Promise<CustomerProfiles> | Observable<CustomerProfiles> | CustomerProfiles;
 
   /** Jobs */
 
@@ -203,6 +244,10 @@ export interface AICoreServiceController {
   getSimpleAnalyseJob(
     request: GetAnalyseJobRequest,
   ): Promise<AiAnalyseJobSimplified> | Observable<AiAnalyseJobSimplified> | AiAnalyseJobSimplified;
+
+  getAccountJobInProgress(
+    request: GetMeRequest,
+  ): Promise<AnalyseJobInProgressResponse> | Observable<AnalyseJobInProgressResponse> | AnalyseJobInProgressResponse;
 }
 
 export function AICoreServiceControllerMethods() {
@@ -215,10 +260,12 @@ export function AICoreServiceControllerMethods() {
       "getExtendedPresetByAccount",
       "createProfile",
       "getProfileById",
+      "getAccountProfiles",
       "createAnalyseJob",
       "updateAnalyseJob",
       "getFullAnalyseJob",
       "getSimpleAnalyseJob",
+      "getAccountJobInProgress",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

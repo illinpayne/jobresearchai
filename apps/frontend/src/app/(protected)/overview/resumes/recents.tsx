@@ -1,56 +1,44 @@
 'use client';
-
-import Link from 'next/link';
-import { availableModels } from '@/api/snapshots/ai/mock.data';
-import type { ResumeResponse } from '@/api/snapshots/resumes/resume.types';
-import AvailableAiModels from '@/components/protected/ai/available-ai-models';
-import UploadedResumeCard from '@/components/shared/uploaded-resume-card';
+import { useQueryClient } from '@tanstack/react-query';
+import { useJobsInProgress } from '@/api/hooks/useJobsInProgress.hook';
+import { useMe } from '@/api/hooks/useMe.hook';
 import UploadedResumeInProgressCard from '@/components/shared/uploaded-resume-inprogress-card';
-import { buttonVariants } from '@/components/ui/button';
-import { ROUTES } from '@/constants';
-import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
-interface Props {
-  resumes: ResumeResponse[];
-}
+export default function RecentResumeUploads() {
+  const { data, isLoading } = useJobsInProgress();
+  const { data: me } = useMe();
+  const queryClient = useQueryClient();
 
-export default function RecentResumeUploads({ ...props }: Props) {
-  if (!props.resumes || props.resumes.length === 0) {
+  if (isLoading && !data) {
     return (
-      <div className='flex flex-col gap-3'>
-        <h2 className='text-2xl font-semibold'>Analyse your resume to get assistance</h2>
-        <div className='mb-5'>
-          <p className='text-neutral-600 inline'>Get your resume analysed with AI power. Choose model whatever you want, get insights, </p>
-          <Link
-            href={ROUTES.OVERVIEW.NEW_RESUME}
-            className={cn(buttonVariants({ variant: 'link' }), 'w-min, px-0')}>
-            Start analysing
-          </Link>
+      <div className='flex flex-col gap-4'>
+        <h2 className='text-2xl font-semibold'>Recently uploads</h2>
+        <div className='grid grid-cols-3 gap-4'>
+          <Skeleton className='w-full h-34 bg-neutral-200'></Skeleton>
+          <Skeleton className='w-full h-34 bg-neutral-200'></Skeleton>
+          <Skeleton className='w-full h-34 bg-neutral-200'></Skeleton>
         </div>
-        {availableModels.length > 0 && (
-          <AvailableAiModels
-            availableModels={availableModels}
-            hideTitle
-          />
-        )}
       </div>
     );
+  }
+
+  if (!data || data.jobs.length === 0) {
+    return <></>;
   }
   return (
     <div className='flex flex-col gap-4'>
       <h2 className='text-2xl font-semibold'>Recently uploads</h2>
-      <div className='grid grid-cols-3 gap-4'>
-        <UploadedResumeInProgressCard />
-        <UploadedResumeInProgressCard />
-        <UploadedResumeInProgressCard />
-      </div>
-      <div className='grid gap-y-4'>
-        {props.resumes.map((f) => (
-          <UploadedResumeCard
+      <div className='grid grid-cols-3 gap-4 max-lg:grid-cols-1 max-3xl:grid-cols-2'>
+        {data?.jobs.map((f, i) => (
+          <UploadedResumeInProgressCard
             key={f.id}
+            workId={++i}
+            queryClient={queryClient}
+            email={me?.email}
             {...f}
           />
-        ))}
+        )) ?? <Skeleton className='w-30 h-10 bg-neutral-200'></Skeleton>}
       </div>
     </div>
   );

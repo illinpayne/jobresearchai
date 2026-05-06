@@ -7,7 +7,7 @@ export const grpcProtoPaths = [protoPaths.AICORE]
 export const grpcProtoLoader: NonNullable<GrpcOptions['options']['loader']> = {
 	keepCase: false,
 	longs: String,
-	enums: String,
+	enums: Number,
 	defaults: true,
 	oneofs: true
 }

@@ -1,11 +1,12 @@
-import { AiResumeUploadEventType } from '@jrai/contracts'
-import { ExtendedAiPreset } from '@jrai/contracts/gen/aicore'
+import { AiResumeUploadEventType, EventStatusCode } from '@jrai/contracts'
+import { AnalyseStatus, ExtendedAiPreset } from '@jrai/contracts/gen/aicore'
 import {
 	BadGatewayException,
 	BadRequestException,
 	Body,
 	Controller,
 	FileTypeValidator,
+	Get,
 	HttpCode,
 	HttpStatus,
 	Inject,
@@ -36,11 +37,13 @@ import {
 } from '@/infrastructure/parser/parser.inject-keys'
 import { QueueService } from '@/infrastructure/queue/queue.service'
 import { RedisService } from '@/infrastructure/redis/redis.service'
+import { JobStatusCacheValue } from '@/shared/job-status.cache'
 import { jobNameCacheKey } from '@/shared/websockets'
 import { TextCleaner } from '@/utils/text-cleaner.util'
 
 import { AicoreClientGrpc } from '../ai/aicore.grpc'
 
+import { AccountProfilesResponse } from './dtos/account-profiles.dto'
 import { UploadResumeDto } from './dtos/upload-resume.dto'
 
 @Controller('resume')
@@ -55,7 +58,7 @@ export class ResumeController {
 
 	@ApiOperation({
 		summary: 'Upload resume for analyse',
-		description: 'Provides analysed resume to find jobsss'
+		description: 'Provides analysed resume to find jobs'
 	})
 	@ApiOkResponse({
 		description: 'Returns metadata about resume',
@@ -84,6 +87,7 @@ export class ResumeController {
 	@HttpCode(HttpStatus.CREATED)
 	public async uploadResume(
 		@CurrentUser('id') accountId: string,
+		@CurrentUser('email') email: string,
 		@UploadedFile(
 			new ParseFilePipe({
 				validators: [
@@ -127,12 +131,26 @@ export class ResumeController {
 				)
 			}
 
+			const jobCacheValue = JSON.stringify({
+				email,
+				lastMessage: 'Put into a queue',
+				status: EventStatusCode.INQUEUE
+			} as JobStatusCacheValue)
+
 			await this.redisService.set(
 				`${jobNameCacheKey}:${jobId}`,
-				accountId,
+				jobCacheValue,
 				'EX',
 				3600
 			)
+
+			await this.aiClient.call('createAnalyseJob', {
+				id: jobId,
+				accountId: accountId,
+				presetId: extendedPreset.preset.id,
+				status: AnalyseStatus.INQUEUE
+			})
+
 			await this.queueService.sendResumeToProcess({
 				preset: {
 					presetId: extendedPreset.preset.id,
@@ -154,5 +172,26 @@ export class ResumeController {
 				error.details ?? error.message ?? 'Unable to upload resume'
 			)
 		}
+	}
+
+	@ApiOperation({
+		summary: 'Get account analysed profiles',
+		description: 'Provides analysed resumes of user'
+	})
+	@ApiOkResponse({
+		description: 'Returns list of resumes',
+		type: AccountProfilesResponse
+	})
+	@ApiUnauthorizedResponse({ description: 'Unauthorized' })
+	@ApiInternalServerErrorResponse({
+		description: 'Failed to get personal data'
+	})
+	@ApiBearerAuth()
+	@Protected()
+	@UseInterceptors(FileInterceptor('resume'))
+	@Get('profiles')
+	@HttpCode(HttpStatus.OK)
+	public async getProfiles(@CurrentUser('id') accountId: string) {
+		return await this.aiClient.call('getAccountProfiles', { id: accountId })
 	}
 }

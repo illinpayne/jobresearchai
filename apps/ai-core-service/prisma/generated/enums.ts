@@ -10,6 +10,7 @@
 */
 
 export const AnalyseStatus = {
+  INQUEUE: 'INQUEUE',
   WAITING: 'WAITING',
   DONE: 'DONE',
   CANCELLED: 'CANCELLED'
