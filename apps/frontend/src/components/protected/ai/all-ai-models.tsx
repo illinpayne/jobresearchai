@@ -44,7 +44,7 @@ export default function AllAiModels({ ...props }: Props) {
             stars={f.stars}
             id={f.id}
             isLoading={isAddingModel && model?.id === f.id}
-            usageTokens={f.usageTokens}
+            usageCredits={f.usageCredits}
             onAdd={async (model) => {
               // if (model.paidTier.toLowerCase() !== 'free') {
               //   billing.onOpen();

@@ -15,7 +15,7 @@ interface Props extends AiPresetResponse {
 
 export default function AiModelCard({ ...props }: Props) {
   return (
-    <div className='relative'>
+    <div className='relative group h-full'>
       {props.isLoading && (
         <div className='size-full absolute top-0 left-0 rounded-lg bg-black/20 backdrop-blur-md z-10 flex items-center justify-center'>
           <div className='animate-spin'>
@@ -25,7 +25,7 @@ export default function AiModelCard({ ...props }: Props) {
       )}
       <div
         className={cn(
-          'rounded-lg p-4 transition-all outline hover:outline-primary group h-max overflow-hidden',
+          'rounded-lg p-4 transition-all outline hover:outline-primary h-full flex flex-col',
           props.isSelected && 'outline-emerald-500 bg-emerald-500/5',
         )}>
         <div className='w-full flex justify-between items-center'>
@@ -43,7 +43,7 @@ export default function AiModelCard({ ...props }: Props) {
             )
           )}
         </div>
-        <div className='flex flex-col'>
+        <div className='flex flex-col h-full'>
           <div className='flex gap-1'>
             {[...Array(5)].map((f, i) => (
               <Star
@@ -52,32 +52,32 @@ export default function AiModelCard({ ...props }: Props) {
               />
             ))}
           </div>
-          <p className='text-neutral-600 font-nunito-sans mt-3'>{props.description}</p>
-          <p className='text-neutral-600 text-sm font-nunito-sans mt-3'>{props.usageCredits ?? 0} tokens per analyse</p>
-          {!props.isSelected && (
-            <div className='transition-all duration-400 group-hover:h-12 group-hover:opacity-100 h-0 opacity-0'>
-              <div className='mt-3 flex justify-end gap-2'>
-                {!props.isAlreadyAvailable && (
-                  <Button
-                    onClick={() => {
-                      props.onAdd && props.onAdd(props as AiPresetResponse);
-                    }}>
-                    Get model
-                  </Button>
-                )}
-                {!props.isSelected && props.isAlreadyAvailable && (
-                  <Button
-                    variant={'outline'}
-                    className='border-primary hover:bg-primary/5'
-                    disabled={props.isSelected}
-                    onClick={() => {
-                      props.onSelect && props.onSelect(props);
-                    }}>
-                    Select
-                  </Button>
-                )}
-              </div>
-            </div>
+          <p className='text-neutral-600 font-nunito-sans my-3'>{props.description}</p>
+          <p className='text-neutral-600 text-sm font-nunito-sans mt-auto'>{props.usageCredits ?? 0} tokens per analyse</p>
+        </div>
+      </div>
+      <div className='transition-all duration-300 group-hover:opacity-100 opacity-0 absolute bottom-4 right-4 z-10'>
+        <div className='mt-3 flex justify-end gap-2'>
+          {!props.isAlreadyAvailable && (
+            <Button
+              variant={'ghost'}
+              className='hover:bg-primary/5 text-blue-500 hover:text-blue-600 transition-all'
+              onClick={() => {
+                props.onAdd && props.onAdd(props as AiPresetResponse);
+              }}>
+              Get model
+            </Button>
+          )}
+          {!props.isSelected && props.isAlreadyAvailable && (
+            <Button
+              variant={'ghost'}
+              className='hover:bg-primary/5 text-blue-500 hover:text-blue-600 transition-all'
+              disabled={props.isSelected}
+              onClick={() => {
+                props.onSelect && props.onSelect(props);
+              }}>
+              Select
+            </Button>
           )}
         </div>
       </div>
