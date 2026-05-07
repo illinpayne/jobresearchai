@@ -1,12 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  presetsCacheKey,
-  presetsCacheStaleTime,
-  RemoveCache,
-  SetCache,
-} from "@/lib/cache";
-import type { AiPresetResponse, AiPresetsResponse } from "../generated";
-import { fetchModels } from "../requests/ai.req";
+import { useQuery } from '@tanstack/react-query';
+import { presetsCacheKey, presetsCacheStaleTime, RemoveCache, SetCache } from '@/lib/cache';
+import type { AiPresetResponse, AiPresetsResponse } from '../generated';
+import { fetchModels } from '../requests/ai.req';
 
 export interface PresetsData {
   available: AiPresetResponse[];
@@ -15,7 +10,7 @@ export interface PresetsData {
 
 export const usePresets = () => {
   return useQuery({
-    queryKey: ["presets"],
+    queryKey: ['presets'],
     queryFn: async (): Promise<AiPresetsResponse> => {
       const rawCache = localStorage.getItem(presetsCacheKey);
 

@@ -1,16 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  jobsCacheKey,
-  jobsCacheStaleTime,
-  RemoveCache,
-  SetCache,
-} from "@/lib/cache";
-import type { SimplifiedAnalyseJobWithPresetResponse } from "../generated";
-import { getJobsInProgress } from "../requests/ai.req";
+import { useQuery } from '@tanstack/react-query';
+import { jobsCacheKey, jobsCacheStaleTime, RemoveCache, SetCache } from '@/lib/cache';
+import type { SimplifiedAnalyseJobWithPresetResponse } from '../generated';
+import { getJobsInProgress } from '../requests/ai.req';
 
 export const useJobsInProgress = () => {
   return useQuery({
-    queryKey: ["jobsInProgress"],
+    queryKey: ['jobsInProgress'],
     queryFn: async (): Promise<SimplifiedAnalyseJobWithPresetResponse> => {
       const rawCache = localStorage.getItem(jobsCacheKey);
 
@@ -22,7 +17,7 @@ export const useJobsInProgress = () => {
         const age = Date.now() - cacheObject.createdAt;
 
         if (age <= jobsCacheStaleTime) {
-          if (typeof cacheObject.data === "string") {
+          if (typeof cacheObject.data === 'string') {
             return {
               jobs: [],
             };
@@ -34,8 +29,7 @@ export const useJobsInProgress = () => {
       }
 
       try {
-        const data =
-          (await getJobsInProgress()) as SimplifiedAnalyseJobWithPresetResponse;
+        const data = (await getJobsInProgress()) as SimplifiedAnalyseJobWithPresetResponse;
 
         if (data.jobs.length > 0) {
           SetCache(jobsCacheKey, data);
@@ -43,7 +37,7 @@ export const useJobsInProgress = () => {
 
         return data;
       } catch (error) {
-        SetCache(jobsCacheKey, "not-found");
+        SetCache(jobsCacheKey, 'not-found');
       }
 
       return {
@@ -51,7 +45,7 @@ export const useJobsInProgress = () => {
       };
     },
     retry: 0,
-    refetchOnMount: "always",
+    refetchOnMount: 'always',
     refetchOnWindowFocus: true,
   });
 };

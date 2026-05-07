@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['tailwindcss'],
     serverActions: {
-      bodySizeLimit: '3mb',
+      bodySizeLimit: '1mb',
     },
     mdxRs: false,
   },

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common'
-import { PresetsModule } from './presets/presets.module';
-import { ProfilesModule } from './profiles/profiles.module';
-import { AnalyseJobsModule } from './analyse-jobs/analyse-jobs.module';
+
+import { AnalyseJobsModule } from './analyse-jobs/analyse-jobs.module'
+import { PresetsModule } from './presets/presets.module'
+import { ProfilesModule } from './profiles/profiles.module'
 
 @Module({
-  imports: [PresetsModule, ProfilesModule, AnalyseJobsModule]
+	imports: [PresetsModule, ProfilesModule, AnalyseJobsModule]
 })
 export class ModulesModule {}

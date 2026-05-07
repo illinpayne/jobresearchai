@@ -1,27 +1,25 @@
-import type { UploadResumeData } from "@/components/protected/uploads/forms/new-form.schema";
-import type { AccountProfilesResponse } from "../generated";
-import { instance } from "../instance";
+import type { UploadResumeData } from '@/components/protected/uploads/forms/new-form.schema';
+import type { AccountProfilesResponse } from '../generated';
+import { instance } from '../instance';
 
 export enum ResumeEndpoints {
-  UPLOAD = "/resume/upload",
-  PROFILES = "/resume/profiles",
+  UPLOAD = '/resume/upload',
+  PROFILES = '/resume/profiles',
 }
 
 export const uploadResume = async (data: UploadResumeData) => {
   const formData = new FormData();
-  formData.append("resume", data.file);
-  formData.append("presetId", data.presetId);
+  formData.append('resume', data.file);
+  formData.append('presetId', data.presetId);
   return await instance
     .post<string>(ResumeEndpoints.UPLOAD, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     })
     .then((response) => response.data);
 };
 
 export const getAccountProfiles = async () => {
-  return await instance
-    .get<AccountProfilesResponse>(ResumeEndpoints.PROFILES)
-    .then((response) => response.data);
+  return await instance.get<AccountProfilesResponse>(ResumeEndpoints.PROFILES).then((response) => response.data);
 };

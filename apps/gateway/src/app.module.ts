@@ -7,7 +7,7 @@ import { oauthEnv } from './config/env/oauth.env'
 import { InfrastructureModule } from './infrastructure/infrastructure.module'
 import { ParserModule } from './infrastructure/parser/parser.module'
 import { AppsModule } from './modules/apps.module'
-import { WebsocketsModule } from './websockets/websockets.module';
+import { WebsocketsModule } from './websockets/websockets.module'
 
 @Module({
 	imports: [

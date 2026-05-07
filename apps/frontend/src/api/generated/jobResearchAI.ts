@@ -6,10 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import axios from 'axios';
-import type {
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import type {
   AccountControllerChangeProfileAvatarV1Body,
@@ -30,7 +27,7 @@ import type {
   SendOtpRegisterDto,
   SendOtpResponse,
   SimplifiedAnalyseJobWithPresetResponse,
-  VerifyOTPRegister
+  VerifyOTPRegister,
 } from './';
 
 /**
@@ -38,261 +35,209 @@ import type {
  * @summary Register new account
  */
 export const authControllerSendRegisterOTPV1 = (
-    sendOtpRegisterDto: SendOtpRegisterDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/send-otp-register`,
-      sendOtpRegisterDto,options
-    );
-  }
+  sendOtpRegisterDto: SendOtpRegisterDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/send-otp-register`, sendOtpRegisterDto, options);
+};
 
 /**
  * Sends OTP code to the email for verify
  * @summary Resend otp code for register
  */
 export const authControllerResendRegisterOTPV1 = (
-    resendOtpDto: ResendOtpDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/resend-otp-register`,
-      resendOtpDto,options
-    );
-  }
+  resendOtpDto: ResendOtpDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/resend-otp-register`, resendOtpDto, options);
+};
 
 /**
  * Verifies OTP code and log into account
  * @summary Verify OTP code and log in
  */
 export const authControllerVerifyRegisterOTPV1 = (
-    verifyOTPRegister: VerifyOTPRegister, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AuthResponse>> => {
-    return axios.post(
-      `/v1/auth/verify-otp-register`,
-      verifyOTPRegister,options
-    );
-  }
+  verifyOTPRegister: VerifyOTPRegister,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AuthResponse>> => {
+  return axios.post(`/v1/auth/verify-otp-register`, verifyOTPRegister, options);
+};
 
 /**
  * Login into existing account with defined credentials
  * @summary Login into account
  */
-export const authControllerLoginV1 = (
-    loginDto: LoginDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AuthResponse>> => {
-    return axios.post(
-      `/v1/auth/login`,
-      loginDto,options
-    );
-  }
+export const authControllerLoginV1 = (loginDto: LoginDto, options?: AxiosRequestConfig): Promise<AxiosResponse<AuthResponse>> => {
+  return axios.post(`/v1/auth/login`, loginDto, options);
+};
 
-export const authControllerOauthLoginV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    return axios.get(
-      `/v1/auth/oauth`,options
-    );
-  }
+export const authControllerOauthLoginV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+  return axios.get(`/v1/auth/oauth`, options);
+};
 
 /**
  * Revalidates the session for the expired one
  * @summary Revalidate session
  */
-export const authControllerRevalidateSessionV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AuthResponse>> => {
-    return axios.post(
-      `/v1/auth/revalidate`,undefined,options
-    );
-  }
+export const authControllerRevalidateSessionV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<AuthResponse>> => {
+  return axios.post(`/v1/auth/revalidate`, undefined, options);
+};
 
 /**
  * Logout from the account
  * @summary Logout session
  */
-export const authControllerLogoutV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LogoutResponse>> => {
-    return axios.post(
-      `/v1/auth/logout`,undefined,options
-    );
-  }
+export const authControllerLogoutV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<LogoutResponse>> => {
+  return axios.post(`/v1/auth/logout`, undefined, options);
+};
 
 /**
  * Sends an OTP code to the user email for password reset
  * @summary Forgot password
  */
 export const authControllerForgotPasswordV1 = (
-    forgotPasswordDto: ForgotPasswordDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/forgot-password`,
-      forgotPasswordDto,options
-    );
-  }
+  forgotPasswordDto: ForgotPasswordDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/forgot-password`, forgotPasswordDto, options);
+};
 
 /**
  * Resets the password for the account with provided email, code and new password
  * @summary Reset password
  */
 export const authControllerResetPasswordV1 = (
-    resetPasswordDto: ResetPasswordDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/reset-password`,
-      resetPasswordDto,options
-    );
-  }
+  resetPasswordDto: ResetPasswordDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/reset-password`, resetPasswordDto, options);
+};
 
 /**
  * Sends an OTP code to the user email for change email
  * @summary Send otp for change email
  */
-export const authControllerSendOTPEmailV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/send-email-otp`,undefined,options
-    );
-  }
+export const authControllerSendOTPEmailV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/send-email-otp`, undefined, options);
+};
 
 /**
  * Resets the password for the account with provided email, code and new password
  * @summary Change email
  */
 export const authControllerChangeEmailV1 = (
-    changeEmailDto: ChangeEmailDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SendOtpResponse>> => {
-    return axios.post(
-      `/v1/auth/change-email`,
-      changeEmailDto,options
-    );
-  }
+  changeEmailDto: ChangeEmailDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SendOtpResponse>> => {
+  return axios.post(`/v1/auth/change-email`, changeEmailDto, options);
+};
 
 /**
  * Provides authenticated account data
  * @summary Account session data
  */
-export const accountControllerGetMeV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AccountResponse>> => {
-    return axios.get(
-      `/v1/account/me`,options
-    );
-  }
+export const accountControllerGetMeV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<AccountResponse>> => {
+  return axios.get(`/v1/account/me`, options);
+};
 
 /**
  * Updates personal information about customer
  * @summary Change personal data
  */
 export const accountControllerUpdatePersonalDataV1 = (
-    changePersonalDataDto: ChangePersonalDataDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AccountResponse>> => {
-    return axios.put(
-      `/v1/account/personal-data`,
-      changePersonalDataDto,options
-    );
-  }
+  changePersonalDataDto: ChangePersonalDataDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AccountResponse>> => {
+  return axios.put(`/v1/account/personal-data`, changePersonalDataDto, options);
+};
 
 /**
  * Change customer avatar
  * @summary Change avatar profile
  */
 export const accountControllerChangeProfileAvatarV1 = (
-    accountControllerChangeProfileAvatarV1Body: AccountControllerChangeProfileAvatarV1Body, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AccountResponse>> => {const formData = new FormData();
-if(accountControllerChangeProfileAvatarV1Body.file !== undefined) {
- formData.append(`file`, accountControllerChangeProfileAvatarV1Body.file);
- }
-
-    return axios.put(
-      `/v1/account/change-avatar`,
-      formData,options
-    );
+  accountControllerChangeProfileAvatarV1Body: AccountControllerChangeProfileAvatarV1Body,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AccountResponse>> => {
+  const formData = new FormData();
+  if (accountControllerChangeProfileAvatarV1Body.file !== undefined) {
+    formData.append(`file`, accountControllerChangeProfileAvatarV1Body.file);
   }
+
+  return axios.put(`/v1/account/change-avatar`, formData, options);
+};
 
 /**
  * Provides analysed resume to find jobs
  * @summary Upload resume for analyse
  */
 export const resumeControllerUploadResumeV1 = (
-    resumeControllerUploadResumeV1Body: ResumeControllerUploadResumeV1Body, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<string>> => {const formData = new FormData();
-if(resumeControllerUploadResumeV1Body.file !== undefined) {
- formData.append(`file`, resumeControllerUploadResumeV1Body.file);
- }
-
-    return axios.post(
-      `/v1/resume/upload`,
-      formData,{
-    ...options,}
-    );
+  resumeControllerUploadResumeV1Body: ResumeControllerUploadResumeV1Body,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<string>> => {
+  const formData = new FormData();
+  if (resumeControllerUploadResumeV1Body.file !== undefined) {
+    formData.append(`file`, resumeControllerUploadResumeV1Body.file);
   }
+
+  return axios.post(`/v1/resume/upload`, formData, {
+    ...options,
+  });
+};
 
 /**
  * Provides analysed resumes of user
  * @summary Get account analysed profiles
  */
-export const resumeControllerGetProfilesV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AccountProfilesResponse>> => {
-    return axios.get(
-      `/v1/resume/profiles`,options
-    );
-  }
+export const resumeControllerGetProfilesV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<AccountProfilesResponse>> => {
+  return axios.get(`/v1/resume/profiles`, options);
+};
 
 /**
  * Gets all ai models
  * @summary Gets ai models
  */
-export const aiControllerGetModelListV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AiPresetsResponse>> => {
-    return axios.get(
-      `/v1/ai/models`,options
-    );
-  }
+export const aiControllerGetModelListV1 = (options?: AxiosRequestConfig): Promise<AxiosResponse<AiPresetsResponse>> => {
+  return axios.get(`/v1/ai/models`, options);
+};
 
 /**
  * Adding model for using in generation
  * @summary Get model to use
  */
 export const aiControllerGetModelToUserV1 = (
-    getModelDto: GetModelDto, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AssignPresetResponse>> => {
-    return axios.post(
-      `/v1/ai/get-model`,
-      getModelDto,options
-    );
-  }
+  getModelDto: GetModelDto,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AssignPresetResponse>> => {
+  return axios.post(`/v1/ai/get-model`, getModelDto, options);
+};
 
 /**
  * Gets all jobs in progress
  * @summary Gets jobs in progress
  */
 export const aiControllerGetJobsInProgressV1 = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<SimplifiedAnalyseJobWithPresetResponse>> => {
-    return axios.get(
-      `/v1/ai/jobs-in-progress`,options
-    );
-  }
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<SimplifiedAnalyseJobWithPresetResponse>> => {
+  return axios.get(`/v1/ai/jobs-in-progress`, options);
+};
 
-export type AuthControllerSendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerResendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerVerifyRegisterOTPV1Result = AxiosResponse<AuthResponse>
-export type AuthControllerLoginV1Result = AxiosResponse<AuthResponse>
-export type AuthControllerOauthLoginV1Result = AxiosResponse<void>
-export type AuthControllerRevalidateSessionV1Result = AxiosResponse<AuthResponse>
-export type AuthControllerLogoutV1Result = AxiosResponse<LogoutResponse>
-export type AuthControllerForgotPasswordV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerResetPasswordV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerSendOTPEmailV1Result = AxiosResponse<SendOtpResponse>
-export type AuthControllerChangeEmailV1Result = AxiosResponse<SendOtpResponse>
-export type AccountControllerGetMeV1Result = AxiosResponse<AccountResponse>
-export type AccountControllerUpdatePersonalDataV1Result = AxiosResponse<AccountResponse>
-export type AccountControllerChangeProfileAvatarV1Result = AxiosResponse<AccountResponse>
-export type ResumeControllerUploadResumeV1Result = AxiosResponse<string>
-export type ResumeControllerGetProfilesV1Result = AxiosResponse<AccountProfilesResponse>
-export type AiControllerGetModelListV1Result = AxiosResponse<AiPresetsResponse>
-export type AiControllerGetModelToUserV1Result = AxiosResponse<AssignPresetResponse>
-export type AiControllerGetJobsInProgressV1Result = AxiosResponse<SimplifiedAnalyseJobWithPresetResponse>
+export type AuthControllerSendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerResendRegisterOTPV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerVerifyRegisterOTPV1Result = AxiosResponse<AuthResponse>;
+export type AuthControllerLoginV1Result = AxiosResponse<AuthResponse>;
+export type AuthControllerOauthLoginV1Result = AxiosResponse<void>;
+export type AuthControllerRevalidateSessionV1Result = AxiosResponse<AuthResponse>;
+export type AuthControllerLogoutV1Result = AxiosResponse<LogoutResponse>;
+export type AuthControllerForgotPasswordV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerResetPasswordV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerSendOTPEmailV1Result = AxiosResponse<SendOtpResponse>;
+export type AuthControllerChangeEmailV1Result = AxiosResponse<SendOtpResponse>;
+export type AccountControllerGetMeV1Result = AxiosResponse<AccountResponse>;
+export type AccountControllerUpdatePersonalDataV1Result = AxiosResponse<AccountResponse>;
+export type AccountControllerChangeProfileAvatarV1Result = AxiosResponse<AccountResponse>;
+export type ResumeControllerUploadResumeV1Result = AxiosResponse<string>;
+export type ResumeControllerGetProfilesV1Result = AxiosResponse<AccountProfilesResponse>;
+export type AiControllerGetModelListV1Result = AxiosResponse<AiPresetsResponse>;
+export type AiControllerGetModelToUserV1Result = AxiosResponse<AssignPresetResponse>;
+export type AiControllerGetJobsInProgressV1Result = AxiosResponse<SimplifiedAnalyseJobWithPresetResponse>;

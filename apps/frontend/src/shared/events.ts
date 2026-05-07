@@ -6,10 +6,10 @@ export enum EventStatusCode {
 }
 
 export enum JobStatus {
-  WAITING = "WAITING",
-  DONE = "DONE",
-  INQUEUE = "INQUEUE",
-  CANCELLED = "CANCELLED",
+  WAITING = 'WAITING',
+  DONE = 'DONE',
+  INQUEUE = 'INQUEUE',
+  CANCELLED = 'CANCELLED',
 }
 
 export interface AiProgressExchangeEventType {

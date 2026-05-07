@@ -33,12 +33,10 @@ export class GrpcExceptionFilter implements ExceptionFilter {
 		if (exception instanceof HttpException) {
 			const status = exception.getStatus()
 
-			return response
-				.status(status)
-				.json({
-					statusCode: status,
-					message: exception.message
-				} as IGrpcExceptionBody)
+			return response.status(status).json({
+				statusCode: status,
+				message: exception.message
+			} as IGrpcExceptionBody)
 		}
 
 		return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

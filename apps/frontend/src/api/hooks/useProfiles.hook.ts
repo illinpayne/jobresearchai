@@ -1,16 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  profilesCacheKey,
-  profilesCacheStaleTime,
-  RemoveCache,
-  SetCache,
-} from "@/lib/cache";
-import type { AccountProfilesResponse } from "../generated";
-import { getAccountProfiles } from "../requests/resume.req";
+import { useQuery } from '@tanstack/react-query';
+import { profilesCacheKey, profilesCacheStaleTime, RemoveCache, SetCache } from '@/lib/cache';
+import type { AccountProfilesResponse } from '../generated';
+import { getAccountProfiles } from '../requests/resume.req';
 
 export const useProfiles = () => {
   return useQuery({
-    queryKey: ["profiles"],
+    queryKey: ['profiles'],
     queryFn: async (): Promise<AccountProfilesResponse> => {
       const rawCache = localStorage.getItem(profilesCacheKey);
 
@@ -22,7 +17,7 @@ export const useProfiles = () => {
         const age = Date.now() - cacheObject.createdAt;
 
         if (age <= profilesCacheStaleTime) {
-          if (typeof cacheObject.data === "string") {
+          if (typeof cacheObject.data === 'string') {
             return {
               data: [],
             };
@@ -42,7 +37,7 @@ export const useProfiles = () => {
 
         return data;
       } catch (error) {
-        SetCache(profilesCacheKey, "not-found");
+        SetCache(profilesCacheKey, 'not-found');
       }
 
       return {

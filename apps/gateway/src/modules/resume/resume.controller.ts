@@ -95,7 +95,7 @@ export class ResumeController {
 						fileType:
 							'.(pdf|vnd.openxmlformats-officedocument.wordprocessingml.document)$'
 					}),
-					new MaxFileSizeValidator({ maxSize: 0.5 * 1024 * 1024 })
+					new MaxFileSizeValidator({ maxSize: 1 * 1024 * 1024 })
 				]
 			})
 		)
