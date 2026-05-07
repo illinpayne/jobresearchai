@@ -10,8 +10,7 @@ import type { AnalyseJobInProgressDto, SimplifiedAnalyseJobWithPresetResponse } 
 import { APP_CONFIG, ROUTES } from '@/constants';
 import { jobsCacheKey, profilesCacheKey, RemoveCache } from '@/lib/cache';
 import { cn } from '@/lib/utils';
-import { type AiProgressExchangeEventType, EventStatusCode } from '@/shared/events';
-import { JobStatus, JobStatusMapper } from '@/shared/jobs';
+import { type AiJoinRoomEventType, type AiProgressExchangeEventType, EventStatusCode, JobStatus, JobStatusMapper } from '@/shared/events';
 
 interface Props extends AnalyseJobInProgressDto {
   workId: number;
@@ -85,44 +84,100 @@ export default function UploadedResumeInProgressCard({ queryClient, email, ...pr
       transports: ['websocket'],
     });
 
+    // socket.on('connect', () => {
+    //   socket.emit('joinJobRoom', { jobId: props.id, accountEmail: email });
+    // });
+
+    // socket.on('roomJoined', (data: AiProgressExchangeEventType) => {
+    //   setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
+    // });
+
     socket.on('connect', () => {
-      socket.emit('joinJobRoom', { jobId: props.id, accountEmail: email });
+      socket.emit(
+        'listenResumeJob',
+        { jobId: props.id, accountEmail: email } as AiJoinRoomEventType,
+        (response: AiProgressExchangeEventType) => {
+          const status = JobStatusMapper[response.status];
+
+          if (status === JobStatus.CANCELLED) {
+            socket.disconnect();
+            setProgressStatus({ message: response.lastMessage, status: JobStatus.CANCELLED });
+            return;
+          }
+
+          setProgressStatus({
+            message: response.lastMessage,
+            status: JobStatusMapper[response.status],
+          });
+        },
+      );
     });
 
-    socket.on('roomJoined', (data: AiProgressExchangeEventType) => {
-      setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
-    });
+    socket.on('updateResumeJob', async (response: AiProgressExchangeEventType) => {
+      const status = JobStatusMapper[response.status];
 
-    socket.on('progressUpdate', async (data: AiProgressExchangeEventType) => {
-      if (data.status === EventStatusCode.DONE) {
-        socket.disconnect();
-        RemoveCache(profilesCacheKey);
-        queryClient.refetchQueries({ queryKey: ['profiles'] });
-        const { toast } = await import('sonner');
-        toast.success(`Job #${props.workId} completed.`);
-        await removeCurrentFromJobList(data);
+      // Done/Error cases
+      switch (status) {
+        case JobStatus.DONE: {
+          socket.disconnect();
+          RemoveCache(profilesCacheKey);
+          queryClient.refetchQueries({ queryKey: ['profiles'] });
+          const { toast } = await import('sonner');
+          toast.success(`Job #${props.workId} completed.`);
+          await removeCurrentFromJobList(response);
 
-        setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
-      } else if (data.status === EventStatusCode.CANCELLED) {
-        socket.disconnect();
+          setProgressStatus({ message: response.lastMessage, status: status });
+          return;
+        }
+        case JobStatus.CANCELLED: {
+          socket.disconnect();
 
-        setProgressStatus({ message: 'Unable to process your request fow now!', status: JobStatus.CANCELLED });
+          const { toast } = await import('sonner');
+          toast.error(`Job #${props.workId} was cancelled.`);
 
-        const { toast } = await import('sonner');
-        toast.error(`Job #${props.workId} was cancelled.`);
+          await removeCurrentFromJobList(response);
 
-        await removeCurrentFromJobList(data);
-      } else {
-        setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
+          setProgressStatus({ message: 'Unable to process your request fow now!', status: JobStatus.CANCELLED });
+          return;
+        }
+
+        default:
+          break;
       }
+
+      setProgressStatus({ message: response.lastMessage, status: status });
     });
 
-    socket.on('error', (err: { message: string }) => {
-      setProgressStatus({ message: err.message, status: JobStatus.CANCELLED });
-      RemoveCache(jobsCacheKey);
-      queryClient.refetchQueries({ queryKey: ['jobsInProgress'] });
-      socket.disconnect();
-    });
+    // socket.on('progressUpdate', async (data: AiProgressExchangeEventType) => {
+    //   if (data.status === EventStatusCode.DONE) {
+    //     socket.disconnect();
+    //     RemoveCache(profilesCacheKey);
+    //     queryClient.refetchQueries({ queryKey: ['profiles'] });
+    //     const { toast } = await import('sonner');
+    //     toast.success(`Job #${props.workId} completed.`);
+    //     await removeCurrentFromJobList(data);
+
+    //     setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
+    //   } else if (data.status === EventStatusCode.CANCELLED) {
+    //     socket.disconnect();
+
+    //     setProgressStatus({ message: 'Unable to process your request fow now!', status: JobStatus.CANCELLED });
+
+    //     const { toast } = await import('sonner');
+    //     toast.error(`Job #${props.workId} was cancelled.`);
+
+    //     await removeCurrentFromJobList(data);
+    //   } else {
+    //     setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
+    //   }
+    // });
+
+    // socket.on('error', (err: { message: string }) => {
+    //   setProgressStatus({ message: err.message, status: JobStatus.CANCELLED });
+    //   RemoveCache(jobsCacheKey);
+    //   queryClient.refetchQueries({ queryKey: ['jobsInProgress'] });
+    //   socket.disconnect();
+    // });
     return () => {
       socket.disconnect();
     };

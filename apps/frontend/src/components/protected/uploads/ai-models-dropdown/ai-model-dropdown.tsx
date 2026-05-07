@@ -1,7 +1,6 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import type { AiPresetResponse } from '@/api/generated';
-import type { AiModelResponse } from '@/api/snapshots/ai/ai.dto';
 import {
   DropdownMenu,
   DropdownMenuContent,

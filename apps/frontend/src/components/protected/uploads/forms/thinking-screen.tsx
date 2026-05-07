@@ -8,8 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import { APP_CONFIG, ROUTES } from '@/constants';
 import { jobsCacheKey, profilesCacheKey, RemoveCache } from '@/lib/cache';
-import { type AiProgressExchangeEventType, EventStatusCode } from '@/shared/events';
-import { type JobJoinedRoom, JobStatus, JobStatusMapper, type JobUpdatesRoom } from '@/shared/jobs';
+import { type AiJoinRoomEventType, type AiProgressExchangeEventType, JobStatus, JobStatusMapper } from '@/shared/events';
 import { useAIStore } from '@/states/useAiStorage.hook';
 
 interface ThinkingScreenProps {
@@ -37,45 +36,64 @@ export const ThinkingScreen = React.memo(function ThinkingScreen({
     });
 
     socket.on('connect', () => {
-      socket.emit('joinJobRoom', { jobId: activeJobId, accountEmail });
+      socket.emit(
+        'listenResumeJob',
+        { jobId: activeJobId, accountEmail } as AiJoinRoomEventType,
+        (response: AiProgressExchangeEventType) => {
+          const status = JobStatusMapper[response.status];
+
+          if (status === JobStatus.CANCELLED) {
+            socket.disconnect();
+            setProgressStatus({ message: response.lastMessage, status: JobStatus.CANCELLED });
+            router.replace(ROUTES.OVERVIEW.RESUMES);
+            return;
+          }
+
+          setProgressStatus({
+            message: response.lastMessage,
+            status: JobStatusMapper[response.status],
+          });
+        },
+      );
     });
 
-    socket.on('roomJoined', (data: JobJoinedRoom) => {
-      setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
-    });
+    socket.on('updateResumeJob', async (response: AiProgressExchangeEventType) => {
+      const status = JobStatusMapper[response.status];
 
-    socket.on('progressUpdate', async (data: JobUpdatesRoom) => {
-      if (data.status === EventStatusCode.DONE) {
-        setProgressStatus({ message: 'Complete', status: JobStatusMapper[data.status] });
-        socket.disconnect();
+      // Done/Error cases
+      switch (status) {
+        case JobStatus.DONE: {
+          socket.disconnect();
+          setProgressStatus({ message: 'Complete', status: status });
 
-        RemoveCache(profilesCacheKey);
-        RemoveCache(jobsCacheKey);
-        queryClient.refetchQueries({ queryKey: ['jobsInProgress'] });
-        queryClient.refetchQueries({ queryKey: ['profiles'] });
+          RemoveCache(profilesCacheKey);
+          RemoveCache(jobsCacheKey);
+          queryClient.refetchQueries({ queryKey: ['jobsInProgress'] });
+          queryClient.refetchQueries({ queryKey: ['profiles'] });
 
-        const { toast } = await import('sonner');
-        toast.success(`Analyse completed`);
+          const { toast } = await import('sonner');
+          toast.success(`Analyse completed`);
 
-        setTimeout(() => {
-          router.push(ROUTES.OVERVIEW.RESUMES);
-        }, 1000);
-      } else if (data.status === EventStatusCode.CANCELLED) {
-        socket.disconnect();
-        setProgressStatus({ message: 'Unable to process your request fow now!', status: JobStatusMapper[data.status] });
-        setTimeout(() => {
-          router.replace(ROUTES.OVERVIEW.NEW_RESUME);
-        }, 1000);
-      } else {
-        setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
+          setTimeout(() => {
+            router.replace(ROUTES.OVERVIEW.RESUMES);
+          }, 1000);
+          return;
+        }
+        case JobStatus.CANCELLED:
+          socket.disconnect();
+          setProgressStatus({ message: response.lastMessage, status: status });
+          setTimeout(() => {
+            router.replace(ROUTES.OVERVIEW.NEW_RESUME);
+          }, 1000);
+          return;
+
+        default:
+          break;
       }
+
+      setProgressStatus({ message: response.lastMessage, status: status });
     });
 
-    socket.on('error', (err: { message: string }) => {
-      socket.disconnect();
-      setProgressStatus({ message: err.message, status: JobStatus.CANCELLED });
-      router.push(ROUTES.OVERVIEW.RESUMES);
-    });
     return () => {
       socket.disconnect();
     };

@@ -3,6 +3,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { AxiosError } from 'axios';
 import gsap from 'gsap';
 import { Files } from 'lucide-react';
 import Link from 'next/link';
@@ -17,6 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants/routes';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 import { cn } from '@/lib/utils';
+import type { ApiError } from '@/shared/api-error.types';
 import { type AIModelState, useAIStore } from '@/states/useAiStorage.hook';
 import { AiModels } from '../ai-models-dropdown/ai-model-dropdown';
 import { DynamicGreeting } from './greeting';
@@ -48,7 +50,7 @@ function FormLogic({ presets, email, aiStorage }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { control, handleSubmit, watch, formState, setValue, getValues, reset } = useForm<NewFormSchemaValue>({
+  const { control, handleSubmit, watch, formState, setValue, getValues, setError, reset } = useForm<NewFormSchemaValue>({
     resolver: zodResolver(newFormSchema),
     defaultValues: {
       aiModel: aiStorage.selectedLmName,
@@ -74,7 +76,8 @@ function FormLogic({ presets, email, aiStorage }: Props) {
       presetId: presets?.available.find((f) => f.name === values.aiModel)?.id || '',
       file: values.document,
     };
-    if (contentRef.current) contentRef.current.style.pointerEvents = 'none';
+    // if (contentRef.current) contentRef.current.style.pointerEvents = 'none';
+    const { toast } = await import('sonner');
 
     await uploadResume(data, {
       onSuccess: (data) => {
@@ -85,6 +88,7 @@ function FormLogic({ presets, email, aiStorage }: Props) {
               aiModel: aiStorage.selectedLmName,
               document: undefined,
             });
+
             router.push(`${pathname}?jobId=${data}`);
           },
         });
@@ -103,11 +107,22 @@ function FormLogic({ presets, email, aiStorage }: Props) {
           ease: 'expo.in',
         });
       },
+      onError: (error: any) => {
+        const message = error.response?.data?.message;
+        const displayMessage = Array.isArray(message) ? message[0] : message;
+        setError('document', { type: 'value', message: 'dd' });
+        toast.error(displayMessage || 'An unexpected error occurred');
+      },
     });
   }
 
   const handleFile = (files: FileList | null) => {
-    if (files && files.length > 0) setValue('document', files[0], { shouldValidate: true });
+    if (files && files.length > 0) {
+      setValue('document', files[0], { shouldValidate: true });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   return (

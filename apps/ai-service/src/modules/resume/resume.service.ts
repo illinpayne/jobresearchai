@@ -14,6 +14,7 @@ import {
 	IProviderUsageTokens
 } from '@/infrastructure/ai-provider/providers/ai-provider.response'
 import { QueueService } from '@/infrastructure/queue/queue.service'
+import { delay } from '@/utils/delay'
 
 import { AicoreClientGrpc } from '../aicore/aicore.grpc'
 
@@ -29,6 +30,7 @@ export class ResumeService {
 
 	public async processResume(payload: AiResumeUploadEventType) {
 		const { jobId } = payload
+
 		await this.putJobInWaiting(payload)
 		this.queue.sendAnalysisProgress({
 			lastMessage: 'Reasoning provided resume',
@@ -36,7 +38,6 @@ export class ResumeService {
 			status: EventStatusCode.WAITING
 		})
 		const aiResponse = await this.providerPrompt(payload)
-
 		if (!aiResponse) {
 			return
 		}
@@ -47,6 +48,7 @@ export class ResumeService {
 				jobId,
 				status: EventStatusCode.WAITING
 			})
+			await delay(10000)
 			const parsedRaw = JSON.parse(aiResponse.rawData)
 			const customerProfileDto = plainToInstance(
 				CustomerProfileDto,
@@ -143,16 +145,6 @@ export class ResumeService {
 	}
 
 	private async cancellJob(payload: AiResumeUploadEventType) {
-		try {
-			await this.aiClient.call('updateAnalyseJob', {
-				id: payload.jobId,
-				accountId: payload.accountId,
-				status: AnalyseStatus.CANCELLED
-			})
-		} catch (error) {}
-	}
-
-	private async putJobInQueue(payload: AiResumeUploadEventType) {
 		try {
 			await this.aiClient.call('updateAnalyseJob', {
 				id: payload.jobId,
