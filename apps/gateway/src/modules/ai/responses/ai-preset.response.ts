@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-export class AiPresetResponse {
+export class AiSecuredPresetResponse {
 	@ApiProperty({ type: String, default: 'XAjerty' })
 	id: string
 	@ApiProperty({ type: String, default: 'Junkie 1.0' })
@@ -13,13 +13,11 @@ export class AiPresetResponse {
 	usageCredits: number
 	@ApiProperty({ type: String, default: 'Free/Pro' })
 	paidTier: string
-	@ApiProperty({ type: Number, default: 0.5 })
-	temperature: number
 }
 
-export class AiPresetsResponse {
-	@ApiProperty({ type: [AiPresetResponse] })
-	presets: AiPresetResponse[]
+export class AiSecuredPresetsResponse {
+	@ApiProperty({ type: [AiSecuredPresetResponse] })
+	presets: AiSecuredPresetResponse[]
 	@ApiProperty({ type: [String], default: ['presetId1', 'presetId2'] })
 	ownedPresetIds: string[]
 }

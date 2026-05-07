@@ -43,6 +43,15 @@ message AiPresetSimplified {
 	string name = 2;
 }
 
+message AiSecuredPreset {
+	string id = 1;
+	string name = 2;
+	string description = 3;
+	int32 stars = 4;
+	int32 usage_credits = 5;
+	optional string paid_tier = 6;
+}
+
 message ExternalAi {
 	string id = 1;
 	string name = 2;
@@ -54,7 +63,7 @@ message ExtendedAiPreset {
 }
 
 message AiPresetsResponse {
-	repeated AiPreset presets = 1;
+	repeated AiSecuredPreset presets = 1;
 	repeated string owned_preset_ids = 2;
 }
 

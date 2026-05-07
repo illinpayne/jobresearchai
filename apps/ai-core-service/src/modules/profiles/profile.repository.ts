@@ -8,7 +8,7 @@ import { PrismaService } from '@/infrastructure/prisma/prisma.service'
 
 @Injectable()
 export class ProfileRepository {
-	public readonly profileSelect = {
+	public readonly profileSelect: CustomerProfileSelect = {
 		id: true,
 		accountId: true,
 		firstName: true,

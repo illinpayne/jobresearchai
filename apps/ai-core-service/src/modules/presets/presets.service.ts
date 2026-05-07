@@ -1,6 +1,7 @@
 import {
 	AiPreset,
 	AiPresetsResponse,
+	AiSecuredPreset,
 	AssignPresetToUserRequest,
 	AssignStatusResponse,
 	ExtendedAiPreset,
@@ -16,19 +17,21 @@ import { PresetRepository } from './preset.repository'
 
 @Injectable()
 export class PresetsService {
-	public constructor(private readonly presetRepository: PresetRepository) {}
+	public constructor(private readonly repository: PresetRepository) {}
 
 	public async getAllPresets(
 		request: GetPresetsRequest
 	): Promise<AiPresetsResponse> {
 		try {
-			const presets = await this.presetRepository.getAllPresets()
-			const ownedIds = await this.presetRepository.getOwnedPresets(
+			const presets = await this.repository.getAllPresets(
+				this.repository.securedSelect
+			)
+			const ownedIds = await this.repository.getOwnedPresets(
 				request.userId,
-				this.presetRepository.onlyPresetIds
+				this.repository.onlyPresetIds
 			)
 			return {
-				presets: presets as AiPreset[],
+				presets: presets as AiSecuredPreset[],
 				ownedPresetIds: ownedIds.map(p => p.presetId) ?? []
 			}
 		} catch (error) {
@@ -41,14 +44,14 @@ export class PresetsService {
 	): Promise<AssignStatusResponse> {
 		const { userId, presetId } = request
 
-		const findPreset = await this.presetRepository.getPresetById(presetId)
+		const findPreset = await this.repository.getPresetById(presetId)
 
 		if (!findPreset) {
 			throw new GrpcException(RpcStatus.NOT_FOUND, 'Preset not found')
 		}
 
 		try {
-			await this.presetRepository.assignPresetToUser(userId, presetId)
+			await this.repository.assignPresetToUser(userId, presetId)
 			return {
 				status: true
 			}
@@ -64,9 +67,9 @@ export class PresetsService {
 		request: GetPresetsByIdRequest
 	): Promise<AiPreset> {
 		try {
-			const preset = await this.presetRepository.getPresetById(
+			const preset = await this.repository.getPresetById(
 				request.presetId,
-				this.presetRepository.presetSelect
+				this.repository.presetSelect
 			)
 			if (!preset) {
 				throw new GrpcException(RpcStatus.NOT_FOUND, 'Preset not found')
@@ -81,10 +84,9 @@ export class PresetsService {
 		request: GetPresetsByIdRequest
 	): Promise<ExtendedAiPreset> {
 		try {
-			const extendedPreset =
-				await this.presetRepository.getExtendedPresetById(
-					request.presetId
-				)
+			const extendedPreset = await this.repository.getExtendedPresetById(
+				request.presetId
+			)
 			if (!extendedPreset) {
 				throw new GrpcException(RpcStatus.NOT_FOUND, 'Preset not found')
 			}
@@ -103,11 +105,10 @@ export class PresetsService {
 		request: GetPresetsByAccountRequest
 	): Promise<ExtendedAiPreset> {
 		try {
-			const userPreset =
-				await this.presetRepository.getExtendedPresetByAccount(
-					request.presetId,
-					request.accountId
-				)
+			const userPreset = await this.repository.getExtendedPresetByAccount(
+				request.presetId,
+				request.accountId
+			)
 			if (!userPreset) {
 				throw new GrpcException(
 					RpcStatus.NOT_FOUND,

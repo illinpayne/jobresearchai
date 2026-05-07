@@ -14,7 +14,7 @@ export class AnalyseJobRepository {
 		id: true,
 		accountId: true,
 		status: true
-	}
+	} as const
 
 	public readonly normalAnalyseJob: AiAnalyseJobSelect = {
 		id: true,
@@ -30,7 +30,7 @@ export class AnalyseJobRepository {
 				name: true
 			}
 		}
-	}
+	} as const
 
 	public readonly fullAnalyseJob: AiAnalyseJobSelect = {
 		id: true,
@@ -52,7 +52,7 @@ export class AnalyseJobRepository {
 				}
 			}
 		}
-	}
+	} as const
 
 	public readonly jobInProgress: AiAnalyseJobSelect = {
 		id: true,
@@ -62,7 +62,7 @@ export class AnalyseJobRepository {
 				name: true
 			}
 		}
-	}
+	} as const
 
 	public constructor(private readonly prismaService: PrismaService) {}
 

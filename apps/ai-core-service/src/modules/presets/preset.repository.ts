@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import {
 	AiExternalModelCreateInput,
+	AiExternalModelSelect,
 	AiModelPresetCreateInput,
 	AiModelPresetSelect,
 	UserPresetSelect
@@ -10,7 +11,7 @@ import { PrismaService } from '@/infrastructure/prisma/prisma.service'
 
 @Injectable()
 export class PresetRepository {
-	public readonly presetSelect = {
+	public readonly presetSelect: AiModelPresetSelect = {
 		id: true,
 		name: true,
 		description: true,
@@ -21,11 +22,22 @@ export class PresetRepository {
 		systemPrompt: true,
 		maxTokens: true
 	} as const
-	public readonly externalModelSelect = {
+	public readonly securedSelect: AiModelPresetSelect = {
+		id: true,
+		name: true,
+		description: true,
+		stars: true,
+		usageCredits: true,
+		paidTier: true,
+		temperature: true,
+		systemPrompt: true,
+		maxTokens: true
+	} as const
+	public readonly externalModelSelect: AiExternalModelSelect = {
 		id: true,
 		name: true
 	} as const
-	public readonly onlyIds = {
+	public readonly onlyIds: AiModelPresetSelect = {
 		id: true
 	} as const
 	public readonly onlyPresetIds = {
@@ -33,9 +45,9 @@ export class PresetRepository {
 	} as const
 	public constructor(private readonly prismaService: PrismaService) {}
 
-	public async getAllPresets() {
+	public async getAllPresets(select?: AiModelPresetSelect) {
 		const presets = await this.prismaService.aiModelPreset.findMany({
-			select: this.presetSelect
+			select
 		})
 		return presets
 	}

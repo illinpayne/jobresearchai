@@ -38,6 +38,15 @@ export interface AiPresetSimplified {
   name: string;
 }
 
+export interface AiSecuredPreset {
+  id: string;
+  name: string;
+  description: string;
+  stars: number;
+  usageCredits: number;
+  paidTier?: string | undefined;
+}
+
 export interface ExternalAi {
   id: string;
   name: string;
@@ -49,7 +58,7 @@ export interface ExtendedAiPreset {
 }
 
 export interface AiPresetsResponse {
-  presets: AiPreset[];
+  presets: AiSecuredPreset[];
   ownedPresetIds: string[];
 }
 

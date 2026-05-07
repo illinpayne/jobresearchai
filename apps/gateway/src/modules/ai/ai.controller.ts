@@ -19,7 +19,7 @@ import { CurrentUser, Protected } from '@/common/decorators'
 import { AicoreClientGrpc } from './aicore.grpc'
 import { GetModelDto } from './dtos/get-model.dto'
 import {
-	AiPresetsResponse,
+	AiSecuredPresetsResponse,
 	AssignPresetResponse
 } from './responses/ai-preset.response'
 import { SimplifiedAnalyseJobWithPresetResponse } from './responses/jobs-in-progress.response'
@@ -34,7 +34,7 @@ export class AiController {
 	})
 	@ApiOkResponse({
 		description: 'Returns ai models',
-		type: AiPresetsResponse
+		type: AiSecuredPresetsResponse
 	})
 	@ApiNotFoundResponse({
 		description: 'No ai models found'
