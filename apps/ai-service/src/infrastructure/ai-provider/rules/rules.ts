@@ -2,7 +2,7 @@ export const PAID_TIER_RULES = `
 # EXTRACTION
 * **Gatekeeper**: If text is not a CV (any industry), set \`resumeScore\` < 5.
 * **predicatedPosition**: Highest viable role based on skill ceiling.
-* **expectedSalaryFrom/To**: Predict annual **USD** market value for \`predicatedPosition\`. **NEVER** 0 for valid CVs. Convert to UAH.
+* **expectedSalaryFrom/To**: Predict montly **UAH** market value for \`predicatedPosition\`. **NEVER** 0 for valid CVs.
 * **achivements**: Array of quantifiable wins (%, $, people).
 * **tags**: Functional domain clusters (e.g., "Leadership", "React", "Surgical").
 * **level**: Intern, Junior, Middle, Senior, or Lead.
@@ -18,7 +18,7 @@ export const FREE_TIER_RULES = `
 # EXTRACTION
 * **Gatekeeper**: If not a CV, set \`resumeScore\` to 0.
 * **predicatedPosition**: Industry standard title.
-* **expectedSalaryFrom/To**: Predict annual **USD** market minimum. **DO NOT** use 0. Convert to UAH
+* **expectedSalaryFrom/To**: Predict monthly **UAH** market minimum. **DO NOT** use 0.
 * **achivements**: Extract key responsibilities/wins.
 * **resumeScore**: 0-100 based on completeness.
 
