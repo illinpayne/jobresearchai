@@ -3,6 +3,7 @@ export interface AiPresetEventType {
   temperature: number;
   maxTokens: number;
   systemPrompt: string;
+  ownRule?: string;
   usageCredits: number;
   paidTier: string;
   llmName: string;

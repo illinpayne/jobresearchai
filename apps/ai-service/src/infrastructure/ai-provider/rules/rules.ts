@@ -1,36 +1,28 @@
-export const PAID_TIER_LLM_RULE = `
-# DATA EXTRACTION RULES
-* **yearsOld**: If the age is not explicitly specified, use \`0\`.
-* **predicatedPosition**: Predict the most accurate role based on the depth of their skill set, not just their latest title.
-* **currentPosition**: Determine the current position of the candidate.
-* **summary**: Provide a concise "tl;dr" of their professional profile.
-* **achivements**: Extract a list of specific, quantifiable professional wins.
-* * **expectedSalaryFrom/To**: Provide the most accurate salary in UAH currency based on the predicted position.
-* **resumeScore**: Provide a score from 0 to 100 based on the candidate's skills, ATS compatibility, CV correctness data and other factors.
+export const PAID_TIER_RULES = `
+# EXTRACTION
+* **Gatekeeper**: If text is not a CV (any industry), set \`resumeScore\` < 5.
+* **predicatedPosition**: Highest viable role based on skill ceiling.
+* **expectedSalaryFrom/To**: Predict annual **USD** market value for \`predicatedPosition\`. **NEVER** 0 for valid CVs. Convert to UAH.
+* **achivements**: Array of quantifiable wins (%, $, people).
+* **tags**: Functional domain clusters (e.g., "Leadership", "React", "Surgical").
+* **level**: Intern, Junior, Middle, Senior, or Lead.
+* * **resumeScore**: 0-100 based on completeness, Decide based on resume correctness, skills, adaptiveness.
 
-# FORMATTING CONSTRAINTS
-* **Strictness**: Return ONLY a JSON object. No markdown code blocks, no preamble.
-* **Missing Data**: NEVER use \`null\` or \`undefined\`.
-* **String Fallback**: For missing/empty strings, use the text: "Not specified".
-* **Number Fallback**: For missing numbers, use \`0\`.
-* **Validation**: Ensure all salary calculations are based on skills/achievements (the predicted role), not the historical current role.
-`
+# FORMATTING
+* **Strictness**: Return ONLY JSON. No markdown (\`\`\`json), no preamble.
+* **Fallbacks**: String: "Not specified" | Number: 0 (**EXCEPT** salary: predict it).
+* **Validation**: resume score (0-100) based on ATS clarity and impact.
+`.trim()
 
-export const FREE_TIER_LLM_RULE = `
-# DATA EXTRACTION RULES
-* IF provided text is not a resume/CV, set **resumeScore** less then 10!
-* **yearsOld**: If the age is not explicitly specified, use \`0\`.
-* **predicatedPosition**: Predict the most accurate role based on the depth of their skill set, not just their latest title.
-* **currentPosition**: Determine the current position of the candidate.
-* **summary**: Provide a concise "tl;dr" of their professional profile.
-* **achivements**: Extract a list of specific, quantifiable professional wins.
-* * **expectedSalaryFrom/To**: Provide the most accurate salary in UAH currency based on the predicted position.
-* **resumeScore**: Provide a score from 0 to 100 based on the candidate's skills, ATS compatibility, CV correctness data and other factors.
+export const FREE_TIER_RULES = `
+# EXTRACTION
+* **Gatekeeper**: If not a CV, set \`resumeScore\` to 0.
+* **predicatedPosition**: Industry standard title.
+* **expectedSalaryFrom/To**: Predict annual **USD** market minimum. **DO NOT** use 0. Convert to UAH
+* **achivements**: Extract key responsibilities/wins.
+* **resumeScore**: 0-100 based on completeness.
 
-# FORMATTING CONSTRAINTS
-* **Strictness**: Return ONLY a JSON object. No markdown code blocks, no preamble.
-* **Missing Data**: NEVER use \`null\` or \`undefined\`.
-* **String Fallback**: For missing/empty strings, use the text: "Not specified".
-* **Number Fallback**: For missing numbers, use \`0\`.
-* **Validation**: Ensure all salary calculations are based on skills/achievements (the predicted role), not the historical current role.
-`
+# FORMATTING
+* **Strictness**: Return ONLY JSON. No markdown.
+* **Fallbacks**: String: "Not specified" | Number: 0 (**EXCEPT** salary: predict it).
+`.trim()

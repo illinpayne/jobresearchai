@@ -84,14 +84,6 @@ export default function UploadedResumeInProgressCard({ queryClient, email, ...pr
       transports: ['websocket'],
     });
 
-    // socket.on('connect', () => {
-    //   socket.emit('joinJobRoom', { jobId: props.id, accountEmail: email });
-    // });
-
-    // socket.on('roomJoined', (data: AiProgressExchangeEventType) => {
-    //   setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
-    // });
-
     socket.on('connect', () => {
       socket.emit(
         'listenResumeJob',
@@ -148,36 +140,6 @@ export default function UploadedResumeInProgressCard({ queryClient, email, ...pr
       setProgressStatus({ message: response.lastMessage, status: status });
     });
 
-    // socket.on('progressUpdate', async (data: AiProgressExchangeEventType) => {
-    //   if (data.status === EventStatusCode.DONE) {
-    //     socket.disconnect();
-    //     RemoveCache(profilesCacheKey);
-    //     queryClient.refetchQueries({ queryKey: ['profiles'] });
-    //     const { toast } = await import('sonner');
-    //     toast.success(`Job #${props.workId} completed.`);
-    //     await removeCurrentFromJobList(data);
-
-    //     setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
-    //   } else if (data.status === EventStatusCode.CANCELLED) {
-    //     socket.disconnect();
-
-    //     setProgressStatus({ message: 'Unable to process your request fow now!', status: JobStatus.CANCELLED });
-
-    //     const { toast } = await import('sonner');
-    //     toast.error(`Job #${props.workId} was cancelled.`);
-
-    //     await removeCurrentFromJobList(data);
-    //   } else {
-    //     setProgressStatus({ message: data.lastMessage, status: JobStatusMapper[data.status] });
-    //   }
-    // });
-
-    // socket.on('error', (err: { message: string }) => {
-    //   setProgressStatus({ message: err.message, status: JobStatus.CANCELLED });
-    //   RemoveCache(jobsCacheKey);
-    //   queryClient.refetchQueries({ queryKey: ['jobsInProgress'] });
-    //   socket.disconnect();
-    // });
     return () => {
       socket.disconnect();
     };

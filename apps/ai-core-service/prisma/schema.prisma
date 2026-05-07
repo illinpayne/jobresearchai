@@ -24,6 +24,7 @@ model AiModelPreset {
   stars        Int     @default(1)
   usageCredits Int     @default(10) @map("usage_credits")
   paidTier     String? @default("Free") @map("paid_tier")
+  ownRule      String? @map("own_rule")
 
   temperature  Float  @default(0)
   systemPrompt String @default("") @db.Text

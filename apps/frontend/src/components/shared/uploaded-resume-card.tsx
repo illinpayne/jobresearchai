@@ -99,7 +99,7 @@ export default function UploadedResumeCard({ ...props }: Props) {
           <p className='text-sm text-neutral-600'>{profile.summary}</p>
         </div>
         <div className='grid grid-cols-1 gap-2 max-xl:grid-cols-1 max-xl:gap-0 max-xl:my-1'>
-          <p className='text-xl font-medium capitalize'>Key points & skills</p>
+          <p className='text-xl font-medium capitalize'>Key points & skills [{profile?.tags?.length}]</p>
           <div className='text-sm flex gap-2 flex-wrap'>
             {profile?.tags?.map((f, i) => (
               <p

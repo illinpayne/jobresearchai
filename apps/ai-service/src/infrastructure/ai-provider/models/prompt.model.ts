@@ -2,7 +2,8 @@ export interface PromptModel {
 	temperature: number
 	maxTokens: number
 	systemPrompt: string
-	llmName: string
+	ownRule?: string
 	paidTier: string
+	llmName: string
 	extractedText: string
 }

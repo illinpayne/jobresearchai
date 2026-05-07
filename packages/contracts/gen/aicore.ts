@@ -30,6 +30,7 @@ export interface AiPreset {
   temperature: number;
   systemPrompt: string;
   maxTokens: number;
+  ownRule?: string | undefined;
 }
 
 export interface AiPresetSimplified {

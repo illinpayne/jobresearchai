@@ -159,7 +159,8 @@ export class ResumeController {
 					systemPrompt: extendedPreset.preset.systemPrompt,
 					usageCredits: extendedPreset.preset.usageCredits,
 					llmName: extendedPreset.aiExternalModel.name,
-					paidTier: extendedPreset.preset.paidTier
+					paidTier: extendedPreset.preset.paidTier,
+					ownRule: extendedPreset.preset.ownRule
 				},
 				jobId,
 				accountId,

@@ -7,15 +7,14 @@ import { AiConfig, AllConfigs } from '@/config/interfaces'
 import { QueueService } from '@/infrastructure/queue/queue.service'
 
 import { PromptModel } from '../models/prompt.model'
-import { FREE_TIER_LLM_RULE, PAID_TIER_LLM_RULE } from '../rules/rules'
-
 import {
 	IProviderPromptResponse,
 	IProviderUsageTokens
-} from './ai-provider.response'
+} from '../responses/ai-provider.response'
+import { FREE_TIER_RULES, PAID_TIER_RULES } from '../rules/rules'
 
 @Injectable()
-export class LMStudioLocalProvider implements AiProvider, OnModuleInit {
+export class OpenrouterProvider implements AiProvider, OnModuleInit {
 	public constructor(
 		private readonly queue: QueueService,
 		private readonly config: ConfigService<AllConfigs>
@@ -36,6 +35,7 @@ export class LMStudioLocalProvider implements AiProvider, OnModuleInit {
 	public async waitablePrompt(
 		prompt: PromptModel
 	): Promise<IProviderPromptResponse> {
+		const rules = this.getRules(prompt.paidTier, prompt.ownRule)
 		const completion = await this.openai.chat.completions.create({
 			model: prompt.llmName,
 			temperature: prompt.temperature,
@@ -43,14 +43,12 @@ export class LMStudioLocalProvider implements AiProvider, OnModuleInit {
 			messages: [
 				{
 					role: 'system',
-					content:
-						prompt.systemPrompt +
-						'\n\n' +
-						this.getRules(prompt.paidTier)
+					content: prompt.systemPrompt.trim() + '\n\n' + rules
 				},
 				{
 					role: 'user',
-					content: `Analyse resume of candidate: ${prompt.extractedText}`
+					content:
+						`Extract data from this resume text: ${prompt.extractedText}`.trim()
 				}
 			],
 			response_format: {
@@ -121,10 +119,13 @@ export class LMStudioLocalProvider implements AiProvider, OnModuleInit {
 		return response
 	}
 
-	private getRules(paidTier: string): string {
+	private getRules(paidTier: string, ownRule?: string): string {
+		if (ownRule) {
+			return ownRule.trim()
+		}
 		return paidTier.toLowerCase().includes('free')
-			? FREE_TIER_LLM_RULE.trim()
-			: PAID_TIER_LLM_RULE.trim()
+			? FREE_TIER_RULES.trim()
+			: PAID_TIER_RULES.trim()
 	}
 
 	public streamPrompt(prompt: PromptModel) {

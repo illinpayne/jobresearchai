@@ -81,6 +81,7 @@ export const AiModelPresetScalarFieldEnum = {
   stars: 'stars',
   usageCredits: 'usageCredits',
   paidTier: 'paidTier',
+  ownRule: 'ownRule',
   temperature: 'temperature',
   systemPrompt: 'systemPrompt',
   maxTokens: 'maxTokens',

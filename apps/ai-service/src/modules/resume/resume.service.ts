@@ -12,9 +12,8 @@ import { PromptModel } from '@/infrastructure/ai-provider/models/prompt.model'
 import {
 	IProviderPromptResponse,
 	IProviderUsageTokens
-} from '@/infrastructure/ai-provider/providers/ai-provider.response'
+} from '@/infrastructure/ai-provider/responses/ai-provider.response'
 import { QueueService } from '@/infrastructure/queue/queue.service'
-import { delay } from '@/utils/delay'
 
 import { AicoreClientGrpc } from '../aicore/aicore.grpc'
 
@@ -37,8 +36,15 @@ export class ResumeService {
 			jobId,
 			status: EventStatusCode.WAITING
 		})
+
 		const aiResponse = await this.providerPrompt(payload)
 		if (!aiResponse) {
+			this.queue.sendAnalysisProgress({
+				lastMessage: 'Invalid response from AI',
+				jobId,
+				status: EventStatusCode.CANCELLED
+			})
+			await this.cancellJob(payload)
 			return
 		}
 
@@ -48,7 +54,6 @@ export class ResumeService {
 				jobId,
 				status: EventStatusCode.WAITING
 			})
-			await delay(10000)
 			const parsedRaw = JSON.parse(aiResponse.rawData)
 			const customerProfileDto = plainToInstance(
 				CustomerProfileDto,
@@ -96,14 +101,14 @@ export class ResumeService {
 					jobId,
 					status: EventStatusCode.CANCELLED
 				})
+				await this.cancellJob(payload)
 				return
-			} else {
-				this.queue.sendAnalysisProgress({
-					lastMessage: 'Failed to proceed the analysis',
-					jobId,
-					status: EventStatusCode.CANCELLED
-				})
 			}
+			this.queue.sendAnalysisProgress({
+				lastMessage: 'Failed to proceed the analysis',
+				jobId,
+				status: EventStatusCode.CANCELLED
+			})
 
 			await this.cancellJob(payload)
 			return
@@ -121,7 +126,8 @@ export class ResumeService {
 				temperature: payload.preset.temperature,
 				paidTier: payload.preset.paidTier,
 				systemPrompt: payload.preset.systemPrompt,
-				maxTokens: payload.preset.maxTokens
+				maxTokens: payload.preset.maxTokens,
+				ownRule: payload.preset.ownRule
 			} as PromptModel)
 		} catch (error) {
 			this.queue.sendAnalysisProgress({
@@ -129,7 +135,6 @@ export class ResumeService {
 				jobId,
 				status: EventStatusCode.CANCELLED
 			})
-			await this.cancellJob(payload)
 			return null
 		}
 	}

@@ -47,6 +47,7 @@ export type AiModelPresetMinAggregateOutputType = {
   stars: number | null
   usageCredits: number | null
   paidTier: string | null
+  ownRule: string | null
   temperature: number | null
   systemPrompt: string | null
   maxTokens: number | null
@@ -62,6 +63,7 @@ export type AiModelPresetMaxAggregateOutputType = {
   stars: number | null
   usageCredits: number | null
   paidTier: string | null
+  ownRule: string | null
   temperature: number | null
   systemPrompt: string | null
   maxTokens: number | null
@@ -77,6 +79,7 @@ export type AiModelPresetCountAggregateOutputType = {
   stars: number
   usageCredits: number
   paidTier: number
+  ownRule: number
   temperature: number
   systemPrompt: number
   maxTokens: number
@@ -108,6 +111,7 @@ export type AiModelPresetMinAggregateInputType = {
   stars?: true
   usageCredits?: true
   paidTier?: true
+  ownRule?: true
   temperature?: true
   systemPrompt?: true
   maxTokens?: true
@@ -123,6 +127,7 @@ export type AiModelPresetMaxAggregateInputType = {
   stars?: true
   usageCredits?: true
   paidTier?: true
+  ownRule?: true
   temperature?: true
   systemPrompt?: true
   maxTokens?: true
@@ -138,6 +143,7 @@ export type AiModelPresetCountAggregateInputType = {
   stars?: true
   usageCredits?: true
   paidTier?: true
+  ownRule?: true
   temperature?: true
   systemPrompt?: true
   maxTokens?: true
@@ -240,6 +246,7 @@ export type AiModelPresetGroupByOutputType = {
   stars: number
   usageCredits: number
   paidTier: string | null
+  ownRule: string | null
   temperature: number
   systemPrompt: string
   maxTokens: number
@@ -278,6 +285,7 @@ export type AiModelPresetWhereInput = {
   stars?: Prisma.IntFilter<"AiModelPreset"> | number
   usageCredits?: Prisma.IntFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
+  ownRule?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatFilter<"AiModelPreset"> | number
   systemPrompt?: Prisma.StringFilter<"AiModelPreset"> | string
   maxTokens?: Prisma.IntFilter<"AiModelPreset"> | number
@@ -296,6 +304,7 @@ export type AiModelPresetOrderByWithRelationInput = {
   stars?: Prisma.SortOrder
   usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownRule?: Prisma.SortOrderInput | Prisma.SortOrder
   temperature?: Prisma.SortOrder
   systemPrompt?: Prisma.SortOrder
   maxTokens?: Prisma.SortOrder
@@ -317,6 +326,7 @@ export type AiModelPresetWhereUniqueInput = Prisma.AtLeast<{
   stars?: Prisma.IntFilter<"AiModelPreset"> | number
   usageCredits?: Prisma.IntFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
+  ownRule?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatFilter<"AiModelPreset"> | number
   systemPrompt?: Prisma.StringFilter<"AiModelPreset"> | string
   maxTokens?: Prisma.IntFilter<"AiModelPreset"> | number
@@ -335,6 +345,7 @@ export type AiModelPresetOrderByWithAggregationInput = {
   stars?: Prisma.SortOrder
   usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownRule?: Prisma.SortOrderInput | Prisma.SortOrder
   temperature?: Prisma.SortOrder
   systemPrompt?: Prisma.SortOrder
   maxTokens?: Prisma.SortOrder
@@ -358,6 +369,7 @@ export type AiModelPresetScalarWhereWithAggregatesInput = {
   stars?: Prisma.IntWithAggregatesFilter<"AiModelPreset"> | number
   usageCredits?: Prisma.IntWithAggregatesFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableWithAggregatesFilter<"AiModelPreset"> | string | null
+  ownRule?: Prisma.StringNullableWithAggregatesFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatWithAggregatesFilter<"AiModelPreset"> | number
   systemPrompt?: Prisma.StringWithAggregatesFilter<"AiModelPreset"> | string
   maxTokens?: Prisma.IntWithAggregatesFilter<"AiModelPreset"> | number
@@ -373,6 +385,7 @@ export type AiModelPresetCreateInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -390,6 +403,7 @@ export type AiModelPresetUncheckedCreateInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -407,6 +421,7 @@ export type AiModelPresetUpdateInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -424,6 +439,7 @@ export type AiModelPresetUncheckedUpdateInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -441,6 +457,7 @@ export type AiModelPresetCreateManyInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -456,6 +473,7 @@ export type AiModelPresetUpdateManyMutationInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -470,6 +488,7 @@ export type AiModelPresetUncheckedUpdateManyInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -485,6 +504,7 @@ export type AiModelPresetCountOrderByAggregateInput = {
   stars?: Prisma.SortOrder
   usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrder
+  ownRule?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
   systemPrompt?: Prisma.SortOrder
   maxTokens?: Prisma.SortOrder
@@ -507,6 +527,7 @@ export type AiModelPresetMaxOrderByAggregateInput = {
   stars?: Prisma.SortOrder
   usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrder
+  ownRule?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
   systemPrompt?: Prisma.SortOrder
   maxTokens?: Prisma.SortOrder
@@ -522,6 +543,7 @@ export type AiModelPresetMinOrderByAggregateInput = {
   stars?: Prisma.SortOrder
   usageCredits?: Prisma.SortOrder
   paidTier?: Prisma.SortOrder
+  ownRule?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
   systemPrompt?: Prisma.SortOrder
   maxTokens?: Prisma.SortOrder
@@ -657,6 +679,7 @@ export type AiModelPresetCreateWithoutAiExternalModelInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -673,6 +696,7 @@ export type AiModelPresetUncheckedCreateWithoutAiExternalModelInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -718,6 +742,7 @@ export type AiModelPresetScalarWhereInput = {
   stars?: Prisma.IntFilter<"AiModelPreset"> | number
   usageCredits?: Prisma.IntFilter<"AiModelPreset"> | number
   paidTier?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
+  ownRule?: Prisma.StringNullableFilter<"AiModelPreset"> | string | null
   temperature?: Prisma.FloatFilter<"AiModelPreset"> | number
   systemPrompt?: Prisma.StringFilter<"AiModelPreset"> | string
   maxTokens?: Prisma.IntFilter<"AiModelPreset"> | number
@@ -733,6 +758,7 @@ export type AiModelPresetCreateWithoutUserPresetsInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -749,6 +775,7 @@ export type AiModelPresetUncheckedCreateWithoutUserPresetsInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -781,6 +808,7 @@ export type AiModelPresetUpdateWithoutUserPresetsInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -797,6 +825,7 @@ export type AiModelPresetUncheckedUpdateWithoutUserPresetsInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -813,6 +842,7 @@ export type AiModelPresetCreateWithoutAiAnalyseJobsInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -829,6 +859,7 @@ export type AiModelPresetUncheckedCreateWithoutAiAnalyseJobsInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -861,6 +892,7 @@ export type AiModelPresetUpdateWithoutAiAnalyseJobsInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -877,6 +909,7 @@ export type AiModelPresetUncheckedUpdateWithoutAiAnalyseJobsInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -893,6 +926,7 @@ export type AiModelPresetCreateManyAiExternalModelInput = {
   stars?: number
   usageCredits?: number
   paidTier?: string | null
+  ownRule?: string | null
   temperature?: number
   systemPrompt?: string
   maxTokens?: number
@@ -907,6 +941,7 @@ export type AiModelPresetUpdateWithoutAiExternalModelInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -923,6 +958,7 @@ export type AiModelPresetUncheckedUpdateWithoutAiExternalModelInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -939,6 +975,7 @@ export type AiModelPresetUncheckedUpdateManyWithoutAiExternalModelInput = {
   stars?: Prisma.IntFieldUpdateOperationsInput | number
   usageCredits?: Prisma.IntFieldUpdateOperationsInput | number
   paidTier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownRule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
   systemPrompt?: Prisma.StringFieldUpdateOperationsInput | string
   maxTokens?: Prisma.IntFieldUpdateOperationsInput | number
@@ -993,6 +1030,7 @@ export type AiModelPresetSelect<ExtArgs extends runtime.Types.Extensions.Interna
   stars?: boolean
   usageCredits?: boolean
   paidTier?: boolean
+  ownRule?: boolean
   temperature?: boolean
   systemPrompt?: boolean
   maxTokens?: boolean
@@ -1012,6 +1050,7 @@ export type AiModelPresetSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   stars?: boolean
   usageCredits?: boolean
   paidTier?: boolean
+  ownRule?: boolean
   temperature?: boolean
   systemPrompt?: boolean
   maxTokens?: boolean
@@ -1028,6 +1067,7 @@ export type AiModelPresetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   stars?: boolean
   usageCredits?: boolean
   paidTier?: boolean
+  ownRule?: boolean
   temperature?: boolean
   systemPrompt?: boolean
   maxTokens?: boolean
@@ -1044,6 +1084,7 @@ export type AiModelPresetSelectScalar = {
   stars?: boolean
   usageCredits?: boolean
   paidTier?: boolean
+  ownRule?: boolean
   temperature?: boolean
   systemPrompt?: boolean
   maxTokens?: boolean
@@ -1052,7 +1093,7 @@ export type AiModelPresetSelectScalar = {
   aiExternalModelId?: boolean
 }
 
-export type AiModelPresetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "stars" | "usageCredits" | "paidTier" | "temperature" | "systemPrompt" | "maxTokens" | "createdAt" | "updatedAt" | "aiExternalModelId", ExtArgs["result"]["aiModelPreset"]>
+export type AiModelPresetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "stars" | "usageCredits" | "paidTier" | "ownRule" | "temperature" | "systemPrompt" | "maxTokens" | "createdAt" | "updatedAt" | "aiExternalModelId", ExtArgs["result"]["aiModelPreset"]>
 export type AiModelPresetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   aiExternalModel?: boolean | Prisma.AiExternalModelDefaultArgs<ExtArgs>
   userPresets?: boolean | Prisma.AiModelPreset$userPresetsArgs<ExtArgs>
@@ -1080,6 +1121,7 @@ export type $AiModelPresetPayload<ExtArgs extends runtime.Types.Extensions.Inter
     stars: number
     usageCredits: number
     paidTier: string | null
+    ownRule: string | null
     temperature: number
     systemPrompt: string
     maxTokens: number
@@ -1518,6 +1560,7 @@ export interface AiModelPresetFieldRefs {
   readonly stars: Prisma.FieldRef<"AiModelPreset", 'Int'>
   readonly usageCredits: Prisma.FieldRef<"AiModelPreset", 'Int'>
   readonly paidTier: Prisma.FieldRef<"AiModelPreset", 'String'>
+  readonly ownRule: Prisma.FieldRef<"AiModelPreset", 'String'>
   readonly temperature: Prisma.FieldRef<"AiModelPreset", 'Float'>
   readonly systemPrompt: Prisma.FieldRef<"AiModelPreset", 'String'>
   readonly maxTokens: Prisma.FieldRef<"AiModelPreset", 'Int'>

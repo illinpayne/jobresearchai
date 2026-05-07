@@ -81,7 +81,6 @@ export class AuthService {
 		request: ResendOTPRegisterRequest
 	): Promise<SendOtpResponse> {
 		const { email } = request
-		console.log(email)
 		if (!email || email === '') {
 			throw new GrpcException(
 				RpcStatus.INVALID_ARGUMENT,

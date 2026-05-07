@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { usePresets } from '@/api/hooks/usePresets.hook';
 import { useProfiles } from '@/api/hooks/useProfiles.hook';
+import AvailableAiModels from '@/components/protected/ai/available-ai-models';
 import UploadedResumeCard from '@/components/shared/uploaded-resume-card';
 import { buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -34,13 +36,6 @@ export default function AllResumeUploads() {
             Start analysing
           </Link>
         </div>
-        {/* {availableModels.length > 0 && (
-          <AvailableAiModels
-            availableModels={availableModels}
-            hideTitle
-          />
-        )} */}
-
         <div className='grid grid-cols-1 gap-4'>
           <Skeleton className='w-full h-34 bg-linear-to-b from-green-300/40 to-green-300/20'></Skeleton>
           <Skeleton className='w-full h-34 bg-linear-to-b from-green-300/20 to-green-300/0'></Skeleton>
