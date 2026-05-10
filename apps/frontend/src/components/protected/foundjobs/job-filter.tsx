@@ -90,7 +90,7 @@ export default function JobFilter({ filter, defaultFilters }: Props) {
         <div className='border rounded-lg  flex flex-col max-h-[70vh] bg-white/90 backdrop-blur-xs overflow-y-auto overflow-x-hidden xl:top-10 max-xl:max-h-[50vh] max-xl:top-5'>
           <h1 className='text-lg font-medium sticky top-0 bg-white/80 backdrop-blur-xs px-5 py-2 z-10'>Position</h1>
           <div className='grid *:flex *:items-center *:gap-2 px-5 pb-4 pt-2 border-b'>
-            {defaultFilters.positions.map((pos, i) => (
+            {defaultFilters?.positions.map((pos, i) => (
               <div key={i}>
                 <Controller
                   control={control}
@@ -128,7 +128,7 @@ export default function JobFilter({ filter, defaultFilters }: Props) {
           </div>
           <h1 className='text-lg font-medium sticky top-0 bg-white/80 backdrop-blur-xs px-5 py-2 z-10'>Location</h1>
           <div className='grid *:flex *:items-center *:gap-2 px-5 pb-4 pt-2 border-b'>
-            {defaultFilters.locations.map((loc, i) => (
+            {defaultFilters?.locations.map((loc, i) => (
               <div key={i}>
                 <Controller
                   control={control}
@@ -151,7 +151,7 @@ export default function JobFilter({ filter, defaultFilters }: Props) {
           </div>
           <h1 className='text-lg font-medium sticky top-0 bg-white/80 backdrop-blur-xs px-5 py-2 z-10'>Service</h1>
           <div className='grid *:flex *:items-center *:gap-2 px-5 pb-4 pt-2'>
-            {defaultFilters.services.map((serv, i) => (
+            {defaultFilters?.services.map((serv, i) => (
               <div key={i}>
                 <Controller
                   control={control}

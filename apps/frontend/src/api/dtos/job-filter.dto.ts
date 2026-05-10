@@ -1,4 +1,4 @@
-import type { PaginationOptions } from "./pagination.dto";
+import type { PaginationOptions } from './pagination.dto';
 
 export interface JobFilterDto {
   chunk: PaginationOptions;

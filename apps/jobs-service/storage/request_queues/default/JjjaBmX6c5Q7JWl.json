@@ -1,6 +1,6 @@
 {
 	"id": "JjjaBmX6c5Q7JWl",
-	"json": "{\"id\":\"JjjaBmX6c5Q7JWl\",\"url\":\"https://www.work.ua/jobs-Node.js/\",\"loadedUrl\":\"https://www.work.ua/jobs-Node.js/\",\"uniqueKey\":\"https://www.work.ua/jobs-Node.js\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2026-05-10T22:16:47.355Z\"}",
+	"json": "{\"id\":\"JjjaBmX6c5Q7JWl\",\"url\":\"https://www.work.ua/jobs-Node.js/\",\"loadedUrl\":\"https://www.work.ua/jobs-Node.js/\",\"uniqueKey\":\"https://www.work.ua/jobs-Node.js\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2026-05-10T22:20:19.027Z\"}",
 	"method": "GET",
 	"orderNo": null,
 	"retryCount": 0,

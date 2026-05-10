@@ -1,4 +1,4 @@
-import type { AccountResponse } from "@/api/generated";
+import type { AccountResponse } from '@/api/generated';
 
 export const fiveMinutes = 5 * 60 * 1000;
 export const day = 24 * 60 * 1000;
@@ -13,14 +13,14 @@ export const profilesCacheStaleTime = tenMinutes;
 export const jobsCacheStaleTime = fiveSeconds;
 export const jobsFilterCacheStaleTime = fiveSeconds;
 
-export const accountCacheKey = "account_cache";
-export const changePasswordCacheKey = "change_password_cache";
-export const changeEmailCacheKey = "change_email_cache";
-export const aiModelCacheKey = "ai-cache";
-export const presetsCacheKey = "presets_data";
-export const profilesCacheKey = "profiles_data";
-export const jobsCacheKey = "jobs_data";
-export const jobsFilterCacheKey = "vacancies_filter_data";
+export const accountCacheKey = 'account_cache';
+export const changePasswordCacheKey = 'change_password_cache';
+export const changeEmailCacheKey = 'change_email_cache';
+export const aiModelCacheKey = 'ai-cache';
+export const presetsCacheKey = 'presets_data';
+export const profilesCacheKey = 'profiles_data';
+export const jobsCacheKey = 'jobs_data';
+export const jobsFilterCacheKey = 'vacancies_filter_data';
 
 export type BaseCache = {
   createdAt: number;
@@ -40,9 +40,7 @@ export function MakeCacheAccount(response: AccountResponse): CachedAccount {
   };
 }
 
-export function InvalidateAccountCache(
-  response: AccountResponse,
-): CachedAccount {
+export function InvalidateAccountCache(response: AccountResponse): CachedAccount {
   const cache = localStorage.getItem(accountCacheKey);
   let new_cache = null;
   if (!cache) {

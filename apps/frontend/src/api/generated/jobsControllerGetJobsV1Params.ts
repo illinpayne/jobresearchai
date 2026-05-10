@@ -7,6 +7,6 @@
  */
 
 export type JobsControllerGetJobsV1Params = {
-page: number;
-limit: number;
+  page: number;
+  limit: number;
 };
