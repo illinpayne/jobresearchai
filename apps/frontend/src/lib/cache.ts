@@ -11,7 +11,7 @@ export const changePasswordCacheStaleTime = twoMinutes;
 export const presetsCacheStaleTime = day;
 export const profilesCacheStaleTime = tenMinutes;
 export const jobsCacheStaleTime = fiveSeconds;
-export const jobsFilterCacheStaleTime = fiveMinutes;
+export const jobsFilterCacheStaleTime = fiveSeconds;
 
 export const accountCacheKey = "account_cache";
 export const changePasswordCacheKey = "change_password_cache";

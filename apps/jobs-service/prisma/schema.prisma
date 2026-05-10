@@ -25,6 +25,11 @@ model Vacancy {
   updatedAt     DateTime      @updatedAt @map("updated_at")
   userVacancies UserVacancy[]
 
+  @@index([position])
+  @@index([location])
+  @@index([salaryValueFrom])
+  @@index([salaryValueTo])
+  @@index([createdAt(sort: Desc)])
   @@map("vacancies")
 }
 
