@@ -41,8 +41,8 @@ export class ProfilesService {
 
 		this.queue.createJobForUser({
 			accountId: newProfile.accountId,
+			position: newProfile.predicatedPosition ?? 'All',
 			tags: newProfile.tags,
-			location: newProfile.location ?? undefined,
 			limit: 5
 		})
 

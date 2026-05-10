@@ -3,8 +3,7 @@ syntax = "proto3";
 
 package job.v1;
 
-import "google/protobuf/timestamp.proto";
-
+import "account.proto";
 import "pagination.proto";
 
 // Jobs proto service
@@ -12,26 +11,28 @@ service JobService {
 	rpc CreateJobToUser(CreateJobRequest) returns (Job);
 	rpc GetJobById(GetJobByIdRequest) returns (Job);
 	rpc GetJobs(GetJobsRequest) returns (JobPaginationResponse);
+	rpc GetFilters(account.v1.GetMeRequest) returns (GetJobFilterResponse);
 }
 
 message Job {
 	string id = 1;
 	string title = 2;
+	optional string company = 9;
 	string description = 3;
-	optional int32 salary_from = 4;
-	optional int32 salary_to = 5;
+	optional string salary = 4;
 	optional string location = 6;
 	string source_url = 7;
-	google.protobuf.Timestamp created_at = 8;
+	string position = 8;
 }
 
 message CreateJobRequest {
 	string title = 1;
+	optional string company = 8;
 	string description = 2;
-	optional int32 salary_from = 3;
-	optional int32 salary_to = 4;
-	optional string location = 5;
-	string source_url = 6;
+	optional string salary = 3;
+	optional string location = 4;
+	string source_url = 5;
+	string position = 6;
 	string account_id = 7;
 }
 
@@ -42,9 +43,22 @@ message GetJobByIdRequest {
 message GetJobsRequest {
 	pagination.v1.PaginationOptions chunk = 1;
 	string account_id = 2;
+	optional int32 salary_from = 3;
+	optional int32 salary_to = 4;
+	repeated string positions = 5;
+	repeated string locations = 6;
+	repeated string services = 7;
 }
 
 message JobPaginationResponse {
 	repeated Job data = 1;
 	pagination.v1.PaginationMeta meta = 2;
-  }
+}
+
+message GetJobFilterResponse {
+	repeated string positions = 1;
+	repeated string locations = 2;
+	repeated string services = 3;
+	int32 salary_from = 4;
+	int32 salary_to = 5;
+}

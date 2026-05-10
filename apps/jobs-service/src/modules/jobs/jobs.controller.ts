@@ -1,6 +1,8 @@
 import type { CreateVacancyEventType } from '@jrai/contracts'
+import { type GetMeRequest } from '@jrai/contracts/gen/account'
 import {
 	type GetJobByIdRequest,
+	GetJobFilterResponse,
 	type GetJobsRequest,
 	Job,
 	JOB_SERVICE_NAME,
@@ -39,6 +41,7 @@ export class JobsController {
 		try {
 			const scrappedJobs = await this.workUaScrapper.scrape({
 				...data,
+				tags: data.tags,
 				limit: data.limit
 			})
 			await this.jobsService.bulkNewJobToUser(
@@ -61,5 +64,12 @@ export class JobsController {
 		request: GetJobsRequest
 	): Promise<JobPaginationResponse> {
 		return await this.jobsService.getJobs(request)
+	}
+
+	@GrpcMethod(JOB_SERVICE_NAME, 'GetFilters')
+	public async getFilter(
+		request: GetMeRequest
+	): Promise<GetJobFilterResponse> {
+		return await this.jobsService.generateFilterForUser(request.id)
 	}
 }

@@ -13,6 +13,7 @@ export const PAID_TIER_RULES = `
 * **Strictness**: Return ONLY JSON. No markdown.
 * **Fallbacks**: String: "Not specified" | Number: 0 (**EXCEPT** salary: predict it).
 * **Validation**: resume score (0-100) based on ATS clarity and impact.
+* **tags**: Provide only up to 6 values.
 `.trim()
 
 export const FREE_TIER_RULES = `
@@ -28,4 +29,5 @@ export const FREE_TIER_RULES = `
 # FORMATTING
 * **Strictness**: Return ONLY JSON. No markdown.
 * **Fallbacks**: String: "Not specified" | Number: 0 (**EXCEPT** salary: predict it).
+* **tags**: Provide only up to 6 values.
 `.trim()

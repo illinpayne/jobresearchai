@@ -1,5 +1,6 @@
 'use client';
 
+import { Brain } from 'lucide-react';
 import type { ExtendedCustomerProfileDto } from '@/api/generated';
 import { cn } from '@/lib/utils';
 
@@ -42,11 +43,19 @@ export default function UploadedResumeCard({ ...props }: Props) {
   return (
     <div
       className={cn(
-        'rounded-lg p-4 transition-all outline hover:outline-primary group h-auto overflow-hidden h-fit group',
+        'rounded-lg p-4 transition-all outline hover:outline-primary group overflow-hidden h-fit group',
         false && 'outline-emerald-500 bg-emerald-500/5',
       )}>
       <div className='w-full flex justify-between items-center max-sm:flex-col max-sm:items-start'>
-        <h2 className='text-2xl font-semibold'>{profile.currentPosition}</h2>
+        <h2 className='text-2xl font-semibold'>
+          {profile.currentPosition === 'Not specified' || profile.currentPosition.includes('N/A') ? (
+            <span className='flex gap-1'>
+              {profile.predicatedPosition} <Brain className='size-4 text-emerald-500' />
+            </span>
+          ) : (
+            profile.currentPosition
+          )}
+        </h2>
         <div>
           <p className='font-nunito-sans font-bold text-end max-sm:hidden'>{profile.resumeScore}/100</p>
           <div className='flex'>

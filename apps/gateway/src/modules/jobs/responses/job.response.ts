@@ -7,23 +7,64 @@ export class JobResponse {
 	id: string
 	@ApiProperty({ type: String, default: 'IT Manager' })
 	title: string
+	@ApiProperty({ type: String, default: 'Job Research LLC' })
+	company: string
+	@ApiProperty({ type: String, default: 'IT Manager' })
+	position: string
 	@ApiProperty({ type: String, default: 'We are looking for an IT Manager' })
 	description: string
-	@ApiProperty({ type: Number, default: 10000, nullable: true })
-	salaryFrom?: number
-	@ApiProperty({ type: Number, default: 100000, nullable: true })
-	salaryTo?: number
+	@ApiProperty({
+		type: String,
+		default: '10 000 - 15 000 грн',
+		nullable: true
+	})
+	salary: string
 	@ApiProperty({ type: String, default: 'Remote', nullable: true })
 	location?: string
 	@ApiProperty({ type: String, default: 'Upwork.com' })
 	sourceUrl: string
-	@ApiProperty({ type: Date })
-	createdAt: Date
 }
 
 export class JobPaginationResponse {
 	@ApiProperty({ type: [JobResponse] })
 	data: JobResponse[]
 	@ApiProperty({ type: PaginationMetadata })
-	metadata: PaginationMetadata
+	meta: PaginationMetadata
+}
+
+export class JobFilterDtoResponse {
+	@ApiProperty({
+		type: [String],
+		description: 'List of unique job positions/titles available',
+		example: ['Full-stack Developer', '.NET Developer', 'Node.js Developer']
+	})
+	positions: string[]
+
+	@ApiProperty({
+		type: [String],
+		description: 'List of unique locations available',
+		example: ['Kyiv', 'Lviv', 'Remote']
+	})
+	locations: string[]
+
+	@ApiProperty({
+		type: [String],
+		description: 'List of derived job boards or services',
+		example: ['work.ua', 'other']
+	})
+	services: string[]
+
+	@ApiProperty({
+		type: Number,
+		description: 'The minimum salary value found in the current dataset',
+		example: 15000
+	})
+	salaryFrom: number
+
+	@ApiProperty({
+		type: Number,
+		description: 'The maximum salary value found in the current dataset',
+		example: 120000
+	})
+	salaryTo: number
 }

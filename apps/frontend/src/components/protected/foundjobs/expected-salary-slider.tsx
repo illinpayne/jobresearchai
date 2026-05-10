@@ -12,7 +12,7 @@ export default function ExpectedSalarySlider({ ...props }: Props) {
   return (
     <>
       {props.value && (
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-between items-center w-full'>
           <p>{props.value[0].toLocaleString('uk-UA')} грн</p>
           <p>{props.value[1].toLocaleString('uk-UA')} грн</p>
         </div>
@@ -24,7 +24,7 @@ export default function ExpectedSalarySlider({ ...props }: Props) {
         step={5000}
         value={props.value}
         onValueChange={props.onValueChange}
-        className='mx-auto w-full max-w-xs'
+        className='mx-auto w-full'
       />
     </>
   );

@@ -6,8 +6,8 @@
 
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
+import { GetMeRequest } from "./account";
 import { PaginationMeta, PaginationOptions } from "./pagination";
 
 export const protobufPackage = "job.v1";
@@ -15,21 +15,22 @@ export const protobufPackage = "job.v1";
 export interface Job {
   id: string;
   title: string;
+  company?: string | undefined;
   description: string;
-  salaryFrom?: number | undefined;
-  salaryTo?: number | undefined;
+  salary?: string | undefined;
   location?: string | undefined;
   sourceUrl: string;
-  createdAt: Date | undefined;
+  position: string;
 }
 
 export interface CreateJobRequest {
   title: string;
+  company?: string | undefined;
   description: string;
-  salaryFrom?: number | undefined;
-  salaryTo?: number | undefined;
+  salary?: string | undefined;
   location?: string | undefined;
   sourceUrl: string;
+  position: string;
   accountId: string;
 }
 
@@ -40,6 +41,11 @@ export interface GetJobByIdRequest {
 export interface GetJobsRequest {
   chunk: PaginationOptions | undefined;
   accountId: string;
+  salaryFrom?: number | undefined;
+  salaryTo?: number | undefined;
+  positions: string[];
+  locations: string[];
+  services: string[];
 }
 
 export interface JobPaginationResponse {
@@ -47,16 +53,15 @@ export interface JobPaginationResponse {
   meta: PaginationMeta | undefined;
 }
 
-export const JOB_V1_PACKAGE_NAME = "job.v1";
+export interface GetJobFilterResponse {
+  positions: string[];
+  locations: string[];
+  services: string[];
+  salaryFrom: number;
+  salaryTo: number;
+}
 
-wrappers[".google.protobuf.Timestamp"] = {
-  fromObject(value: Date) {
-    return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
-  },
-  toObject(message: { seconds: number; nanos: number }) {
-    return new Date(message.seconds * 1000 + message.nanos / 1e6);
-  },
-} as any;
+export const JOB_V1_PACKAGE_NAME = "job.v1";
 
 /** Jobs proto service */
 
@@ -66,6 +71,8 @@ export interface JobServiceClient {
   getJobById(request: GetJobByIdRequest): Observable<Job>;
 
   getJobs(request: GetJobsRequest): Observable<JobPaginationResponse>;
+
+  getFilters(request: GetMeRequest): Observable<GetJobFilterResponse>;
 }
 
 /** Jobs proto service */
@@ -78,11 +85,15 @@ export interface JobServiceController {
   getJobs(
     request: GetJobsRequest,
   ): Promise<JobPaginationResponse> | Observable<JobPaginationResponse> | JobPaginationResponse;
+
+  getFilters(
+    request: GetMeRequest,
+  ): Promise<GetJobFilterResponse> | Observable<GetJobFilterResponse> | GetJobFilterResponse;
 }
 
 export function JobServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createJobToUser", "getJobById", "getJobs"];
+    const grpcMethods: string[] = ["createJobToUser", "getJobById", "getJobs", "getFilters"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("JobService", method)(constructor.prototype[method], method, descriptor);

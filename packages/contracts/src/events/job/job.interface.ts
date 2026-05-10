@@ -1,6 +1,6 @@
 export interface CreateVacancyEventType {
   accountId: string;
+  position: string;
   tags: string[];
-  location?: string;
   limit: number;
 }

@@ -27,22 +27,25 @@ export type AggregateVacancy = {
 }
 
 export type VacancyAvgAggregateOutputType = {
-  salaryFrom: number | null
-  salaryTo: number | null
+  salaryValueFrom: number | null
+  salaryValueTo: number | null
 }
 
 export type VacancySumAggregateOutputType = {
-  salaryFrom: number | null
-  salaryTo: number | null
+  salaryValueFrom: number | null
+  salaryValueTo: number | null
 }
 
 export type VacancyMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  salaryFrom: number | null
-  salaryTo: number | null
+  company: string | null
+  salary: string | null
+  salaryValueFrom: number | null
+  salaryValueTo: number | null
   location: string | null
+  position: string | null
   sourceUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,9 +55,12 @@ export type VacancyMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  salaryFrom: number | null
-  salaryTo: number | null
+  company: string | null
+  salary: string | null
+  salaryValueFrom: number | null
+  salaryValueTo: number | null
   location: string | null
+  position: string | null
   sourceUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -64,9 +70,12 @@ export type VacancyCountAggregateOutputType = {
   id: number
   title: number
   description: number
-  salaryFrom: number
-  salaryTo: number
+  company: number
+  salary: number
+  salaryValueFrom: number
+  salaryValueTo: number
   location: number
+  position: number
   sourceUrl: number
   createdAt: number
   updatedAt: number
@@ -75,22 +84,25 @@ export type VacancyCountAggregateOutputType = {
 
 
 export type VacancyAvgAggregateInputType = {
-  salaryFrom?: true
-  salaryTo?: true
+  salaryValueFrom?: true
+  salaryValueTo?: true
 }
 
 export type VacancySumAggregateInputType = {
-  salaryFrom?: true
-  salaryTo?: true
+  salaryValueFrom?: true
+  salaryValueTo?: true
 }
 
 export type VacancyMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  salaryFrom?: true
-  salaryTo?: true
+  company?: true
+  salary?: true
+  salaryValueFrom?: true
+  salaryValueTo?: true
   location?: true
+  position?: true
   sourceUrl?: true
   createdAt?: true
   updatedAt?: true
@@ -100,9 +112,12 @@ export type VacancyMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  salaryFrom?: true
-  salaryTo?: true
+  company?: true
+  salary?: true
+  salaryValueFrom?: true
+  salaryValueTo?: true
   location?: true
+  position?: true
   sourceUrl?: true
   createdAt?: true
   updatedAt?: true
@@ -112,9 +127,12 @@ export type VacancyCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  salaryFrom?: true
-  salaryTo?: true
+  company?: true
+  salary?: true
+  salaryValueFrom?: true
+  salaryValueTo?: true
   location?: true
+  position?: true
   sourceUrl?: true
   createdAt?: true
   updatedAt?: true
@@ -211,9 +229,12 @@ export type VacancyGroupByOutputType = {
   id: string
   title: string
   description: string
-  salaryFrom: number | null
-  salaryTo: number | null
+  company: string | null
+  salary: string | null
+  salaryValueFrom: number | null
+  salaryValueTo: number | null
   location: string | null
+  position: string
   sourceUrl: string
   createdAt: Date
   updatedAt: Date
@@ -246,9 +267,12 @@ export type VacancyWhereInput = {
   id?: Prisma.StringFilter<"Vacancy"> | string
   title?: Prisma.StringFilter<"Vacancy"> | string
   description?: Prisma.StringFilter<"Vacancy"> | string
-  salaryFrom?: Prisma.IntNullableFilter<"Vacancy"> | number | null
-  salaryTo?: Prisma.IntNullableFilter<"Vacancy"> | number | null
+  company?: Prisma.StringNullableFilter<"Vacancy"> | string | null
+  salary?: Prisma.StringNullableFilter<"Vacancy"> | string | null
+  salaryValueFrom?: Prisma.IntNullableFilter<"Vacancy"> | number | null
+  salaryValueTo?: Prisma.IntNullableFilter<"Vacancy"> | number | null
   location?: Prisma.StringNullableFilter<"Vacancy"> | string | null
+  position?: Prisma.StringFilter<"Vacancy"> | string
   sourceUrl?: Prisma.StringFilter<"Vacancy"> | string
   createdAt?: Prisma.DateTimeFilter<"Vacancy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vacancy"> | Date | string
@@ -259,9 +283,12 @@ export type VacancyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  salaryFrom?: Prisma.SortOrderInput | Prisma.SortOrder
-  salaryTo?: Prisma.SortOrderInput | Prisma.SortOrder
+  company?: Prisma.SortOrderInput | Prisma.SortOrder
+  salary?: Prisma.SortOrderInput | Prisma.SortOrder
+  salaryValueFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  salaryValueTo?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
   sourceUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -275,9 +302,12 @@ export type VacancyWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.VacancyWhereInput | Prisma.VacancyWhereInput[]
   title?: Prisma.StringFilter<"Vacancy"> | string
   description?: Prisma.StringFilter<"Vacancy"> | string
-  salaryFrom?: Prisma.IntNullableFilter<"Vacancy"> | number | null
-  salaryTo?: Prisma.IntNullableFilter<"Vacancy"> | number | null
+  company?: Prisma.StringNullableFilter<"Vacancy"> | string | null
+  salary?: Prisma.StringNullableFilter<"Vacancy"> | string | null
+  salaryValueFrom?: Prisma.IntNullableFilter<"Vacancy"> | number | null
+  salaryValueTo?: Prisma.IntNullableFilter<"Vacancy"> | number | null
   location?: Prisma.StringNullableFilter<"Vacancy"> | string | null
+  position?: Prisma.StringFilter<"Vacancy"> | string
   sourceUrl?: Prisma.StringFilter<"Vacancy"> | string
   createdAt?: Prisma.DateTimeFilter<"Vacancy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vacancy"> | Date | string
@@ -288,9 +318,12 @@ export type VacancyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  salaryFrom?: Prisma.SortOrderInput | Prisma.SortOrder
-  salaryTo?: Prisma.SortOrderInput | Prisma.SortOrder
+  company?: Prisma.SortOrderInput | Prisma.SortOrder
+  salary?: Prisma.SortOrderInput | Prisma.SortOrder
+  salaryValueFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  salaryValueTo?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
   sourceUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -308,9 +341,12 @@ export type VacancyScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Vacancy"> | string
   title?: Prisma.StringWithAggregatesFilter<"Vacancy"> | string
   description?: Prisma.StringWithAggregatesFilter<"Vacancy"> | string
-  salaryFrom?: Prisma.IntNullableWithAggregatesFilter<"Vacancy"> | number | null
-  salaryTo?: Prisma.IntNullableWithAggregatesFilter<"Vacancy"> | number | null
+  company?: Prisma.StringNullableWithAggregatesFilter<"Vacancy"> | string | null
+  salary?: Prisma.StringNullableWithAggregatesFilter<"Vacancy"> | string | null
+  salaryValueFrom?: Prisma.IntNullableWithAggregatesFilter<"Vacancy"> | number | null
+  salaryValueTo?: Prisma.IntNullableWithAggregatesFilter<"Vacancy"> | number | null
   location?: Prisma.StringNullableWithAggregatesFilter<"Vacancy"> | string | null
+  position?: Prisma.StringWithAggregatesFilter<"Vacancy"> | string
   sourceUrl?: Prisma.StringWithAggregatesFilter<"Vacancy"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Vacancy"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Vacancy"> | Date | string
@@ -320,9 +356,12 @@ export type VacancyCreateInput = {
   id?: string
   title: string
   description: string
-  salaryFrom?: number | null
-  salaryTo?: number | null
+  company?: string | null
+  salary?: string | null
+  salaryValueFrom?: number | null
+  salaryValueTo?: number | null
   location?: string | null
+  position: string
   sourceUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -333,9 +372,12 @@ export type VacancyUncheckedCreateInput = {
   id?: string
   title: string
   description: string
-  salaryFrom?: number | null
-  salaryTo?: number | null
+  company?: string | null
+  salary?: string | null
+  salaryValueFrom?: number | null
+  salaryValueTo?: number | null
   location?: string | null
+  position: string
   sourceUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -346,9 +388,12 @@ export type VacancyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  salaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  salaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salaryValueFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  salaryValueTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.StringFieldUpdateOperationsInput | string
   sourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -359,9 +404,12 @@ export type VacancyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  salaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  salaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salaryValueFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  salaryValueTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.StringFieldUpdateOperationsInput | string
   sourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -372,9 +420,12 @@ export type VacancyCreateManyInput = {
   id?: string
   title: string
   description: string
-  salaryFrom?: number | null
-  salaryTo?: number | null
+  company?: string | null
+  salary?: string | null
+  salaryValueFrom?: number | null
+  salaryValueTo?: number | null
   location?: string | null
+  position: string
   sourceUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -384,9 +435,12 @@ export type VacancyUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  salaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  salaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salaryValueFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  salaryValueTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.StringFieldUpdateOperationsInput | string
   sourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -396,9 +450,12 @@ export type VacancyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  salaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  salaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salaryValueFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  salaryValueTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.StringFieldUpdateOperationsInput | string
   sourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -408,26 +465,32 @@ export type VacancyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  salaryFrom?: Prisma.SortOrder
-  salaryTo?: Prisma.SortOrder
+  company?: Prisma.SortOrder
+  salary?: Prisma.SortOrder
+  salaryValueFrom?: Prisma.SortOrder
+  salaryValueTo?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   sourceUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type VacancyAvgOrderByAggregateInput = {
-  salaryFrom?: Prisma.SortOrder
-  salaryTo?: Prisma.SortOrder
+  salaryValueFrom?: Prisma.SortOrder
+  salaryValueTo?: Prisma.SortOrder
 }
 
 export type VacancyMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  salaryFrom?: Prisma.SortOrder
-  salaryTo?: Prisma.SortOrder
+  company?: Prisma.SortOrder
+  salary?: Prisma.SortOrder
+  salaryValueFrom?: Prisma.SortOrder
+  salaryValueTo?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   sourceUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -437,17 +500,20 @@ export type VacancyMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  salaryFrom?: Prisma.SortOrder
-  salaryTo?: Prisma.SortOrder
+  company?: Prisma.SortOrder
+  salary?: Prisma.SortOrder
+  salaryValueFrom?: Prisma.SortOrder
+  salaryValueTo?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   sourceUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type VacancySumOrderByAggregateInput = {
-  salaryFrom?: Prisma.SortOrder
-  salaryTo?: Prisma.SortOrder
+  salaryValueFrom?: Prisma.SortOrder
+  salaryValueTo?: Prisma.SortOrder
 }
 
 export type VacancyScalarRelationFilter = {
@@ -459,16 +525,16 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -493,9 +559,12 @@ export type VacancyCreateWithoutUserVacanciesInput = {
   id?: string
   title: string
   description: string
-  salaryFrom?: number | null
-  salaryTo?: number | null
+  company?: string | null
+  salary?: string | null
+  salaryValueFrom?: number | null
+  salaryValueTo?: number | null
   location?: string | null
+  position: string
   sourceUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -505,9 +574,12 @@ export type VacancyUncheckedCreateWithoutUserVacanciesInput = {
   id?: string
   title: string
   description: string
-  salaryFrom?: number | null
-  salaryTo?: number | null
+  company?: string | null
+  salary?: string | null
+  salaryValueFrom?: number | null
+  salaryValueTo?: number | null
   location?: string | null
+  position: string
   sourceUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -533,9 +605,12 @@ export type VacancyUpdateWithoutUserVacanciesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  salaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  salaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salaryValueFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  salaryValueTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.StringFieldUpdateOperationsInput | string
   sourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -545,9 +620,12 @@ export type VacancyUncheckedUpdateWithoutUserVacanciesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  salaryFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  salaryTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salaryValueFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  salaryValueTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.StringFieldUpdateOperationsInput | string
   sourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -588,9 +666,12 @@ export type VacancySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   title?: boolean
   description?: boolean
-  salaryFrom?: boolean
-  salaryTo?: boolean
+  company?: boolean
+  salary?: boolean
+  salaryValueFrom?: boolean
+  salaryValueTo?: boolean
   location?: boolean
+  position?: boolean
   sourceUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -602,9 +683,12 @@ export type VacancySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   title?: boolean
   description?: boolean
-  salaryFrom?: boolean
-  salaryTo?: boolean
+  company?: boolean
+  salary?: boolean
+  salaryValueFrom?: boolean
+  salaryValueTo?: boolean
   location?: boolean
+  position?: boolean
   sourceUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -614,9 +698,12 @@ export type VacancySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   title?: boolean
   description?: boolean
-  salaryFrom?: boolean
-  salaryTo?: boolean
+  company?: boolean
+  salary?: boolean
+  salaryValueFrom?: boolean
+  salaryValueTo?: boolean
   location?: boolean
+  position?: boolean
   sourceUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -626,15 +713,18 @@ export type VacancySelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
-  salaryFrom?: boolean
-  salaryTo?: boolean
+  company?: boolean
+  salary?: boolean
+  salaryValueFrom?: boolean
+  salaryValueTo?: boolean
   location?: boolean
+  position?: boolean
   sourceUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VacancyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "salaryFrom" | "salaryTo" | "location" | "sourceUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["vacancy"]>
+export type VacancyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "company" | "salary" | "salaryValueFrom" | "salaryValueTo" | "location" | "position" | "sourceUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["vacancy"]>
 export type VacancyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userVacancies?: boolean | Prisma.Vacancy$userVacanciesArgs<ExtArgs>
   _count?: boolean | Prisma.VacancyCountOutputTypeDefaultArgs<ExtArgs>
@@ -651,9 +741,12 @@ export type $VacancyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     title: string
     description: string
-    salaryFrom: number | null
-    salaryTo: number | null
+    company: string | null
+    salary: string | null
+    salaryValueFrom: number | null
+    salaryValueTo: number | null
     location: string | null
+    position: string
     sourceUrl: string
     createdAt: Date
     updatedAt: Date
@@ -1084,9 +1177,12 @@ export interface VacancyFieldRefs {
   readonly id: Prisma.FieldRef<"Vacancy", 'String'>
   readonly title: Prisma.FieldRef<"Vacancy", 'String'>
   readonly description: Prisma.FieldRef<"Vacancy", 'String'>
-  readonly salaryFrom: Prisma.FieldRef<"Vacancy", 'Int'>
-  readonly salaryTo: Prisma.FieldRef<"Vacancy", 'Int'>
+  readonly company: Prisma.FieldRef<"Vacancy", 'String'>
+  readonly salary: Prisma.FieldRef<"Vacancy", 'String'>
+  readonly salaryValueFrom: Prisma.FieldRef<"Vacancy", 'Int'>
+  readonly salaryValueTo: Prisma.FieldRef<"Vacancy", 'Int'>
   readonly location: Prisma.FieldRef<"Vacancy", 'String'>
+  readonly position: Prisma.FieldRef<"Vacancy", 'String'>
   readonly sourceUrl: Prisma.FieldRef<"Vacancy", 'String'>
   readonly createdAt: Prisma.FieldRef<"Vacancy", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Vacancy", 'DateTime'>

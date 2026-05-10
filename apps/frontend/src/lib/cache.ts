@@ -1,4 +1,4 @@
-import type { AccountResponse } from '@/api/generated';
+import type { AccountResponse } from "@/api/generated";
 
 export const fiveMinutes = 5 * 60 * 1000;
 export const day = 24 * 60 * 1000;
@@ -11,14 +11,16 @@ export const changePasswordCacheStaleTime = twoMinutes;
 export const presetsCacheStaleTime = day;
 export const profilesCacheStaleTime = tenMinutes;
 export const jobsCacheStaleTime = fiveSeconds;
+export const jobsFilterCacheStaleTime = fiveMinutes;
 
-export const accountCacheKey = 'account_cache';
-export const changePasswordCacheKey = 'change_password_cache';
-export const changeEmailCacheKey = 'change_email_cache';
-export const aiModelCacheKey = 'ai-cache';
-export const presetsCacheKey = 'presets_data';
-export const profilesCacheKey = 'profiles_data';
-export const jobsCacheKey = 'jobs_data';
+export const accountCacheKey = "account_cache";
+export const changePasswordCacheKey = "change_password_cache";
+export const changeEmailCacheKey = "change_email_cache";
+export const aiModelCacheKey = "ai-cache";
+export const presetsCacheKey = "presets_data";
+export const profilesCacheKey = "profiles_data";
+export const jobsCacheKey = "jobs_data";
+export const jobsFilterCacheKey = "vacancies_filter_data";
 
 export type BaseCache = {
   createdAt: number;
@@ -38,7 +40,9 @@ export function MakeCacheAccount(response: AccountResponse): CachedAccount {
   };
 }
 
-export function InvalidateAccountCache(response: AccountResponse): CachedAccount {
+export function InvalidateAccountCache(
+  response: AccountResponse,
+): CachedAccount {
   const cache = localStorage.getItem(accountCacheKey);
   let new_cache = null;
   if (!cache) {
@@ -99,7 +103,15 @@ export function RemoveCache(key: string) {
 }
 
 export function DisposeCache() {
-  const cache_to_remove = [accountCacheKey, changePasswordCacheKey, changeEmailCacheKey, aiModelCacheKey, presetsCacheKey];
+  const cache_to_remove = [
+    accountCacheKey,
+    changePasswordCacheKey,
+    changeEmailCacheKey,
+    aiModelCacheKey,
+    presetsCacheKey,
+    jobsCacheKey,
+    jobsFilterCacheKey,
+  ];
   cache_to_remove.forEach((key) => {
     RemoveCache(key);
   });

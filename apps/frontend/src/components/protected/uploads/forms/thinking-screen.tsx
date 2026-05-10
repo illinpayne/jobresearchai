@@ -70,6 +70,8 @@ export const ThinkingScreen = React.memo(function ThinkingScreen({
           RemoveCache(jobsCacheKey);
           queryClient.refetchQueries({ queryKey: ['jobsInProgress'] });
           queryClient.refetchQueries({ queryKey: ['profiles'] });
+          queryClient.refetchQueries({ queryKey: ['jobs'] });
+          queryClient.refetchQueries({ queryKey: ['jobs-filter'] });
 
           const { toast } = await import('sonner');
           toast.success(`Analyse completed`);

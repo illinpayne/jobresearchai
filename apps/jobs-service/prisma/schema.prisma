@@ -11,12 +11,15 @@ datasource db {
 model Vacancy {
   id String @id @default(nanoid())
 
-  title       String
-  description String
-  salaryFrom  Int?    @map("salary_from")
-  salaryTo    Int?    @map("salary_to")
-  location    String?
-  sourceUrl   String
+  title           String
+  description     String
+  company         String?
+  salary          String?
+  salaryValueFrom Int?
+  salaryValueTo   Int?
+  location        String?
+  position        String
+  sourceUrl       String
 
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")

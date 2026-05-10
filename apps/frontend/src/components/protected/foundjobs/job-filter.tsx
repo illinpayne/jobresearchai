@@ -1,9 +1,12 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import z from 'zod';
+import type { JobFilterDto } from '@/api/dtos/job-filter.dto';
+import type { JobFilterDtoResponse } from '@/api/generated';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -25,21 +28,50 @@ export const schema = z.object({
 
 export type Values = z.infer<typeof schema>;
 
-export default function JobFilter() {
-  const [expand, setExpand] = useState(true);
+interface Props {
+  filter: JobFilterDto;
+  defaultFilters: JobFilterDtoResponse;
+}
 
+export default function JobFilter({ filter, defaultFilters }: Props) {
+  const [expand, setExpand] = useState(true);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { handleSubmit, control, formState, reset } = useForm<Values>({
     resolver: zodResolver(schema),
     defaultValues: {
-      positions: [],
-      locations: [],
-      services: [],
-      expectedSalary: { from: 1000, to: 500000 },
+      positions: filter.positions ?? [],
+      locations: filter.locations ?? [],
+      services: filter.services ?? [],
+      expectedSalary: { from: filter.salaryFrom ?? defaultFilters.salaryFrom, to: filter.salaryTo ?? defaultFilters.salaryTo },
     },
   });
 
   const onSubmit = (data: Values) => {
-    console.log('Filter Data:', data);
+    const params = new URLSearchParams();
+
+    if (data.positions.length) params.set('positions', data.positions.join(','));
+    if (data.locations.length) params.set('locations', data.locations.join(','));
+    if (data.services.length) params.set('services', data.services.join(','));
+
+    if (data.expectedSalary.from > 0 && data.expectedSalary.from !== defaultFilters.salaryFrom)
+      params.set('salaryFrom', data.expectedSalary.from.toString());
+    if (data.expectedSalary.to > 0 && data.expectedSalary.to !== defaultFilters.salaryTo)
+      params.set('salaryTo', data.expectedSalary.to.toString());
+
+    params.set('page', '1');
+    params.set('limit', searchParams.get('limit') || '10');
+
+    reset({
+      positions: data.positions,
+      locations: data.locations,
+      services: data.services,
+      expectedSalary: data.expectedSalary,
+    });
+
+    console.log('push');
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
@@ -58,7 +90,7 @@ export default function JobFilter() {
         <div className='border rounded-lg  flex flex-col max-h-[70vh] bg-white/90 backdrop-blur-xs overflow-y-auto overflow-x-hidden xl:top-10 max-xl:max-h-[50vh] max-xl:top-5'>
           <h1 className='text-lg font-medium sticky top-0 bg-white/80 backdrop-blur-xs px-5 py-2 z-10'>Position</h1>
           <div className='grid *:flex *:items-center *:gap-2 px-5 pb-4 pt-2 border-b'>
-            {positions.map((pos, i) => (
+            {defaultFilters.positions.map((pos, i) => (
               <div key={i}>
                 <Controller
                   control={control}
@@ -67,7 +99,7 @@ export default function JobFilter() {
                     <Checkbox
                       id={pos}
                       className='size-5'
-                      checked={field.value.includes(pos)}
+                      checked={field.value && field.value.includes(pos)}
                       onCheckedChange={(checked) => {
                         const updatedValue = checked ? [...field.value, pos] : field.value.filter((val) => val !== pos);
                         field.onChange(updatedValue);
@@ -86,8 +118,8 @@ export default function JobFilter() {
               name='expectedSalary'
               render={({ field }) => (
                 <ExpectedSalarySlider
-                  from={1000}
-                  to={200000}
+                  from={defaultFilters.salaryFrom}
+                  to={defaultFilters.salaryTo}
                   value={[field.value.from, field.value.to]}
                   onValueChange={([from, to]) => field.onChange({ from, to })}
                 />
@@ -96,7 +128,7 @@ export default function JobFilter() {
           </div>
           <h1 className='text-lg font-medium sticky top-0 bg-white/80 backdrop-blur-xs px-5 py-2 z-10'>Location</h1>
           <div className='grid *:flex *:items-center *:gap-2 px-5 pb-4 pt-2 border-b'>
-            {locations.map((loc, i) => (
+            {defaultFilters.locations.map((loc, i) => (
               <div key={i}>
                 <Controller
                   control={control}
@@ -105,7 +137,7 @@ export default function JobFilter() {
                     <Checkbox
                       id={loc}
                       className='size-5'
-                      checked={field.value.includes(loc)}
+                      checked={field.value?.includes(loc)}
                       onCheckedChange={(checked) => {
                         const updatedValue = checked ? [...field.value, loc] : field.value.filter((val) => val !== loc);
                         field.onChange(updatedValue);
@@ -119,7 +151,7 @@ export default function JobFilter() {
           </div>
           <h1 className='text-lg font-medium sticky top-0 bg-white/80 backdrop-blur-xs px-5 py-2 z-10'>Service</h1>
           <div className='grid *:flex *:items-center *:gap-2 px-5 pb-4 pt-2'>
-            {services.map((serv, i) => (
+            {defaultFilters.services.map((serv, i) => (
               <div key={i}>
                 <Controller
                   control={control}
@@ -136,7 +168,7 @@ export default function JobFilter() {
                     />
                   )}
                 />
-                <label htmlFor='services'>{serv}</label>
+                <label htmlFor='services capitalize'>{serv}</label>
               </div>
             ))}
           </div>

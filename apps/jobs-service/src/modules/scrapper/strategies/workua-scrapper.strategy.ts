@@ -13,7 +13,7 @@ export const WORKUA_STRATEGY_TOKEN = Symbol('WORKUA_STRATEGY_TOKEN')
 export class WorkuaScrapperStrategy implements ScrapperStrategy {
 	public async scrape(payload: ScrapperPayload): Promise<ScrappedJob[]> {
 		const jobs: ScrappedJob[] = []
-		const { tags, location, limit } = payload
+		const { tags, limit, position } = payload
 
 		const searchKeywords = tags.map(tag => tag.trim()).join('+')
 		const url = `https://www.work.ua/jobs-${encodeURIComponent(searchKeywords)}/`
@@ -23,17 +23,50 @@ export class WorkuaScrapperStrategy implements ScrapperStrategy {
 				$('.card-hover').each((_, element) => {
 					const $el = $(element)
 					const titleLink = $el.find('h2 a')
-					const salaryText = $el.find('span.strong-600').text().trim()
+
+					const salaryText = $el
+						.find('span.strong-600')
+						.filter((_, e) => $(e).text().includes('грн'))
+						.text()
+						.trim()
+
+					const company = $el
+						.find('.mt-xs span.strong-600')
+						.text()
+						.trim()
+
+					const locationInfo = $el
+						.find('.mt-xs')
+						.text()
+						.replace(company, '')
+						.replace(/,/g, '')
+						.trim()
+
+					const description = $el
+						.find('p.text-default-7')
+						.text()
+						.trim()
 
 					const { from, to } = this.parseSalary(salaryText)
+					const salaryStringify =
+						from && to
+							? `${from.toLocaleString()} - ${to.toLocaleString()} грн`
+							: from
+								? `${from.toLocaleString()} грн`
+								: to
+									? `${to.toLocaleString()} грн`
+									: undefined
 
 					const job: ScrappedJob = {
 						title: titleLink.text().trim(),
-						description: $el.find('p.text-muted').text().trim(),
-						salaryFrom: from,
-						salaryTo: to,
-						location: location || 'Ukraine',
-						sourceUrl: `https://www.work.ua${titleLink.attr('href')}`
+						company: company || 'Not specified',
+						description: description,
+						salary: salaryStringify,
+						salaryValueFrom: from,
+						salaryValueTo: to,
+						location: locationInfo || 'Ukraine',
+						sourceUrl: `https://www.work.ua${titleLink.attr('href')}`,
+						position: position
 					}
 
 					if (job.title && job.sourceUrl) {
@@ -42,7 +75,6 @@ export class WorkuaScrapperStrategy implements ScrapperStrategy {
 				})
 
 				if (jobs.length >= limit) {
-					// This prevents the crawler from picking up more URLs from the queue
 					await crawler.autoscaledPool?.abort()
 				}
 			}
