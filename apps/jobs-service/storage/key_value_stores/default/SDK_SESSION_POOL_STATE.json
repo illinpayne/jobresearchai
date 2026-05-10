@@ -1,0 +1,79 @@
+{
+  "usableSessionsCount": 1,
+  "retiredSessionsCount": 0,
+  "sessions": [
+    {
+      "id": "session_HCycf45Qm0",
+      "cookieJar": {
+        "version": "tough-cookie@6.0.0",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": [
+          {
+            "key": "_maau",
+            "value": "8a78baa01750dc57ab5bc7e915cf64d3",
+            "expires": "2027-05-10T15:09:14.000Z",
+            "maxAge": 31536000,
+            "domain": "www.work.ua",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": true,
+            "creation": "2026-05-10T15:09:02.604Z",
+            "lastAccessed": "2026-05-10T15:09:02.604Z",
+            "sameSite": "lax"
+          },
+          {
+            "key": "wsid",
+            "value": "01KR96YWSD95DYWCVCVE1WTC0Z",
+            "expires": "2026-05-10T15:39:14.000Z",
+            "maxAge": 1800,
+            "domain": "www.work.ua",
+            "path": "/",
+            "secure": true,
+            "hostOnly": true,
+            "creation": "2026-05-10T15:09:02.604Z",
+            "lastAccessed": "2026-05-10T15:09:02.604Z",
+            "sameSite": "none"
+          },
+          {
+            "key": "wdid",
+            "value": "01KR96YWSEYGBRW71RJZ4QVRKS",
+            "expires": "2036-05-10T15:09:14.000Z",
+            "maxAge": 315619200,
+            "domain": "www.work.ua",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": true,
+            "creation": "2026-05-10T15:09:02.604Z",
+            "lastAccessed": "2026-05-10T15:09:02.604Z",
+            "sameSite": "lax"
+          },
+          {
+            "key": "_sst",
+            "value": "1778425754",
+            "expires": "2026-05-10T15:24:14.000Z",
+            "maxAge": 900,
+            "domain": "www.work.ua",
+            "path": "/",
+            "hostOnly": true,
+            "creation": "2026-05-10T15:09:02.604Z",
+            "lastAccessed": "2026-05-10T15:09:02.604Z"
+          }
+        ]
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2026-05-10T15:59:02.033Z",
+      "createdAt": "2026-05-10T15:09:02.033Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    }
+  ]
+}

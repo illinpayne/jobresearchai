@@ -5,6 +5,8 @@ export const protoPaths = {
   ACCOUNT: join(__dirname, "../../proto/account.proto"),
   STORAGE: join(__dirname, "../../proto/storage.proto"),
   AICORE: join(__dirname, "../../proto/aicore.proto"),
+  JOB: join(__dirname, "../../proto/job.proto"),
+  PAGINATION: join(__dirname, "../../proto/pagination.proto"),
 } as const;
 
 export const grpcPackages = {
@@ -12,4 +14,6 @@ export const grpcPackages = {
   account_v1: "account.v1",
   storage_v1: "storage.v1",
   aicore_v1: "aicore.v1",
+  job_v1: "job.v1",
+  pagination_v1: "pagination.v1",
 } as const;

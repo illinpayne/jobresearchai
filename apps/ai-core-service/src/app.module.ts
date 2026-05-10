@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
-import { appEnv } from './config/env'
+import { appEnv, rmqEnv } from './config/env'
 import { InfrastructureModule } from './infrastructure/infrastructure.module'
 import { ModulesModule } from './modules/modules.module'
 
@@ -9,7 +9,7 @@ import { ModulesModule } from './modules/modules.module'
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			load: [appEnv]
+			load: [appEnv, rmqEnv]
 		}),
 		InfrastructureModule,
 		ModulesModule

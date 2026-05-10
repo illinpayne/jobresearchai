@@ -21,4 +21,14 @@ export const GRPC_CLIENT = {
     protoPath: protoPaths.AICORE,
     env: "AICORE_GRPC_URL",
   },
+  JOB_PACKAGE: {
+    package: "job.v1",
+    protoPath: protoPaths.JOB,
+    env: "JOB_GRPC_URL",
+  },
+  PAGINATION_PACKAGE: {
+    package: "pagination.v1",
+    protoPath: protoPaths.PAGINATION,
+    env: "PAGINATION_GRPC_URL",
+  },
 } as const;

@@ -1,0 +1,39 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "./generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Vacancy {
+  id String @id @default(nanoid())
+
+  title       String
+  description String
+  salaryFrom  Int?    @map("salary_from")
+  salaryTo    Int?    @map("salary_to")
+  location    String?
+  sourceUrl   String
+
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  userVacancies UserVacancy[]
+
+  @@map("vacancies")
+}
+
+model UserVacancy {
+  accountId String @map("account_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  vacancy   Vacancy @relation(fields: [vacancyId], references: [id])
+  vacancyId String
+
+  @@id([accountId, vacancyId])
+  @@map("user_vacancy")
+}

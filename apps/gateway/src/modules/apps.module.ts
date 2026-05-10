@@ -4,8 +4,9 @@ import { AccountModule } from './accounts/account.module'
 import { AiModule } from './ai/ai.module'
 import { AuthModule } from './auth/auth.module'
 import { ResumeModule } from './resume/resume.module'
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
-	imports: [AuthModule, AccountModule, ResumeModule, AiModule]
+	imports: [AuthModule, AccountModule, ResumeModule, AiModule, JobsModule]
 })
 export class AppsModule {}

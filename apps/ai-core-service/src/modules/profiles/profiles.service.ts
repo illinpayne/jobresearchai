@@ -9,11 +9,16 @@ import { BoolValue } from '@jrai/contracts/gen/google/protobuf/wrappers'
 import { GrpcException, RpcStatus } from '@jrai/contracts/grpc'
 import { Injectable } from '@nestjs/common'
 
+import { QueueService } from '@/infrastructure/queue/queue.service'
+
 import { ProfileRepository } from './profile.repository'
 
 @Injectable()
 export class ProfilesService {
-	public constructor(private readonly repository: ProfileRepository) {}
+	public constructor(
+		private readonly repository: ProfileRepository,
+		private readonly queue: QueueService
+	) {}
 
 	public async createProfile(
 		request: CreateCustomerProfileRequest
@@ -33,6 +38,13 @@ export class ProfilesService {
 				'Cannot create a new profile'
 			)
 		}
+
+		this.queue.createJobForUser({
+			accountId: newProfile.accountId,
+			tags: newProfile.tags,
+			location: newProfile.location ?? undefined,
+			limit: 5
+		})
 
 		return { value: true }
 	}

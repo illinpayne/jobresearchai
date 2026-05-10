@@ -4,7 +4,7 @@
   "description": "gRPC contracts for APIs",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "generate": "protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=nestJs=true,package=omit"
+    "generate": "protoc -I ./proto ./proto/*.proto --ts_proto_out=./gen --ts_proto_opt=useDate=true,nestJs=true,package=omit"
   },
   "exports": {
     ".": {
@@ -28,6 +28,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/microservices": "^11.1.12",
+    "protobufjs": "^8.0.3",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
