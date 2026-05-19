@@ -10,7 +10,7 @@ export default function Home() {
       <WelcomeSection />
       <QuickStartSection />
       <WhyweSection />
-      <PricingSection />
+      {/* <PricingSection /> */}
       <FaqSection />
     </div>
   );

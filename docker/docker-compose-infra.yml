@@ -29,6 +29,7 @@ services:
   minio:
     image: quay.io/minio/minio:latest
     container_name: storage-minio
+    restart: unless-stopped
     ports:
       - "9000:9000"
       - "9001:9001"

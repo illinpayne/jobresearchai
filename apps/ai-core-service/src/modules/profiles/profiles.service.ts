@@ -43,7 +43,7 @@ export class ProfilesService {
 			accountId: newProfile.accountId,
 			position: newProfile.predicatedPosition ?? 'All',
 			tags: newProfile.tags,
-			limit: 5
+			limit: 10
 		})
 
 		return { value: true }

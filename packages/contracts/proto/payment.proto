@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package payment.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+import "pagination.proto";
+
+service PaymentService {
+  // Account Bill
+  rpc CreateAccountBill (CreateAccountBillRequest) returns (AccountBillResponse);
+  rpc GetAccountBill (GetAccountBillRequest) returns (AccountBillResponse);
+  rpc UpdateAccountBill (UpdateAccountBillRequest) returns (AccountBillResponse);
+
+  // Plans & Bundles
+  rpc GetPlans (google.protobuf.Empty) returns (GetPlansResponse);
+  rpc GetBundles (google.protobuf.Empty) returns (GetBundlesResponse);
+  rpc BuyBundle (BuyBundleRequest) returns (CheckoutResponse);
+
+  // Subscriptions
+  rpc Subscribe (SubscribeRequest) returns (CheckoutResponse);
+  rpc GetSubscription (AccountRequest) returns (SubscriptionResponse);
+  rpc CancelSubscription (AccountRequest) returns (SubscriptionResponse);
+  rpc ResumeSubscription (AccountRequest) returns (SubscriptionResponse);
+  rpc RetryFailedPayment (AccountRequest) returns (RetryPaymentResponse);
+
+  // Transactions
+  rpc GetTransactions(AccountRequest) returns (FindAllByAccountResponse);
+}
+
+// Account Bill
+message AccountRequest {
+  string account_id = 1;
+}
+
+message CreateAccountBillRequest {
+  string account_id = 1;
+  string email      = 2;
+}
+
+message GetAccountBillRequest {
+  string account_id = 1;
+}
+
+message UpdateAccountBillRequest {
+  string account_id = 1;
+  optional int32  credits = 3;
+}
+
+message AccountBillResponse {
+  string account_id = 1;
+  string email      = 2;
+  int32  credits    = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+// Plans & Bundles
+
+message PlanResponse {
+  string id                      = 1;
+  string name                    = 2;
+  int32  granted_credits         = 3;
+  int32  trial_days              = 4;
+  string stripe_price_monthly_id = 5;
+  string stripe_price_annual_id  = 6;
+}
+
+message GetPlansResponse {
+  repeated PlanResponse plans = 1;
+}
+
+message BundleResponse {
+  string id              = 1;
+  string name            = 2;
+  int32  credits         = 3;
+  int32  price           = 4;
+  string stripe_price_id = 5;
+}
+
+message GetBundlesResponse {
+  repeated BundleResponse bundles = 1;
+}
+
+message SubscribeRequest {
+  string account_id = 1;
+  string email      = 2;
+  string plan_id    = 3;
+  string interval   = 4;
+}
+
+message SubscriptionResponse {
+  string       id                     = 1;
+  string       account_id             = 2;
+  string       plan_id                = 3;
+  string       stripe_subscription_id = 4;
+  string       status                 = 5;
+  string       interval               = 6;
+  bool         cancel_at_period_end   = 7;
+  string       current_period_start   = 8;
+  string       current_period_end     = 9;
+  PlanResponse plan                   = 10;
+}
+
+message BuyBundleRequest {
+  string account_id = 1;
+  string email      = 2;
+  string bundle_id  = 3;
+}
+
+message CheckoutResponse {
+  string url = 1;
+}
+
+message RetryPaymentResponse {
+  string status = 1;
+}
+
+// Transactions 
+
+enum TransactionType {
+  TRANSACTION_TYPE_UNSPECIFIED = 0;
+  TRANSACTION_TYPE_SUBSCRIPTION = 1;
+  TRANSACTION_TYPE_BUNDLE = 2;
+  TRANSACTION_TYPE_REFUND = 3;
+}
+
+enum TransactionStatus {
+  TRANSACTION_STATUS_UNSPECIFIED = 0;
+  TRANSACTION_STATUS_PENDING = 1;
+  TRANSACTION_STATUS_SUCCEEDED = 2;
+  TRANSACTION_STATUS_FAILED = 3;
+  TRANSACTION_STATUS_CANCELED = 4;
+}
+
+enum SubscriptionStatus {
+  SUBSCRIPTION_STATUS_UNSPECIFIED = 0;
+  SUBSCRIPTION_STATUS_ACTIVE = 1;
+  SUBSCRIPTION_STATUS_PAST_DUE = 2;
+  SUBSCRIPTION_STATUS_CANCELED = 3;
+  SUBSCRIPTION_STATUS_TRIALING = 4;
+}
+
+enum BillingInterval {
+  BILLING_INTERVAL_UNSPECIFIED = 0;
+  BILLING_INTERVAL_MONTHLY = 1;
+  BILLING_INTERVAL_ANNUAL = 2;
+}
+
+message Transaction {
+  string id = 1;
+  string account_id = 2;
+  TransactionType type = 3;
+  TransactionStatus status = 4;
+  optional string stripe_payment_intent_id = 5;
+  optional string stripe_invoice_id = 6;
+  optional string subscription_id = 7;
+  optional string bundle_id = 8;
+  google.protobuf.Timestamp created_at = 9;
+
+  optional SubscriptionResponse subscription = 10;
+  optional BundleResponse bundle = 11;
+}
+
+message FindAllByAccountResponse {
+  repeated Transaction transactions = 1;
+}

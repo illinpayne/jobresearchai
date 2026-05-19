@@ -31,4 +31,9 @@ export const GRPC_CLIENT = {
     protoPath: protoPaths.PAGINATION,
     env: "PAGINATION_GRPC_URL",
   },
+  PAYMENT_PACKAGE: {
+    package: "payment.v1",
+    protoPath: protoPaths.PAYMENT,
+    env: "PAYMENT_GRPC_URL",
+  },
 } as const;

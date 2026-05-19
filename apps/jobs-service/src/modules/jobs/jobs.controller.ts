@@ -41,9 +41,10 @@ export class JobsController {
 		try {
 			const scrappedJobs = await this.workUaScrapper.scrape({
 				...data,
-				tags: data.tags.slice(0, 1),
+				tags: [data.tags[0]],
 				limit: data.limit
 			})
+			console.log(scrappedJobs.length)
 			await this.jobsService.bulkNewJobToUser(
 				data.accountId,
 				scrappedJobs

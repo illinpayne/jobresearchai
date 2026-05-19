@@ -1,0 +1,116 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "./generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BillingInterval {
+  MONTHLY
+  ANNUAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+  EXPIRED
+}
+
+enum TransactionType {
+  SUBSCRIPTION_CREATED
+  SUBSCRIPTION_RENEWED
+  SUBSCRIPTION_REFUND
+  BUNDLE_PURCHASE
+}
+
+enum TransactionStatus {
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+model AccountBill {
+  accountId String   @unique @map("account_id")
+  email     String   @unique
+  credits   Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subscriptions Subscription[]
+
+  @@index([accountId])
+  @@map("account_billings")
+}
+
+model Plan {
+  id                   String   @id @default(nanoid())
+  name                 String   @unique
+  stripePriceMonthlyId String   @map("stripe_price_monthly_id")
+  stripePriceAnnualId  String   @map("stripe_price_annual_id")
+  grantedCredits       Int      @default(0) @map("granted_credits")
+  trialDays            Int      @default(0) @map("trial_days")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id                   String             @id @default(nanoid())
+  accountId            String             @map("account_id")
+  planId               String             @map("plan_id")
+  stripeSubscriptionId String?            @unique @map("stripe_subscription_id")
+  stripeCustomerId     String             @map("stripe_customer_id")
+  status               SubscriptionStatus
+  interval             BillingInterval
+  currentPeriodStart   DateTime           @map("current_period_start")
+  currentPeriodEnd     DateTime           @map("current_period_end")
+  cancelAtPeriodEnd    Boolean            @default(false) @map("cancel_at_period_end")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
+
+  accountBill  AccountBill   @relation(fields: [accountId], references: [accountId])
+  plan         Plan          @relation(fields: [planId], references: [id])
+  transactions Transaction[]
+
+  @@index([accountId])
+  @@map("subscriptions")
+}
+
+model Bundle {
+  id            String   @id @default(nanoid())
+  name          String   @unique
+  credits       Int
+  stripePriceId String   @map("stripe_price_id")
+  price         Int
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  transactions Transaction[]
+
+  @@map("bundles")
+}
+
+model Transaction {
+  id                    String            @id @default(nanoid())
+  accountId             String            @map("account_id")
+  type                  TransactionType
+  status                TransactionStatus
+  stripePaymentIntentId String?           @map("stripe_payment_intent_id")
+  stripeInvoiceId       String?           @map("stripe_invoice_id")
+  subscriptionId        String?           @map("subscription_id")
+  bundleId              String?           @map("bundle_id")
+  createdAt             DateTime          @default(now()) @map("created_at")
+
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+  bundle       Bundle?       @relation(fields: [bundleId], references: [id])
+
+  @@index([accountId])
+  @@map("transactions")
+}

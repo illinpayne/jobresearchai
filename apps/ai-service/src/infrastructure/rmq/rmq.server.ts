@@ -17,7 +17,7 @@ export function createRmqServer(
 				durable: true
 			},
 			noAck: false,
-			prefetchCount: 2,
+			prefetchCount: 1,
 			persistent: true
 		}
 	})

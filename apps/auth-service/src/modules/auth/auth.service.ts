@@ -24,6 +24,7 @@ import { AuthProviders } from '@/shared/auth.types'
 
 import { AccountRepository } from '../account/account.repository'
 import { OtpService } from '../otp/otp.service'
+import { PaymentClientGrpc } from '../payment/payment.grpc'
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,8 @@ export class AuthService {
 		private readonly accountRepository: AccountRepository,
 		private readonly otpService: OtpService,
 		private readonly tokenService: TokenService,
-		private readonly messagingService: MessagingService
+		private readonly messagingService: MessagingService,
+		private readonly paymentClient: PaymentClientGrpc
 	) {}
 
 	public async sendOTPRegister(
@@ -48,8 +50,10 @@ export class AuthService {
 
 		const passwordHash = await hash(password)
 
+		let newAccount: Account | null = null
+
 		try {
-			await this.accountRepository.createAccount({
+			newAccount = await this.accountRepository.createAccount({
 				email,
 				passwordHash,
 				firstName,
@@ -60,9 +64,22 @@ export class AuthService {
 					}
 				}
 			})
+
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
 			throw new GrpcException(RpcStatus.ABORTED, 'Cannot create account')
+		}
+
+		if (newAccount) {
+			try {
+				const resp = await this.paymentClient.call(
+					'createAccountBill',
+					{
+						accountId: newAccount.id,
+						email: newAccount.email
+					}
+				)
+			} catch (error) {}
 		}
 
 		const codes = await this.otpService.persist(email, 'register')

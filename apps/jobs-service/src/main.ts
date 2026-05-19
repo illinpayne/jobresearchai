@@ -19,7 +19,7 @@ async function bootstrap() {
 	try {
 		await app.startAllMicroservices()
 		await app.init()
-		logger.log('🚀 Ai Core microservice successfully configured')
+		logger.log('🚀 Jobs microservice successfully configured')
 	} catch (error) {
 		logger.error(
 			`❌ Failed to start microservice: ${error.message ?? 'unknows issue'}`,
