@@ -1,7 +1,11 @@
-import { CheckoutResponse } from '@jrai/contracts/gen/payment'
+import {
+	CheckoutResponse,
+	DisplayedSubscriptionResponse
+} from '@jrai/contracts/gen/payment'
 import { GrpcException, RpcStatus } from '@jrai/contracts/grpc'
 import { Injectable } from '@nestjs/common'
 import { BillingInterval, SubscriptionStatus } from '@prisma/generated/enums'
+import { SubscriptionSelect } from '@prisma/generated/models'
 import Stripe from 'stripe'
 
 import { PaymentProvider } from '@/common/abstracts/payment-provider.abstract'
@@ -14,6 +18,27 @@ import { SubscribeDto } from './dtos/subscribe.dto'
 
 @Injectable()
 export class SubscriptionService {
+	public subscription: SubscriptionSelect = {
+		id: true,
+		status: true,
+		interval: true,
+		cancelAtPeriodEnd: true,
+		currentPeriodEnd: true,
+		currentPeriodStart: true,
+
+		plan: {
+			select: {
+				id: true,
+				name: true,
+
+				grantedCredits: true,
+				trialDays: true,
+				description: true,
+				monthlyPrice: true,
+				annualPrice: true
+			}
+		}
+	}
 	public constructor(
 		private readonly prisma: PrismaService,
 		private readonly paymentProvider: PaymentProvider,
@@ -21,7 +46,9 @@ export class SubscriptionService {
 		private readonly accountBillService: AccountBillService
 	) {}
 
-	public async findSubscription(accountId: string) {
+	public async findSubscription(
+		accountId: string
+	): Promise<DisplayedSubscriptionResponse | any> {
 		const subscription = await this.prisma.subscription.findFirst({
 			where: {
 				accountId,
@@ -34,16 +61,42 @@ export class SubscriptionService {
 					]
 				}
 			},
-			include: { plan: true }
+			include: {
+				plan: true,
+				accountBill: {
+					select: {
+						credits: true
+					}
+				}
+			}
 		})
 		if (!subscription) {
-			throw new GrpcException(
-				RpcStatus.NOT_FOUND,
-				'No subscription yet on your account'
-			)
+			const bill = await this.accountBillService.findOne(accountId)
+			return {
+				id: '000-000-000',
+				planId: '00-00-00',
+				status: SubscriptionStatus.ACTIVE,
+				interval: BillingInterval.MONTHLY,
+				cancelAtPeriodEnd: false,
+				credits: bill.credits.toString(),
+				currentPeriodEnd: '',
+				currentPeriodStart: '',
+				plan: {
+					id: '00-00-00',
+					name: 'Free',
+					grantedCredits: 30,
+					trialDays: 0,
+					description: '',
+					monthlyPrice: 0,
+					annualPrice: 0
+				}
+			} as DisplayedSubscriptionResponse
 		}
-
-		return subscription
+		const { accountBill, ...data } = subscription
+		return {
+			...data,
+			credits: accountBill.credits.toString()
+		}
 	}
 
 	public async findByStripeId(stripeSubscriptionId: string) {

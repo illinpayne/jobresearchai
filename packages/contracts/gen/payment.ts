@@ -79,6 +79,20 @@ export interface PlanResponse {
   trialDays: number;
   stripePriceMonthlyId: string;
   stripePriceAnnualId: string;
+  description: string;
+  monthlyPrice: number;
+  annualPrice: number;
+  benefits: string[];
+}
+
+export interface DisplayedPlanResponse {
+  id: string;
+  name: string;
+  grantedCredits: number;
+  trialDays: number;
+  description: string;
+  monthlyPrice: number;
+  annualPrice: number;
 }
 
 export interface GetPlansResponse {
@@ -91,6 +105,7 @@ export interface BundleResponse {
   credits: number;
   price: number;
   stripePriceId: string;
+  description: string;
 }
 
 export interface GetBundlesResponse {
@@ -115,6 +130,18 @@ export interface SubscriptionResponse {
   currentPeriodStart: string;
   currentPeriodEnd: string;
   plan: PlanResponse | undefined;
+}
+
+export interface DisplayedSubscriptionResponse {
+  id: string;
+  planId: string;
+  status: string;
+  interval: string;
+  cancelAtPeriodEnd: boolean;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  credits: string;
+  plan: DisplayedPlanResponse | undefined;
 }
 
 export interface BuyBundleRequest {
@@ -169,6 +196,8 @@ export interface PaymentServiceClient {
 
   updateAccountBill(request: UpdateAccountBillRequest): Observable<AccountBillResponse>;
 
+  decrementBillCredits(request: UpdateAccountBillRequest): Observable<AccountBillResponse>;
+
   /** Plans & Bundles */
 
   getPlans(request: Empty): Observable<GetPlansResponse>;
@@ -181,7 +210,7 @@ export interface PaymentServiceClient {
 
   subscribe(request: SubscribeRequest): Observable<CheckoutResponse>;
 
-  getSubscription(request: AccountRequest): Observable<SubscriptionResponse>;
+  getSubscription(request: AccountRequest): Observable<DisplayedSubscriptionResponse>;
 
   cancelSubscription(request: AccountRequest): Observable<SubscriptionResponse>;
 
@@ -209,6 +238,10 @@ export interface PaymentServiceController {
     request: UpdateAccountBillRequest,
   ): Promise<AccountBillResponse> | Observable<AccountBillResponse> | AccountBillResponse;
 
+  decrementBillCredits(
+    request: UpdateAccountBillRequest,
+  ): Promise<AccountBillResponse> | Observable<AccountBillResponse> | AccountBillResponse;
+
   /** Plans & Bundles */
 
   getPlans(request: Empty): Promise<GetPlansResponse> | Observable<GetPlansResponse> | GetPlansResponse;
@@ -223,7 +256,7 @@ export interface PaymentServiceController {
 
   getSubscription(
     request: AccountRequest,
-  ): Promise<SubscriptionResponse> | Observable<SubscriptionResponse> | SubscriptionResponse;
+  ): Promise<DisplayedSubscriptionResponse> | Observable<DisplayedSubscriptionResponse> | DisplayedSubscriptionResponse;
 
   cancelSubscription(
     request: AccountRequest,
@@ -250,6 +283,7 @@ export function PaymentServiceControllerMethods() {
       "createAccountBill",
       "getAccountBill",
       "updateAccountBill",
+      "decrementBillCredits",
       "getPlans",
       "getBundles",
       "buyBundle",

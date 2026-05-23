@@ -2,8 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ApplicationName } from '@/constants';
-import { Button } from '../ui/button';
+import { ApplicationName, ROUTES } from '@/constants';
 import HeaderLoginButton from './header-login-button';
 
 export const navigations = [
@@ -25,7 +24,7 @@ export const navigations = [
   },
   {
     title: 'Pricing',
-    href: '/#pricing',
+    href: ROUTES.PRICING,
   },
 ];
 

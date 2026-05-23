@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import { APP_CONFIG, ROUTES } from '@/constants';
-import { jobsCacheKey, profilesCacheKey, RemoveCache } from '@/lib/cache';
+import { billingSubscriptionCacheKey, jobsCacheKey, profilesCacheKey, RemoveCache } from '@/lib/cache';
 import { type AiJoinRoomEventType, type AiProgressExchangeEventType, JobStatus, JobStatusMapper } from '@/shared/events';
 import { useAIStore } from '@/states/useAiStorage.hook';
 
@@ -68,10 +68,12 @@ export const ThinkingScreen = React.memo(function ThinkingScreen({
 
           RemoveCache(profilesCacheKey);
           RemoveCache(jobsCacheKey);
+          RemoveCache(billingSubscriptionCacheKey);
           queryClient.refetchQueries({ queryKey: ['jobsInProgress'] });
           queryClient.refetchQueries({ queryKey: ['profiles'] });
           queryClient.refetchQueries({ queryKey: ['jobs'] });
           queryClient.refetchQueries({ queryKey: ['jobs-filter'] });
+          queryClient.refetchQueries({ queryKey: ['billing-subscription'] });
 
           const { toast } = await import('sonner');
           toast.success(`Analyse completed`);

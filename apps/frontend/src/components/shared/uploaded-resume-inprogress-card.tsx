@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import type { AnalyseJobInProgressDto, SimplifiedAnalyseJobWithPresetResponse } from '@/api/generated';
 import { APP_CONFIG, ROUTES } from '@/constants';
-import { jobsCacheKey, profilesCacheKey, RemoveCache } from '@/lib/cache';
+import { billingSubscriptionCacheKey, jobsCacheKey, profilesCacheKey, RemoveCache } from '@/lib/cache';
 import { cn } from '@/lib/utils';
 import { type AiJoinRoomEventType, type AiProgressExchangeEventType, EventStatusCode, JobStatus, JobStatusMapper } from '@/shared/events';
 
@@ -113,6 +113,8 @@ export default function UploadedResumeInProgressCard({ queryClient, email, ...pr
         case JobStatus.DONE: {
           socket.disconnect();
           RemoveCache(profilesCacheKey);
+          RemoveCache(billingSubscriptionCacheKey);
+          queryClient.refetchQueries({ queryKey: ['billing-subscription'] });
           queryClient.refetchQueries({ queryKey: ['profiles'] });
           const { toast } = await import('sonner');
           toast.success(`Job #${props.workId} completed.`);

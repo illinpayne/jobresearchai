@@ -108,9 +108,16 @@ export class LMStudioLocalProvider implements AiProvider, OnModuleInit {
 				completionTokens: completion.usage.completion_tokens
 			} as IProviderUsageTokens
 		}
+
+		const message = completion.choices[0].message
+		let rawData = message.content
+		if (!rawData || rawData.trim() === '') {
+			rawData = (message as any).reasoning_content || ''
+		}
+
 		const response: IProviderPromptResponse = {
 			usage,
-			rawData: completion.choices[0].message.content
+			rawData: rawData
 		}
 		return response
 	}

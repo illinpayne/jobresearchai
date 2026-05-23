@@ -110,7 +110,7 @@ function FormLogic({ presets, email, aiStorage }: Props) {
       onError: (error: any) => {
         const message = error.response?.data?.message;
         const displayMessage = Array.isArray(message) ? message[0] : message;
-        setError('document', { type: 'value', message: 'dd' });
+        setError('document', { type: 'value', message });
         toast.error(displayMessage || 'An unexpected error occurred');
       },
     });
@@ -183,7 +183,6 @@ function FormLogic({ presets, email, aiStorage }: Props) {
                   ) : (
                     <Skeleton className='h-full w-40 bg-neutral-200' />
                   )}
-                  {/* TODO: Make not Analysing..., run animation immediately, then just show error or realtime thinking */}
                   <button
                     type='submit'
                     disabled={!formState.isValid || (formState.isSubmitted && isSuccess)}

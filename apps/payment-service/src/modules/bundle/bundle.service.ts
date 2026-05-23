@@ -12,7 +12,8 @@ export class BundleService {
 		id: true,
 		name: true,
 		credits: true,
-		price: true
+		price: true,
+		description: true
 	}
 	public constructor(
 		private readonly prisma: PrismaService,

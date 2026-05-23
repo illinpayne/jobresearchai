@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import AiDataWrapper from './data-wrapper';
 
 export const metadata: Metadata = {

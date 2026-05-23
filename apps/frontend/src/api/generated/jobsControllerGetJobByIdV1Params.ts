@@ -7,5 +7,5 @@
  */
 
 export type JobsControllerGetJobByIdV1Params = {
-  id: string;
+id: string;
 };

@@ -29,41 +29,55 @@ export type AggregatePlan = {
 export type PlanAvgAggregateOutputType = {
   grantedCredits: number | null
   trialDays: number | null
+  monthlyPrice: number | null
+  annualPrice: number | null
 }
 
 export type PlanSumAggregateOutputType = {
   grantedCredits: number | null
   trialDays: number | null
+  monthlyPrice: number | null
+  annualPrice: number | null
 }
 
 export type PlanMinAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   stripePriceMonthlyId: string | null
   stripePriceAnnualId: string | null
   grantedCredits: number | null
   trialDays: number | null
+  monthlyPrice: number | null
+  annualPrice: number | null
   createdAt: Date | null
 }
 
 export type PlanMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   stripePriceMonthlyId: string | null
   stripePriceAnnualId: string | null
   grantedCredits: number | null
   trialDays: number | null
+  monthlyPrice: number | null
+  annualPrice: number | null
   createdAt: Date | null
 }
 
 export type PlanCountAggregateOutputType = {
   id: number
   name: number
+  description: number
   stripePriceMonthlyId: number
   stripePriceAnnualId: number
   grantedCredits: number
   trialDays: number
+  monthlyPrice: number
+  annualPrice: number
   createdAt: number
+  benefits: number
   _all: number
 }
 
@@ -71,41 +85,55 @@ export type PlanCountAggregateOutputType = {
 export type PlanAvgAggregateInputType = {
   grantedCredits?: true
   trialDays?: true
+  monthlyPrice?: true
+  annualPrice?: true
 }
 
 export type PlanSumAggregateInputType = {
   grantedCredits?: true
   trialDays?: true
+  monthlyPrice?: true
+  annualPrice?: true
 }
 
 export type PlanMinAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   stripePriceMonthlyId?: true
   stripePriceAnnualId?: true
   grantedCredits?: true
   trialDays?: true
+  monthlyPrice?: true
+  annualPrice?: true
   createdAt?: true
 }
 
 export type PlanMaxAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   stripePriceMonthlyId?: true
   stripePriceAnnualId?: true
   grantedCredits?: true
   trialDays?: true
+  monthlyPrice?: true
+  annualPrice?: true
   createdAt?: true
 }
 
 export type PlanCountAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   stripePriceMonthlyId?: true
   stripePriceAnnualId?: true
   grantedCredits?: true
   trialDays?: true
+  monthlyPrice?: true
+  annualPrice?: true
   createdAt?: true
+  benefits?: true
   _all?: true
 }
 
@@ -198,11 +226,15 @@ export type PlanGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type PlanGroupByOutputType = {
   id: string
   name: string
+  description: string
   stripePriceMonthlyId: string
   stripePriceAnnualId: string
   grantedCredits: number
   trialDays: number
+  monthlyPrice: number
+  annualPrice: number
   createdAt: Date
+  benefits: string[]
   _count: PlanCountAggregateOutputType | null
   _avg: PlanAvgAggregateOutputType | null
   _sum: PlanSumAggregateOutputType | null
@@ -231,22 +263,30 @@ export type PlanWhereInput = {
   NOT?: Prisma.PlanWhereInput | Prisma.PlanWhereInput[]
   id?: Prisma.StringFilter<"Plan"> | string
   name?: Prisma.StringFilter<"Plan"> | string
+  description?: Prisma.StringFilter<"Plan"> | string
   stripePriceMonthlyId?: Prisma.StringFilter<"Plan"> | string
   stripePriceAnnualId?: Prisma.StringFilter<"Plan"> | string
   grantedCredits?: Prisma.IntFilter<"Plan"> | number
   trialDays?: Prisma.IntFilter<"Plan"> | number
+  monthlyPrice?: Prisma.IntFilter<"Plan"> | number
+  annualPrice?: Prisma.IntFilter<"Plan"> | number
   createdAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
+  benefits?: Prisma.StringNullableListFilter<"Plan">
   subscriptions?: Prisma.SubscriptionListRelationFilter
 }
 
 export type PlanOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   stripePriceMonthlyId?: Prisma.SortOrder
   stripePriceAnnualId?: Prisma.SortOrder
   grantedCredits?: Prisma.SortOrder
   trialDays?: Prisma.SortOrder
+  monthlyPrice?: Prisma.SortOrder
+  annualPrice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  benefits?: Prisma.SortOrder
   subscriptions?: Prisma.SubscriptionOrderByRelationAggregateInput
 }
 
@@ -256,22 +296,30 @@ export type PlanWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.PlanWhereInput | Prisma.PlanWhereInput[]
   OR?: Prisma.PlanWhereInput[]
   NOT?: Prisma.PlanWhereInput | Prisma.PlanWhereInput[]
+  description?: Prisma.StringFilter<"Plan"> | string
   stripePriceMonthlyId?: Prisma.StringFilter<"Plan"> | string
   stripePriceAnnualId?: Prisma.StringFilter<"Plan"> | string
   grantedCredits?: Prisma.IntFilter<"Plan"> | number
   trialDays?: Prisma.IntFilter<"Plan"> | number
+  monthlyPrice?: Prisma.IntFilter<"Plan"> | number
+  annualPrice?: Prisma.IntFilter<"Plan"> | number
   createdAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
+  benefits?: Prisma.StringNullableListFilter<"Plan">
   subscriptions?: Prisma.SubscriptionListRelationFilter
 }, "id" | "name">
 
 export type PlanOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   stripePriceMonthlyId?: Prisma.SortOrder
   stripePriceAnnualId?: Prisma.SortOrder
   grantedCredits?: Prisma.SortOrder
   trialDays?: Prisma.SortOrder
+  monthlyPrice?: Prisma.SortOrder
+  annualPrice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  benefits?: Prisma.SortOrder
   _count?: Prisma.PlanCountOrderByAggregateInput
   _avg?: Prisma.PlanAvgOrderByAggregateInput
   _max?: Prisma.PlanMaxOrderByAggregateInput
@@ -285,130 +333,193 @@ export type PlanScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PlanScalarWhereWithAggregatesInput | Prisma.PlanScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Plan"> | string
   name?: Prisma.StringWithAggregatesFilter<"Plan"> | string
+  description?: Prisma.StringWithAggregatesFilter<"Plan"> | string
   stripePriceMonthlyId?: Prisma.StringWithAggregatesFilter<"Plan"> | string
   stripePriceAnnualId?: Prisma.StringWithAggregatesFilter<"Plan"> | string
   grantedCredits?: Prisma.IntWithAggregatesFilter<"Plan"> | number
   trialDays?: Prisma.IntWithAggregatesFilter<"Plan"> | number
+  monthlyPrice?: Prisma.IntWithAggregatesFilter<"Plan"> | number
+  annualPrice?: Prisma.IntWithAggregatesFilter<"Plan"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Plan"> | Date | string
+  benefits?: Prisma.StringNullableListFilter<"Plan">
 }
 
 export type PlanCreateInput = {
   id?: string
   name: string
+  description?: string
   stripePriceMonthlyId: string
   stripePriceAnnualId: string
   grantedCredits?: number
   trialDays?: number
+  monthlyPrice?: number
+  annualPrice?: number
   createdAt?: Date | string
+  benefits?: Prisma.PlanCreatebenefitsInput | string[]
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutPlanInput
 }
 
 export type PlanUncheckedCreateInput = {
   id?: string
   name: string
+  description?: string
   stripePriceMonthlyId: string
   stripePriceAnnualId: string
   grantedCredits?: number
   trialDays?: number
+  monthlyPrice?: number
+  annualPrice?: number
   createdAt?: Date | string
+  benefits?: Prisma.PlanCreatebenefitsInput | string[]
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutPlanInput
 }
 
 export type PlanUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceMonthlyId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceAnnualId?: Prisma.StringFieldUpdateOperationsInput | string
   grantedCredits?: Prisma.IntFieldUpdateOperationsInput | number
   trialDays?: Prisma.IntFieldUpdateOperationsInput | number
+  monthlyPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  annualPrice?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  benefits?: Prisma.PlanUpdatebenefitsInput | string[]
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutPlanNestedInput
 }
 
 export type PlanUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceMonthlyId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceAnnualId?: Prisma.StringFieldUpdateOperationsInput | string
   grantedCredits?: Prisma.IntFieldUpdateOperationsInput | number
   trialDays?: Prisma.IntFieldUpdateOperationsInput | number
+  monthlyPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  annualPrice?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  benefits?: Prisma.PlanUpdatebenefitsInput | string[]
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutPlanNestedInput
 }
 
 export type PlanCreateManyInput = {
   id?: string
   name: string
+  description?: string
   stripePriceMonthlyId: string
   stripePriceAnnualId: string
   grantedCredits?: number
   trialDays?: number
+  monthlyPrice?: number
+  annualPrice?: number
   createdAt?: Date | string
+  benefits?: Prisma.PlanCreatebenefitsInput | string[]
 }
 
 export type PlanUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceMonthlyId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceAnnualId?: Prisma.StringFieldUpdateOperationsInput | string
   grantedCredits?: Prisma.IntFieldUpdateOperationsInput | number
   trialDays?: Prisma.IntFieldUpdateOperationsInput | number
+  monthlyPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  annualPrice?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  benefits?: Prisma.PlanUpdatebenefitsInput | string[]
 }
 
 export type PlanUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceMonthlyId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceAnnualId?: Prisma.StringFieldUpdateOperationsInput | string
   grantedCredits?: Prisma.IntFieldUpdateOperationsInput | number
   trialDays?: Prisma.IntFieldUpdateOperationsInput | number
+  monthlyPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  annualPrice?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  benefits?: Prisma.PlanUpdatebenefitsInput | string[]
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type PlanCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   stripePriceMonthlyId?: Prisma.SortOrder
   stripePriceAnnualId?: Prisma.SortOrder
   grantedCredits?: Prisma.SortOrder
   trialDays?: Prisma.SortOrder
+  monthlyPrice?: Prisma.SortOrder
+  annualPrice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  benefits?: Prisma.SortOrder
 }
 
 export type PlanAvgOrderByAggregateInput = {
   grantedCredits?: Prisma.SortOrder
   trialDays?: Prisma.SortOrder
+  monthlyPrice?: Prisma.SortOrder
+  annualPrice?: Prisma.SortOrder
 }
 
 export type PlanMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   stripePriceMonthlyId?: Prisma.SortOrder
   stripePriceAnnualId?: Prisma.SortOrder
   grantedCredits?: Prisma.SortOrder
   trialDays?: Prisma.SortOrder
+  monthlyPrice?: Prisma.SortOrder
+  annualPrice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type PlanMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   stripePriceMonthlyId?: Prisma.SortOrder
   stripePriceAnnualId?: Prisma.SortOrder
   grantedCredits?: Prisma.SortOrder
   trialDays?: Prisma.SortOrder
+  monthlyPrice?: Prisma.SortOrder
+  annualPrice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type PlanSumOrderByAggregateInput = {
   grantedCredits?: Prisma.SortOrder
   trialDays?: Prisma.SortOrder
+  monthlyPrice?: Prisma.SortOrder
+  annualPrice?: Prisma.SortOrder
 }
 
 export type PlanScalarRelationFilter = {
   is?: Prisma.PlanWhereInput
   isNot?: Prisma.PlanWhereInput
+}
+
+export type PlanCreatebenefitsInput = {
+  set: string[]
+}
+
+export type PlanUpdatebenefitsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type PlanCreateNestedOneWithoutSubscriptionsInput = {
@@ -428,21 +539,29 @@ export type PlanUpdateOneRequiredWithoutSubscriptionsNestedInput = {
 export type PlanCreateWithoutSubscriptionsInput = {
   id?: string
   name: string
+  description?: string
   stripePriceMonthlyId: string
   stripePriceAnnualId: string
   grantedCredits?: number
   trialDays?: number
+  monthlyPrice?: number
+  annualPrice?: number
   createdAt?: Date | string
+  benefits?: Prisma.PlanCreatebenefitsInput | string[]
 }
 
 export type PlanUncheckedCreateWithoutSubscriptionsInput = {
   id?: string
   name: string
+  description?: string
   stripePriceMonthlyId: string
   stripePriceAnnualId: string
   grantedCredits?: number
   trialDays?: number
+  monthlyPrice?: number
+  annualPrice?: number
   createdAt?: Date | string
+  benefits?: Prisma.PlanCreatebenefitsInput | string[]
 }
 
 export type PlanCreateOrConnectWithoutSubscriptionsInput = {
@@ -464,21 +583,29 @@ export type PlanUpdateToOneWithWhereWithoutSubscriptionsInput = {
 export type PlanUpdateWithoutSubscriptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceMonthlyId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceAnnualId?: Prisma.StringFieldUpdateOperationsInput | string
   grantedCredits?: Prisma.IntFieldUpdateOperationsInput | number
   trialDays?: Prisma.IntFieldUpdateOperationsInput | number
+  monthlyPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  annualPrice?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  benefits?: Prisma.PlanUpdatebenefitsInput | string[]
 }
 
 export type PlanUncheckedUpdateWithoutSubscriptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceMonthlyId?: Prisma.StringFieldUpdateOperationsInput | string
   stripePriceAnnualId?: Prisma.StringFieldUpdateOperationsInput | string
   grantedCredits?: Prisma.IntFieldUpdateOperationsInput | number
   trialDays?: Prisma.IntFieldUpdateOperationsInput | number
+  monthlyPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  annualPrice?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  benefits?: Prisma.PlanUpdatebenefitsInput | string[]
 }
 
 
@@ -515,11 +642,15 @@ export type PlanCountOutputTypeCountSubscriptionsArgs<ExtArgs extends runtime.Ty
 export type PlanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   stripePriceMonthlyId?: boolean
   stripePriceAnnualId?: boolean
   grantedCredits?: boolean
   trialDays?: boolean
+  monthlyPrice?: boolean
+  annualPrice?: boolean
   createdAt?: boolean
+  benefits?: boolean
   subscriptions?: boolean | Prisma.Plan$subscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.PlanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["plan"]>
@@ -527,34 +658,46 @@ export type PlanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type PlanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   stripePriceMonthlyId?: boolean
   stripePriceAnnualId?: boolean
   grantedCredits?: boolean
   trialDays?: boolean
+  monthlyPrice?: boolean
+  annualPrice?: boolean
   createdAt?: boolean
+  benefits?: boolean
 }, ExtArgs["result"]["plan"]>
 
 export type PlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   stripePriceMonthlyId?: boolean
   stripePriceAnnualId?: boolean
   grantedCredits?: boolean
   trialDays?: boolean
+  monthlyPrice?: boolean
+  annualPrice?: boolean
   createdAt?: boolean
+  benefits?: boolean
 }, ExtArgs["result"]["plan"]>
 
 export type PlanSelectScalar = {
   id?: boolean
   name?: boolean
+  description?: boolean
   stripePriceMonthlyId?: boolean
   stripePriceAnnualId?: boolean
   grantedCredits?: boolean
   trialDays?: boolean
+  monthlyPrice?: boolean
+  annualPrice?: boolean
   createdAt?: boolean
+  benefits?: boolean
 }
 
-export type PlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "stripePriceMonthlyId" | "stripePriceAnnualId" | "grantedCredits" | "trialDays" | "createdAt", ExtArgs["result"]["plan"]>
+export type PlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "stripePriceMonthlyId" | "stripePriceAnnualId" | "grantedCredits" | "trialDays" | "monthlyPrice" | "annualPrice" | "createdAt" | "benefits", ExtArgs["result"]["plan"]>
 export type PlanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subscriptions?: boolean | Prisma.Plan$subscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.PlanCountOutputTypeDefaultArgs<ExtArgs>
@@ -570,11 +713,15 @@ export type $PlanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    description: string
     stripePriceMonthlyId: string
     stripePriceAnnualId: string
     grantedCredits: number
     trialDays: number
+    monthlyPrice: number
+    annualPrice: number
     createdAt: Date
+    benefits: string[]
   }, ExtArgs["result"]["plan"]>
   composites: {}
 }
@@ -1001,11 +1148,15 @@ export interface Prisma__PlanClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface PlanFieldRefs {
   readonly id: Prisma.FieldRef<"Plan", 'String'>
   readonly name: Prisma.FieldRef<"Plan", 'String'>
+  readonly description: Prisma.FieldRef<"Plan", 'String'>
   readonly stripePriceMonthlyId: Prisma.FieldRef<"Plan", 'String'>
   readonly stripePriceAnnualId: Prisma.FieldRef<"Plan", 'String'>
   readonly grantedCredits: Prisma.FieldRef<"Plan", 'Int'>
   readonly trialDays: Prisma.FieldRef<"Plan", 'Int'>
+  readonly monthlyPrice: Prisma.FieldRef<"Plan", 'Int'>
+  readonly annualPrice: Prisma.FieldRef<"Plan", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Plan", 'DateTime'>
+  readonly benefits: Prisma.FieldRef<"Plan", 'String[]'>
 }
     
 

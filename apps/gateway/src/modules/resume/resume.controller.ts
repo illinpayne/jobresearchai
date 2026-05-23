@@ -42,6 +42,7 @@ import { jobNameCacheKey } from '@/shared/websockets'
 import { TextCleaner } from '@/utils/text-cleaner.util'
 
 import { AicoreClientGrpc } from '../ai/aicore.grpc'
+import { BillingClientGrpc } from '../billing/billing.grpc'
 
 import { AccountProfilesResponse } from './dtos/account-profiles.dto'
 import { UploadResumeDto } from './dtos/upload-resume.dto'
@@ -52,6 +53,7 @@ export class ResumeController {
 		@Inject(PDF_PARSER) private readonly pdfParser: ResumeParser,
 		@Inject(WORD_PARSER) private readonly wordParser: ResumeParser,
 		private readonly aiClient: AicoreClientGrpc,
+		private readonly billingClient: BillingClientGrpc,
 		private readonly queueService: QueueService,
 		private readonly redisService: RedisService
 	) {}
@@ -110,14 +112,13 @@ export class ResumeController {
 		}
 
 		try {
-			const jobId = nanoid()
-			let extractedText = ''
-			if (file.mimetype.includes('pdf')) {
-				const text = await this.pdfParser.parse(file.buffer)
-				extractedText = TextCleaner.sanitize(text)
-			} else {
-				extractedText = await this.wordParser.parse(file.buffer)
-			}
+			const subscription = await this.billingClient.call(
+				'getSubscription',
+				{
+					accountId: accountId
+				}
+			)
+
 			const extendedPreset: ExtendedAiPreset = await this.aiClient.call(
 				'getExtendedPresetByAccount',
 				{
@@ -125,10 +126,29 @@ export class ResumeController {
 					accountId
 				}
 			)
+
 			if (!extendedPreset.preset || !extendedPreset.aiExternalModel) {
 				throw new BadRequestException(
 					'Invalid preset or LLM configuration'
 				)
+			}
+
+			if (
+				Number(subscription.credits) <
+				extendedPreset.preset.usageCredits
+			) {
+				throw new BadRequestException(
+					'Insufficient credits, upgrade the new tier or buy extra credits to continue.'
+				)
+			}
+
+			const jobId = nanoid()
+			let extractedText = ''
+			if (file.mimetype.includes('pdf')) {
+				const text = await this.pdfParser.parse(file.buffer)
+				extractedText = TextCleaner.sanitize(text)
+			} else {
+				extractedText = await this.wordParser.parse(file.buffer)
 			}
 
 			const jobCacheValue = JSON.stringify({

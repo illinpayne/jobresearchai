@@ -5,6 +5,7 @@ export const day = 24 * 60 * 1000;
 export const tenMinutes = 10 * 60 * 1000;
 export const twoMinutes = 2 * 60 * 1000;
 export const fiveSeconds = 5000;
+export const oneMinute = 1 * 60 * 1000;
 
 export const accountCacheStaleTime = fiveMinutes;
 export const changePasswordCacheStaleTime = twoMinutes;
@@ -12,6 +13,9 @@ export const presetsCacheStaleTime = day;
 export const profilesCacheStaleTime = tenMinutes;
 export const jobsCacheStaleTime = fiveSeconds;
 export const jobsFilterCacheStaleTime = fiveSeconds;
+export const billingSubscriptionCacheStaleTime = oneMinute;
+export const plansCacheStaleTime = day;
+export const bundleCacheStaleTime = day;
 
 export const accountCacheKey = "account_cache";
 export const changePasswordCacheKey = "change_password_cache";
@@ -21,6 +25,9 @@ export const presetsCacheKey = "presets_data";
 export const profilesCacheKey = "profiles_data";
 export const jobsCacheKey = "jobs_data";
 export const jobsFilterCacheKey = "vacancies_filter_data";
+export const billingSubscriptionCacheKey = "billing_subscription_data";
+export const plansCacheKey = "plans_data";
+export const bundleCacheKey = "bundle_data";
 
 export type BaseCache = {
   createdAt: number;
@@ -112,6 +119,7 @@ export function DisposeCache() {
     profilesCacheKey,
     jobsCacheKey,
     jobsFilterCacheKey,
+    billingSubscriptionCacheKey,
   ];
   cache_to_remove.forEach((key) => {
     RemoveCache(key);

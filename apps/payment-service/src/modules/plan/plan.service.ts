@@ -8,8 +8,12 @@ export class PlanService {
 	public plan: PlanSelect = {
 		id: true,
 		name: true,
+		description: true,
 		grantedCredits: true,
-		trialDays: true
+		trialDays: true,
+		monthlyPrice: true,
+		annualPrice: true,
+		benefits: true
 	}
 	public constructor(private readonly prisma: PrismaService) {}
 

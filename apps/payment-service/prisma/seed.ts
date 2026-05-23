@@ -2,53 +2,86 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
 import { PrismaClient } from './generated/client'
+import { BundleCreateInput, PlanCreateInput } from './generated/models'
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL })
 const adapter = new PrismaPg(pool)
 
 const prisma = new PrismaClient({ adapter })
 
-const PLANS = [
+const PLANS: PlanCreateInput[] = [
 	{
 		name: 'Basic',
 		grantedCredits: 250,
 		trialDays: 7,
 		stripePriceMonthlyId: 'price_1TX6XKGly7U8J4pxBC5gLbAB',
-		stripePriceAnnualId: 'price_1TX6XbGly7U8J4pxjDTYraBW'
+		stripePriceAnnualId: 'price_1TX6XbGly7U8J4pxjDTYraBW',
+		monthlyPrice: 5,
+		annualPrice: 60,
+		description: 'Everything you need to get started.',
+		benefits: [
+			'Up to 2 AI models',
+			'250 montly credits',
+			'Trial for 7 days'
+		]
 	},
 	{
 		name: 'Pro',
 		grantedCredits: 490,
 		trialDays: 3,
 		stripePriceMonthlyId: 'price_1TVnftGly7U8J4pxoho8NzJZ',
-		stripePriceAnnualId: 'price_1TVpbGGly7U8J4pxH1GIYjbZ'
+		stripePriceAnnualId: 'price_1TVpbGGly7U8J4pxH1GIYjbZ',
+		monthlyPrice: 10,
+		annualPrice: 96,
+		description: 'For growing teams that need more power and flexibility.',
+		benefits: [
+			'Up to 5 AI models',
+			'490 montly credits',
+			'Trial for 3 days',
+			'Email support',
+			'Getting more relevant jobs'
+		]
 	},
 	{
 		name: 'Ultimate',
 		grantedCredits: 1100,
 		stripePriceMonthlyId: 'price_1TVnghGly7U8J4pxq4QcMvEM',
-		stripePriceAnnualId: 'price_1TVpabGly7U8J4pxcST5sQkq'
+		stripePriceAnnualId: 'price_1TVpabGly7U8J4pxcST5sQkq',
+		monthlyPrice: 25,
+		annualPrice: 240,
+		description: 'Large grade for lots of snapshots of the same CV.',
+		benefits: [
+			'Everything from Pro',
+			'All pro-tier AI models',
+			'1100 montly credits',
+			'Getting full information from CV',
+			'Placing in the fastest scan queue'
+		]
 	}
 ]
 
-const BUNDLES = [
+const BUNDLES: BundleCreateInput[] = [
 	{
 		name: 'Quick reviewing',
 		credits: 50,
 		price: 2,
-		stripePriceId: 'price_1TX2z8Gly7U8J4pxL1PZIxYL'
+		stripePriceId: 'price_1TX2z8Gly7U8J4pxL1PZIxYL',
+		description: 'Perfect for one-time thinking to get maximum result.'
 	},
 	{
 		name: 'Improve reviewing',
 		credits: 120,
 		price: 12,
-		stripePriceId: 'price_1TX33TGly7U8J4pxuYHZE1kg'
+		stripePriceId: 'price_1TX33TGly7U8J4pxuYHZE1kg',
+		description: 'Get scanned a couple of resumes for the best decision.'
 	},
 	{
 		name: 'HR reviewing',
 		credits: 290,
 		price: 20,
-		stripePriceId: 'price_1TX32BGly7U8J4pxIpxmcjM4'
+		stripePriceId: 'price_1TX32BGly7U8J4pxIpxmcjM4',
+		description:
+			'Review several snapshots of the same resume for getting incredible result.'
 	}
 ]
 
@@ -62,7 +95,11 @@ async function seedPlans() {
 				grantedCredits: plan.grantedCredits,
 				trialDays: plan.trialDays,
 				stripePriceMonthlyId: plan.stripePriceMonthlyId,
-				stripePriceAnnualId: plan.stripePriceAnnualId
+				stripePriceAnnualId: plan.stripePriceAnnualId,
+				description: plan.description,
+				monthlyPrice: plan.monthlyPrice,
+				annualPrice: plan.annualPrice,
+				benefits: plan.benefits
 			}
 		})
 		console.log(`  ✓ ${plan.name}`)
@@ -78,7 +115,8 @@ async function seedBundles() {
 			update: {
 				credits: bundle.credits,
 				price: bundle.price,
-				stripePriceId: bundle.stripePriceId
+				stripePriceId: bundle.stripePriceId,
+				description: bundle.description
 			}
 		})
 		console.log(`  ✓ ${bundle.name}`)

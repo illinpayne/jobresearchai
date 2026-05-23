@@ -72,13 +72,10 @@ export class AuthService {
 
 		if (newAccount) {
 			try {
-				const resp = await this.paymentClient.call(
-					'createAccountBill',
-					{
-						accountId: newAccount.id,
-						email: newAccount.email
-					}
-				)
+				await this.paymentClient.call('createAccountBill', {
+					accountId: newAccount.id,
+					email: newAccount.email
+				})
 			} catch (error) {}
 		}
 
@@ -217,6 +214,15 @@ export class AuthService {
 					}
 				}
 			})
+
+			if (newAccount) {
+				try {
+					await this.paymentClient.call('createAccountBill', {
+						accountId: newAccount.id,
+						email: newAccount.email
+					})
+				} catch (error) {}
+			}
 
 			return this.generateJwt(newAccount)
 		} catch (error) {

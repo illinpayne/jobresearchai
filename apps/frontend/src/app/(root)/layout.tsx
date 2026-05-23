@@ -10,6 +10,7 @@ export default function RootLayout({
     <div id='home'>
       <Header />
       <div className='overflow-x-hidden'>{children}</div>
+
       <Footer />
     </div>
   );

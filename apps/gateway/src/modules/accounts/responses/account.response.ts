@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 export class AccountResponse {
+	@ApiProperty({ type: String, default: 'auYDgh...' })
+	id: string
+
 	@ApiProperty({ type: String, default: 'tony.soprano@gmail.com' })
 	email: string
 

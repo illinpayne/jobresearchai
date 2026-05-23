@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
 	Get,
@@ -15,6 +16,9 @@ import {
 } from '@nestjs/swagger'
 
 import { CurrentUser, Protected } from '@/common/decorators'
+import { TIER_ORDER } from '@/shared/plans'
+
+import { BillingClientGrpc } from '../billing/billing.grpc'
 
 import { AicoreClientGrpc } from './aicore.grpc'
 import { GetModelDto } from './dtos/get-model.dto'
@@ -26,7 +30,10 @@ import { SimplifiedAnalyseJobWithPresetResponse } from './responses/jobs-in-prog
 
 @Controller('ai')
 export class AiController {
-	public constructor(private readonly aiClient: AicoreClientGrpc) {}
+	public constructor(
+		private readonly aiClient: AicoreClientGrpc,
+		private readonly billingClient: BillingClientGrpc
+	) {}
 
 	@ApiOperation({
 		summary: 'Gets ai models',
@@ -72,9 +79,35 @@ export class AiController {
 		@CurrentUser('id') id: string,
 		@Body() dto: GetModelDto
 	) {
+		const findPreset = await this.aiClient.call('getExtendedPresetById', {
+			presetId: dto.presetId
+		})
+		if (!findPreset || !findPreset.preset) {
+			throw new NotFoundException('Preset not found')
+		}
+
+		const billingInfo = await this.billingClient.call('getSubscription', {
+			accountId: id
+		})
+
+		if (!billingInfo.plan) {
+			throw new BadRequestException('Billing plan not found.')
+		}
+
+		const featureTier = findPreset.preset.paidTier as string
+		const userTier = billingInfo.plan.name as string
+
+		const featureRank = TIER_ORDER.indexOf(featureTier)
+		const userRank = TIER_ORDER.indexOf(userTier)
+
+		if (featureRank === -1 || userRank === -1 || userRank < featureRank) {
+			throw new BadRequestException(
+				`You don't have access to this model.`
+			)
+		}
 		const response = await this.aiClient.call('assignPresetToUser', {
 			userId: id,
-			presetId: dto.presetId
+			presetId: findPreset.preset.id
 		})
 		if (!response.status) {
 			throw new NotFoundException('Cannot get this model.')

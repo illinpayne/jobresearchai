@@ -18,8 +18,8 @@ export class StripePaymentProvider
 		super()
 		const { app_url } = config.get('app', { infer: true }) as AppConfig
 
-		this.successUrl = `${app_url}/payments/success`
-		this.cancelUrl = `${app_url}/payments/cancel`
+		this.successUrl = `${app_url}/billing/success`
+		this.cancelUrl = `${app_url}/billing/cancel`
 	}
 
 	onModuleInit() {
@@ -77,7 +77,6 @@ export class StripePaymentProvider
 	}): Promise<Stripe.Checkout.Session> {
 		return this._stripe.checkout.sessions.create({
 			mode: 'payment',
-			payment_method_collection: 'always',
 			customer_email: params.customerEmail,
 			line_items: [{ price: params.priceId, quantity: 1 }],
 			success_url: this.successUrl,

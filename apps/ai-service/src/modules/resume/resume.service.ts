@@ -16,6 +16,7 @@ import {
 import { QueueService } from '@/infrastructure/queue/queue.service'
 
 import { AicoreClientGrpc } from '../aicore/aicore.grpc'
+import { BillingClientGrpc } from '../billing/billing.grpc'
 
 import { CustomerProfileDto } from './models/customer-profile.dto'
 
@@ -24,6 +25,7 @@ export class ResumeService {
 	public constructor(
 		private readonly aiProvider: AiProvider,
 		private readonly aiClient: AicoreClientGrpc,
+		private readonly billingClient: BillingClientGrpc,
 		private readonly queue: QueueService
 	) {}
 
@@ -90,6 +92,11 @@ export class ResumeService {
 				lastMessage: 'Done',
 				jobId,
 				status: EventStatusCode.DONE
+			})
+
+			await this.billingClient.call('decrementBillCredits', {
+				accountId: payload.accountId,
+				credits: payload.preset.usageCredits
 			})
 		} catch (error: any) {
 			if (

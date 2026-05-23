@@ -831,11 +831,15 @@ export type AccountBillScalarFieldEnum = (typeof AccountBillScalarFieldEnum)[key
 export const PlanScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   stripePriceMonthlyId: 'stripePriceMonthlyId',
   stripePriceAnnualId: 'stripePriceAnnualId',
   grantedCredits: 'grantedCredits',
   trialDays: 'trialDays',
-  createdAt: 'createdAt'
+  monthlyPrice: 'monthlyPrice',
+  annualPrice: 'annualPrice',
+  createdAt: 'createdAt',
+  benefits: 'benefits'
 } as const
 
 export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
@@ -862,6 +866,7 @@ export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[k
 export const BundleScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   credits: 'credits',
   stripePriceId: 'stripePriceId',
   price: 'price',

@@ -9,6 +9,8 @@ export class BundleModelResponse {
 	credits: number
 	@ApiProperty({ type: Number, example: 2.99 })
 	price: number
+	@ApiProperty({ type: String, example: 'Get extra credits' })
+	description: number
 }
 
 export class BundlesResponse {

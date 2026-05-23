@@ -1,10 +1,16 @@
 'use client';
 
-import { CircleUser, Gem, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BillingBlock } from '@/components/shared/billing-block';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import type { SubscriptionModelResponse } from '@/api/generated';
+import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook';
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
+import { useSubscribe } from '@/api/hooks/useSubscribe.hook';
+import { BillingPlanCard } from '@/components/shared/billing-card';
+import { buttonVariants } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ApplicationName, ROUTES } from '@/constants';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
@@ -12,6 +18,16 @@ import { cn } from '@/lib/utils';
 
 export const BillingModalProvider = () => {
   const { onOpen, onClose, isOpen } = useBillingDialog();
+  const { data: plans } = useBillingPlans();
+  const { data: sub } = useCurrentSubscription();
+  const { mutateAsync: subscribeAsync } = useSubscribe({
+    onSuccess(data) {
+      const { url } = data;
+      router.push(url);
+    },
+  });
+  const [billingCycle] = useState('monthly');
+  const router = useRouter();
 
   return (
     <Dialog
@@ -43,90 +59,34 @@ export const BillingModalProvider = () => {
             By upgrading, you get more attempts to review your resumes, getting vacancies, offers, and more.
           </DialogDescription>
         </DialogHeader>
-        <div className='grid grid-cols-3 grid-rows-[auto_1fr] mt-4 overflow-y-auto'>
-          <div className='bg-white'></div>
-          <div className='rounded-t uppercase text-white bg-primary text-center font-semibold font-inter text-xs py-1 translate-y-px'>
-            most popular
-          </div>
-          <div className='bg-white'></div>
-          <div className='col-span-3 grid grid-cols-3 divide-x border border-gray-200 rounded max-sm:grid-cols-1'>
-            <BillingBlock
-              title={`You're on Free`}
-              description='Get started with the basics'
-              actionButton={
-                <Button
-                  disabled
-                  className='rounded-xs'
-                  variant={'outline'}
-                  size={'sm'}>
-                  Current plan
-                </Button>
-              }
-              banner={<></>}
-              benefitsTitle='Free is limited to:'
-              benefits={[{ title: 'Up to 1 resume upload' }]}
+        <div className='mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 py-10'>
+          {plans?.plans.map((plan, i) => (
+            <BillingPlanCard
+              key={plan.id}
+              plan={{
+                id: plan.id,
+                title: plan.name,
+                description: plan.description,
+                price: billingCycle === 'monthly' ? plan.monthlyPrice : plan.annualPrice,
+                cta: plan.trialDays > 0 ? 'free-trial' : 'get-started',
+                benefits: plan.benefits,
+                featured: plan.name === 'Pro',
+                priceWithoutDiscount: billingCycle === 'annual' ? `${plan.monthlyPrice * 12}` : undefined,
+              }}
+              onPaymentAction={async (dto) => {
+                if (!sub || (sub as SubscriptionModelResponse).plan.name === 'Free') {
+                  await subscribeAsync(dto);
+                } else {
+                  router.push(ROUTES.OVERVIEW.USAGE);
+                }
+              }}
             />
-            <BillingBlock
-              className='outline-1 outline-primary z-10'
-              title={`Standart`}
-              description='Speed up finding job with more detailed resume review'
-              actionButton={
-                <Button
-                  className='rounded-xs'
-                  size={'sm'}>
-                  Try to use
-                </Button>
-              }
-              banner={
-                <div className='bg-primary/10 rounded-xs text-sm p-4'>
-                  <p className='font-semibold flex gap-1 items-center'>
-                    <CircleUser className='size-5' /> Fit
-                  </p>
-                  <p className='text-neutral-800 mt-2'>Perfect fit for the first time!</p>
-                </div>
-              }
-              benefitsTitle='Everything from Free, plus:'
-              benefits={[
-                { title: 'Up to 3 resume upload per month', active: true },
-                { title: 'Ability to buy extra credits', active: true },
-                { title: 'Get into weekly TOP board with top candidates', active: true },
-                { title: 'Thinker AI', active: true },
-                { title: '25 000 tokens per month', active: true },
-              ]}
-            />
-            <BillingBlock
-              title={`Premium`}
-              description='Get our of boundaries with ultimate power of unlimits'
-              actionButton={
-                <Button
-                  className='rounded-xs'
-                  size={'sm'}>
-                  Try for free for 3 days trial
-                </Button>
-              }
-              banner={
-                <div className='bg-linear-to-r from-secondary/10 to-primary/10 rounded-xs text-sm p-4'>
-                  <p className='font-semibold flex gap-1 items-center'>
-                    <Gem className='size-5' /> Ultimate
-                  </p>
-                  <p className='text-neutral-800 mt-2'>Unlimited stuff to work on!</p>
-                </div>
-              }
-              benefitsTitle='Everything from Standart, plus:'
-              benefits={[
-                { title: 'Up to 9 resume upload per month', active: true },
-                { title: 'Ability to buy extra credits', active: true },
-                { title: 'Ability to get fresh vacancies by uploaded resume', active: true },
-                { title: 'Gets exclisive badge for premium users', active: true },
-                { title: 'Filtering found vacancies using AI', active: true },
-              ]}
-            />
-          </div>
+          ))}
         </div>
         <div className='flex items-center justify-between w-full p-0'>
           <p className='text-sm text-neutral-500'>Cancel anytime. We'll remind you three days before your trial ends.</p>
           <Link
-            href={ROUTES.OVERVIEW.AI}
+            href={ROUTES.PRICING}
             className={cn('px-0', buttonVariants({ variant: 'link' }))}
             onClick={() => onClose()}>
             See all features

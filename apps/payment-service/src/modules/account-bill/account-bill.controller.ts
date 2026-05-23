@@ -30,4 +30,13 @@ export class AccountBillController {
 		const { accountId, ...dto } = data
 		return this.accountBillService.update(accountId, dto)
 	}
+
+	@GrpcMethod(PAYMENT_SERVICE_NAME, 'DecrementBillCredits')
+	public decrementBillCredits(data: UpdateAccountBillRequest) {
+		const { accountId, ...dto } = data
+		return this.accountBillService.decrementCredits(
+			accountId,
+			dto.credits ?? 0
+		)
+	}
 }

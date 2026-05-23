@@ -3,7 +3,7 @@ import { Geist, Inter, Nunito_Sans, Playwrite_IS } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { APP_CONFIG, SEO } from '@/constants';
-import { TanstackQueryProvider } from '@/providers';
+import { BillingModalProvider, TanstackQueryProvider } from '@/providers';
 
 const font = Geist({
   subsets: ['cyrillic', 'latin'],
@@ -89,7 +89,9 @@ export default function RootLayout({
       lang='en'
       suppressHydrationWarning>
       <body className={`${font.className} ${font.variable} ${inter.variable} ${nunito_sans.variable} ${borel.variable} antialiased`}>
-        <TanstackQueryProvider>{children}</TanstackQueryProvider>
+        <TanstackQueryProvider>
+          {children} <BillingModalProvider />
+        </TanstackQueryProvider>
         <Toaster />
       </body>
     </html>

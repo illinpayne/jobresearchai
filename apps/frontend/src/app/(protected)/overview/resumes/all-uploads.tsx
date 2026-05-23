@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePresets } from '@/api/hooks/usePresets.hook';
 import { useProfiles } from '@/api/hooks/useProfiles.hook';
-import AvailableAiModels from '@/components/protected/ai/available-ai-models';
 import UploadedResumeCard from '@/components/shared/uploaded-resume-card';
 import { buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';

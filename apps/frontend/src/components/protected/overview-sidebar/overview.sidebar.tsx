@@ -42,13 +42,8 @@ const workflow = [
 const account = [
   {
     name: 'Usage',
-    url: '/overview/billing',
+    url: '/overview/usage',
     icon: <Zap />,
-  },
-  {
-    name: 'Subscriptions',
-    url: '/overview/billing',
-    icon: <CreditCard />,
   },
   {
     name: 'Settings',

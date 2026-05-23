@@ -1,11 +1,15 @@
-'use client';
+"use client";
 
-import axios, { type InternalAxiosRequestConfig } from 'axios';
-import { redirect } from 'next/navigation';
-import { DisposeCache } from '@/lib/cache';
-import { getSessionToken, removeSessionToken, setSessionToken } from '@/lib/cookies';
-import { APP_CONFIG } from '../constants/app';
-import { logout, refresh } from './requests/auth.req';
+import axios, { type InternalAxiosRequestConfig } from "axios";
+import { redirect } from "next/navigation";
+import { DisposeCache } from "@/lib/cache";
+import {
+  getSessionToken,
+  removeSessionToken,
+  setSessionToken,
+} from "@/lib/cookies";
+import { APP_CONFIG } from "../constants/app";
+import { logout, refresh } from "./requests/auth.req";
 
 export const api = axios.create({
   baseURL: APP_CONFIG.apiUrl,
@@ -21,7 +25,7 @@ instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getSessionToken();
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
@@ -55,7 +59,7 @@ instance.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            originalRequest.headers['Authorization'] = `Bearer ${token}`;
+            originalRequest.headers["Authorization"] = `Bearer ${token}`;
             return instance(originalRequest);
           })
           .catch((err) => Promise.reject(err));
@@ -71,20 +75,20 @@ instance.interceptors.response.use(
         setSessionToken(newAccessToken);
         processQueue(null, newAccessToken);
 
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return instance(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
         removeSessionToken();
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           DisposeCache();
         }
         await logout();
         setTimeout(() => {
-          redirect('/signin');
+          redirect("/signin");
         }, 1000);
 
-        return Promise.reject('Session expired');
+        return Promise.reject("Session expired");
       } finally {
         // Unlock the refresh process regardless of success or failure
         isRefreshing = false;

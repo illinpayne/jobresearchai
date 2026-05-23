@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noArrayIndexKey: BillingBlock */
 'use client';
 
 import { Check } from 'lucide-react';
@@ -18,26 +17,61 @@ interface Props {
   benefitsTitle: string;
   benefits: BenefitProps[];
   className?: string;
+  featured?: boolean;
 }
 
-export const BillingBlock: React.FC<Props> = ({ ...props }) => {
+export const BillingBlock: React.FC<Props> = ({ featured, ...props }) => {
   return (
-    <div className={cn('bg-white grid grid-rows-[4rem_1fr_0fr_2fr] size-full p-6 gap-4 h-full', props.className)}>
-      <div>
-        <h1 className='text-xl font-semibold'>{props.title}</h1>
-        <p className='text-neutral-400 text-xs'>{props.description}</p>
+    <div
+      className={cn(
+        'relative flex flex-col p-7 gap-5 h-full transition-all duration-200',
+        featured ? 'bg-gradient-to-b from-slate-900 to-slate-800 text-white' : 'bg-white text-slate-900',
+        props.className,
+      )}>
+      {/* Header */}
+      <div className='space-y-1'>
+        <h2 className={cn('text-lg font-semibold tracking-tight', featured ? 'text-white' : 'text-slate-900')}>{props.title}</h2>
+        <p className={cn('text-xs leading-relaxed', featured ? 'text-slate-400' : 'text-slate-400')}>{props.description}</p>
       </div>
-      <div className='mt-auto'>{props.banner}</div>
-      <div className='w-full flex *:w-full'>{props.actionButton}</div>
-      <div>
-        <p className='font-medium text-sm'>{props.benefitsTitle}</p>
-        <ul className='mt-2 flex flex-col gap-2'>
+
+      {/* Banner */}
+      {props.banner && <div>{props.banner}</div>}
+
+      {/* CTA */}
+      <div className='w-full'>{props.actionButton}</div>
+
+      {/* Benefits */}
+      <div className='flex-1'>
+        <p className={cn('text-xs font-semibold uppercase tracking-widest mb-3', featured ? 'text-slate-400' : 'text-slate-400')}>
+          {props.benefitsTitle}
+        </p>
+        <ul className='space-y-2.5'>
           {props.benefits.map((item, i) => (
             <li
               key={`bb_${i}`}
-              className='text-sm gap-1 grid items-center grid-cols-[20px_auto]'>
-              <Check className={cn('size-4', item.active && 'text-emerald-500')} />
-              <p className=''>{item.title}</p>
+              className='flex items-start gap-2.5 text-sm'>
+              <span
+                className={cn(
+                  'mt-0.5 flex-shrink-0 size-4 rounded-full flex items-center justify-center',
+                  item.active
+                    ? featured
+                      ? 'bg-emerald-400/20 text-emerald-400'
+                      : 'bg-emerald-50 text-emerald-500'
+                    : featured
+                      ? 'bg-slate-700 text-slate-500'
+                      : 'bg-slate-100 text-slate-400',
+                )}>
+                <Check
+                  className='size-2.5'
+                  strokeWidth={3}
+                />
+              </span>
+              <span
+                className={cn(
+                  item.active ? (featured ? 'text-slate-200' : 'text-slate-700') : featured ? 'text-slate-500' : 'text-slate-400',
+                )}>
+                {item.title}
+              </span>
             </li>
           ))}
         </ul>

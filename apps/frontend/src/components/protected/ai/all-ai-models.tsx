@@ -1,7 +1,8 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import type { AiPresetResponse } from '@/api/generated';
+import type { AiPresetResponse, SubscriptionModelResponse } from '@/api/generated';
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
 import { useGetModel } from '@/api/hooks/useGetModel.hook';
 import AiModelCard from '@/components/shared/ai-model-card';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
@@ -11,8 +12,12 @@ interface Props {
   models: AiPresetResponse[];
 }
 
+export const TIER_ORDER = ['Free', 'Basic', 'Pro', 'Ultimate'];
+
 export default function AllAiModels({ ...props }: Props) {
   const billing = useBillingDialog();
+  const { data: sub } = useCurrentSubscription();
+
   const queryClient = useQueryClient();
   const {
     mutateAsync: getModelAsync,
@@ -24,6 +29,11 @@ export default function AllAiModels({ ...props }: Props) {
       queryClient.invalidateQueries({ queryKey: ['presets'] });
       const { toast } = await import('sonner');
       toast.success(`Model ${variables.name} added to your library`);
+    },
+    onError: async (error, variables) => {
+      console.log(error);
+      const { toast } = await import('sonner');
+      toast.success(`Upgrade to ${variables.paidTier} to get this model`);
     },
   });
 
@@ -46,10 +56,15 @@ export default function AllAiModels({ ...props }: Props) {
             isLoading={isAddingModel && model?.id === f.id}
             usageCredits={f.usageCredits}
             onAdd={async (model) => {
-              // if (model.paidTier.toLowerCase() !== 'free') {
-              //   billing.onOpen();
-              //   return;
-              // }
+              const userTier = (sub as SubscriptionModelResponse).plan.name as string;
+
+              const featureRank = TIER_ORDER.indexOf(model.paidTier);
+              const userRank = TIER_ORDER.indexOf(userTier);
+
+              if (featureRank === -1 || userRank === -1 || userRank < featureRank) {
+                billing.onOpen();
+                return;
+              }
               await getModelAsync(model);
             }}
             temperature={f.temperature}

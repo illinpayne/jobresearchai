@@ -5,9 +5,10 @@ import {
 	HttpCode,
 	HttpStatus,
 	Post,
-	Req
+	Req,
+	Res
 } from '@nestjs/common'
-import { Request } from 'express'
+import type { Request, Response } from 'express'
 
 import { BillingService } from './billing.service'
 
@@ -26,12 +27,12 @@ export class BillingController {
 	}
 
 	@Get('success')
-	success() {
-		return { message: 'Payment successful' }
+	public success(@Res({ passthrough: true }) res: Response) {
+		res.redirect(`http://localhost:3000/getting-subscription`)
 	}
 
 	@Get('cancel')
-	cancel() {
-		return { message: 'Payment cancelled' }
+	public cancel(@Res({ passthrough: true }) res: Response) {
+		res.redirect(`http://localhost:3000/overview`)
 	}
 }

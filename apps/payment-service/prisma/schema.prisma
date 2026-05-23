@@ -51,11 +51,15 @@ model AccountBill {
 model Plan {
   id                   String   @id @default(nanoid())
   name                 String   @unique
+  description          String   @default("")
   stripePriceMonthlyId String   @map("stripe_price_monthly_id")
   stripePriceAnnualId  String   @map("stripe_price_annual_id")
   grantedCredits       Int      @default(0) @map("granted_credits")
   trialDays            Int      @default(0) @map("trial_days")
+  monthlyPrice         Int      @default(0) @map("monthly_price")
+  annualPrice          Int      @default(0) @map("annual_price")
   createdAt            DateTime @default(now()) @map("created_at")
+  benefits             String[] @default([])
 
   subscriptions Subscription[]
 
@@ -87,6 +91,7 @@ model Subscription {
 model Bundle {
   id            String   @id @default(nanoid())
   name          String   @unique
+  description   String   @default("")
   credits       Int
   stripePriceId String   @map("stripe_price_id")
   price         Int

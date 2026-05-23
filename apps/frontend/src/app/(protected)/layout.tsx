@@ -1,6 +1,5 @@
 import { OverviewSidebar } from '@/components/protected/overview-sidebar/overview.sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { BillingModalProvider } from '@/providers';
 
 export default function OverviewLayout({
   children,
@@ -10,10 +9,7 @@ export default function OverviewLayout({
   return (
     <SidebarProvider open>
       <OverviewSidebar />
-      <main className='w-full'>
-        {children}
-        <BillingModalProvider />
-      </main>
+      <main className='w-full'>{children}</main>
     </SidebarProvider>
   );
 }

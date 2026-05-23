@@ -72,4 +72,11 @@ export class AccountBillService {
 			data: { credits: { increment: credits } }
 		})
 	}
+
+	public async decrementCredits(accountId: string, credits: number) {
+		return await this.prisma.accountBill.update({
+			where: { accountId },
+			data: { credits: { decrement: credits } }
+		})
+	}
 }

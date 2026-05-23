@@ -7,6 +7,7 @@
  */
 
 export interface AccountResponse {
+  id: string;
   email: string;
   firstName: string;
   secondName: string;

@@ -39,6 +39,7 @@ export type BundleSumAggregateOutputType = {
 export type BundleMinAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   credits: number | null
   stripePriceId: string | null
   price: number | null
@@ -48,6 +49,7 @@ export type BundleMinAggregateOutputType = {
 export type BundleMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   credits: number | null
   stripePriceId: string | null
   price: number | null
@@ -57,6 +59,7 @@ export type BundleMaxAggregateOutputType = {
 export type BundleCountAggregateOutputType = {
   id: number
   name: number
+  description: number
   credits: number
   stripePriceId: number
   price: number
@@ -78,6 +81,7 @@ export type BundleSumAggregateInputType = {
 export type BundleMinAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   credits?: true
   stripePriceId?: true
   price?: true
@@ -87,6 +91,7 @@ export type BundleMinAggregateInputType = {
 export type BundleMaxAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   credits?: true
   stripePriceId?: true
   price?: true
@@ -96,6 +101,7 @@ export type BundleMaxAggregateInputType = {
 export type BundleCountAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   credits?: true
   stripePriceId?: true
   price?: true
@@ -192,6 +198,7 @@ export type BundleGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type BundleGroupByOutputType = {
   id: string
   name: string
+  description: string
   credits: number
   stripePriceId: string
   price: number
@@ -224,6 +231,7 @@ export type BundleWhereInput = {
   NOT?: Prisma.BundleWhereInput | Prisma.BundleWhereInput[]
   id?: Prisma.StringFilter<"Bundle"> | string
   name?: Prisma.StringFilter<"Bundle"> | string
+  description?: Prisma.StringFilter<"Bundle"> | string
   credits?: Prisma.IntFilter<"Bundle"> | number
   stripePriceId?: Prisma.StringFilter<"Bundle"> | string
   price?: Prisma.IntFilter<"Bundle"> | number
@@ -234,6 +242,7 @@ export type BundleWhereInput = {
 export type BundleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   stripePriceId?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -247,6 +256,7 @@ export type BundleWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BundleWhereInput | Prisma.BundleWhereInput[]
   OR?: Prisma.BundleWhereInput[]
   NOT?: Prisma.BundleWhereInput | Prisma.BundleWhereInput[]
+  description?: Prisma.StringFilter<"Bundle"> | string
   credits?: Prisma.IntFilter<"Bundle"> | number
   stripePriceId?: Prisma.StringFilter<"Bundle"> | string
   price?: Prisma.IntFilter<"Bundle"> | number
@@ -257,6 +267,7 @@ export type BundleWhereUniqueInput = Prisma.AtLeast<{
 export type BundleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   stripePriceId?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -274,6 +285,7 @@ export type BundleScalarWhereWithAggregatesInput = {
   NOT?: Prisma.BundleScalarWhereWithAggregatesInput | Prisma.BundleScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Bundle"> | string
   name?: Prisma.StringWithAggregatesFilter<"Bundle"> | string
+  description?: Prisma.StringWithAggregatesFilter<"Bundle"> | string
   credits?: Prisma.IntWithAggregatesFilter<"Bundle"> | number
   stripePriceId?: Prisma.StringWithAggregatesFilter<"Bundle"> | string
   price?: Prisma.IntWithAggregatesFilter<"Bundle"> | number
@@ -283,6 +295,7 @@ export type BundleScalarWhereWithAggregatesInput = {
 export type BundleCreateInput = {
   id?: string
   name: string
+  description?: string
   credits: number
   stripePriceId: string
   price: number
@@ -293,6 +306,7 @@ export type BundleCreateInput = {
 export type BundleUncheckedCreateInput = {
   id?: string
   name: string
+  description?: string
   credits: number
   stripePriceId: string
   price: number
@@ -303,6 +317,7 @@ export type BundleUncheckedCreateInput = {
 export type BundleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.IntFieldUpdateOperationsInput | number
   stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
@@ -313,6 +328,7 @@ export type BundleUpdateInput = {
 export type BundleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.IntFieldUpdateOperationsInput | number
   stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
@@ -323,6 +339,7 @@ export type BundleUncheckedUpdateInput = {
 export type BundleCreateManyInput = {
   id?: string
   name: string
+  description?: string
   credits: number
   stripePriceId: string
   price: number
@@ -332,6 +349,7 @@ export type BundleCreateManyInput = {
 export type BundleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.IntFieldUpdateOperationsInput | number
   stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
@@ -341,6 +359,7 @@ export type BundleUpdateManyMutationInput = {
 export type BundleUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.IntFieldUpdateOperationsInput | number
   stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
@@ -350,6 +369,7 @@ export type BundleUncheckedUpdateManyInput = {
 export type BundleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   stripePriceId?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -364,6 +384,7 @@ export type BundleAvgOrderByAggregateInput = {
 export type BundleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   stripePriceId?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -373,6 +394,7 @@ export type BundleMaxOrderByAggregateInput = {
 export type BundleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   stripePriceId?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -408,6 +430,7 @@ export type BundleUpdateOneWithoutTransactionsNestedInput = {
 export type BundleCreateWithoutTransactionsInput = {
   id?: string
   name: string
+  description?: string
   credits: number
   stripePriceId: string
   price: number
@@ -417,6 +440,7 @@ export type BundleCreateWithoutTransactionsInput = {
 export type BundleUncheckedCreateWithoutTransactionsInput = {
   id?: string
   name: string
+  description?: string
   credits: number
   stripePriceId: string
   price: number
@@ -442,6 +466,7 @@ export type BundleUpdateToOneWithWhereWithoutTransactionsInput = {
 export type BundleUpdateWithoutTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.IntFieldUpdateOperationsInput | number
   stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
@@ -451,6 +476,7 @@ export type BundleUpdateWithoutTransactionsInput = {
 export type BundleUncheckedUpdateWithoutTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.IntFieldUpdateOperationsInput | number
   stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
@@ -491,6 +517,7 @@ export type BundleCountOutputTypeCountTransactionsArgs<ExtArgs extends runtime.T
 export type BundleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   credits?: boolean
   stripePriceId?: boolean
   price?: boolean
@@ -502,6 +529,7 @@ export type BundleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type BundleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   credits?: boolean
   stripePriceId?: boolean
   price?: boolean
@@ -511,6 +539,7 @@ export type BundleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type BundleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   credits?: boolean
   stripePriceId?: boolean
   price?: boolean
@@ -520,13 +549,14 @@ export type BundleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type BundleSelectScalar = {
   id?: boolean
   name?: boolean
+  description?: boolean
   credits?: boolean
   stripePriceId?: boolean
   price?: boolean
   createdAt?: boolean
 }
 
-export type BundleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "credits" | "stripePriceId" | "price" | "createdAt", ExtArgs["result"]["bundle"]>
+export type BundleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "credits" | "stripePriceId" | "price" | "createdAt", ExtArgs["result"]["bundle"]>
 export type BundleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transactions?: boolean | Prisma.Bundle$transactionsArgs<ExtArgs>
   _count?: boolean | Prisma.BundleCountOutputTypeDefaultArgs<ExtArgs>
@@ -542,6 +572,7 @@ export type $BundlePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    description: string
     credits: number
     stripePriceId: string
     price: number
@@ -972,6 +1003,7 @@ export interface Prisma__BundleClient<T, Null = never, ExtArgs extends runtime.T
 export interface BundleFieldRefs {
   readonly id: Prisma.FieldRef<"Bundle", 'String'>
   readonly name: Prisma.FieldRef<"Bundle", 'String'>
+  readonly description: Prisma.FieldRef<"Bundle", 'String'>
   readonly credits: Prisma.FieldRef<"Bundle", 'Int'>
   readonly stripePriceId: Prisma.FieldRef<"Bundle", 'String'>
   readonly price: Prisma.FieldRef<"Bundle", 'Int'>

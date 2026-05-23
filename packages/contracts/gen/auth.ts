@@ -42,6 +42,7 @@ export interface Account {
   secondName: string;
   avatar: string;
   isEmailVerified: boolean;
+  id: string;
 }
 
 export interface GoogleAccount {

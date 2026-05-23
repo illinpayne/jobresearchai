@@ -1,8 +1,10 @@
+/** biome-ignore-all lint/complexity/noUselessFragments: <explanation> */
 'use client';
 
-import { Bell, CreditCard, Pyramid, Sparkles } from 'lucide-react';
+import { Bell, Pyramid, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { AccountResponse } from '@/api/generated';
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenuContent,
@@ -21,10 +23,12 @@ import LogoutButton from '../overview-sidebar/logout.button';
 export default function ProfileContentDropdown(user: AccountResponse | undefined) {
   const router = useRouter();
   const { onOpen } = useBillingDialog();
+  const { data: sub } = useCurrentSubscription();
 
   if (!user) {
     return <Skeleton className='size-10 rounded-md bg-neutral-300' />;
   }
+
   return (
     <DropdownMenuContent
       className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
@@ -54,14 +58,39 @@ export default function ProfileContentDropdown(user: AccountResponse | undefined
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem onClick={() => onOpen()}>
-          <Sparkles />
-          Upgrade to Pro
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Pyramid />
-          1000 tokens
-        </DropdownMenuItem>
+        {sub !== 'not-found' ? (
+          <>
+            {sub?.plan.name === 'Free' && (
+              <DropdownMenuItem onClick={() => onOpen()}>
+                <Sparkles />
+                Upgrade to Pro
+              </DropdownMenuItem>
+            )}
+
+            <DropdownMenuItem onClick={() => router.push(ROUTES.OVERVIEW.USAGE)}>
+              <Pyramid />
+              {sub?.credits ?? 0} tokens
+            </DropdownMenuItem>
+          </>
+        ) : (
+          <DropdownMenuItem onClick={() => onOpen()}>
+            <Sparkles />
+            Upgrade to Pro
+          </DropdownMenuItem>
+        )}
+        {/* {sub !== 'not-found' && sub?.plan.name === 'Free' ? (
+          <DropdownMenuItem onClick={() => onOpen()}>
+            <Sparkles />
+            Upgrade to Pro
+          </DropdownMenuItem>
+        ) : (
+          sub?.plan && (
+            <div className='px-2 py-1 border rounded text-sm bg-linear-to-r from-blue-600/20 to-white'>
+              <p className='text-xs font-semibold'>Plan</p>
+              {sub?.plan?.name}
+            </div>
+          )
+        )} */}
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
