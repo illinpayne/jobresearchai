@@ -39,7 +39,7 @@ export class LMStudioLocalProvider implements AiProvider, OnModuleInit {
 			messages: [
 				{
 					role: 'system',
-					content: prompt.systemPrompt.trim() + '\n\n' + rules
+					content: rules
 				},
 				{
 					role: 'user',
@@ -126,6 +126,7 @@ export class LMStudioLocalProvider implements AiProvider, OnModuleInit {
 		if (ownRule) {
 			return ownRule.trim()
 		}
+		console.log(paidTier.toLowerCase().includes('free'))
 		return paidTier.toLowerCase().includes('free')
 			? FREE_TIER_RULES.trim()
 			: PAID_TIER_RULES.trim()

@@ -210,11 +210,24 @@ export class SubscriptionService {
 			subscription.stripeSubscriptionId!
 		)
 
-		return await this.prisma.subscription.update({
+		const updatedSubscription = await this.prisma.subscription.update({
 			where: { id: subscription.id },
 			data: { cancelAtPeriodEnd: true },
-			include: { plan: true }
+			include: {
+				plan: true,
+				accountBill: {
+					select: {
+						credits: true
+					}
+				}
+			}
 		})
+
+		const { accountBill, ...data } = updatedSubscription
+		return {
+			...data,
+			credits: accountBill.credits.toString()
+		}
 	}
 
 	public async resume(accountId: string) {
@@ -240,11 +253,24 @@ export class SubscriptionService {
 			subscription.stripeSubscriptionId!
 		)
 
-		return await this.prisma.subscription.update({
+		const updatedSubscription = await this.prisma.subscription.update({
 			where: { id: subscription.id },
 			data: { cancelAtPeriodEnd: false },
-			include: { plan: true }
+			include: {
+				plan: true,
+				accountBill: {
+					select: {
+						credits: true
+					}
+				}
+			}
 		})
+
+		const { accountBill, ...data } = updatedSubscription
+		return {
+			...data,
+			credits: accountBill.credits.toString()
+		}
 	}
 
 	public async retryFailedPayment(

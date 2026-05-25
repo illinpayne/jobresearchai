@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import {
   billingSubscriptionCacheKey,
   billingSubscriptionCacheStaleTime,
   RemoveCache,
   SetCache,
 } from "@/lib/cache";
+import { getSessionToken } from "@/lib/cookies";
 import type { AiPresetResponse, SubscriptionModelResponse } from "../generated";
 import { getSubscription } from "../requests/billing.req";
 
@@ -14,6 +16,13 @@ export interface PresetsData {
 }
 
 export const useCurrentSubscription = (enabled?: boolean) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const hasToken = !!getSessionToken();
   return useQuery({
     queryKey: ["billing-subscription"],
     queryFn: async (): Promise<SubscriptionModelResponse> => {
@@ -33,12 +42,18 @@ export const useCurrentSubscription = (enabled?: boolean) => {
         }
       }
 
-      const data = await getSubscription();
-      SetCache(billingSubscriptionCacheKey, data);
-      return data;
+      try {
+        const data = await getSubscription();
+        SetCache(billingSubscriptionCacheKey, data);
+        return data;
+      } catch (error) {
+        SetCache(billingSubscriptionCacheKey, null);
+        console.log(error);
+        throw error;
+      }
     },
     staleTime: billingSubscriptionCacheStaleTime,
     retry: 0,
-    enabled: enabled,
+    enabled: enabled !== false && isMounted && hasToken,
   });
 };

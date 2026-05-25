@@ -8,26 +8,18 @@ import {
 	ScrapperStrategy
 } from '@/common/abstracts/scrapper-strategy.abstract'
 
-export const WORKUA_STRATEGY_TOKEN = Symbol('WORKUA_STRATEGY_TOKEN')
+export const DOUUA_STRATEGY_TOKEN = Symbol('DOUUA_STRATEGY_TOKEN')
 
 type CardPreview = Omit<ScrappedJob, 'description'>
 
-type DetailEnrichment = Pick<
-	ScrappedJob,
-	| 'description'
-	| 'salary'
-	| 'salaryValueFrom'
-	| 'salaryValueTo'
-	| 'location'
-	| 'company'
->
+type DetailEnrichment = Pick<ScrappedJob, 'description'>
 
 @Injectable()
-export class WorkUaScrapperStrategy extends ScrapperStrategy {
-	private readonly logger = new Logger(WorkUaScrapperStrategy.name)
+export class DouUaScrapperStrategy extends ScrapperStrategy {
+	private readonly logger = new Logger(DouUaScrapperStrategy.name)
 
 	private readonly http: AxiosInstance = axios.create({
-		baseURL: 'https://www.work.ua',
+		baseURL: 'https://jobs.dou.ua',
 		timeout: 15_000,
 		headers: {
 			'User-Agent':
@@ -49,9 +41,10 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 		const { position, tags, limit } = payload
 
 		this.logger.log(
-			`WorkUA scrape started — position="${position}", tags=[${tags.join(', ')}], limit=${limit}`
+			`DOU scrape started — position="${position}", tags=[${tags.join(', ')}], limit=${limit}`
 		)
 
+		// One search per keyword, deduplicate by sourceUrl
 		const keywords = [position, ...tags]
 		const seen = new Map<string, CardPreview>()
 
@@ -75,6 +68,7 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 			await this.delay(this.DELAY_MS)
 		}
 
+		// Enrich each candidate with the full description from the detail page
 		const candidates = [...seen.values()].slice(0, limit)
 		const jobs: ScrappedJob[] = []
 
@@ -86,13 +80,7 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 				jobs.push({
 					...card,
 					position,
-					description: detail.description,
-					company: detail.company ?? card.company,
-					location: detail.location ?? card.location,
-					salary: detail.salary ?? card.salary,
-					salaryValueFrom:
-						detail.salaryValueFrom ?? card.salaryValueFrom,
-					salaryValueTo: detail.salaryValueTo ?? card.salaryValueTo
+					description: detail.description
 				})
 			} catch (err) {
 				this.logger.warn(
@@ -101,14 +89,21 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 			}
 		}
 
-		this.logger.log(`WorkUA scrape done — ${jobs.length} jobs collected`)
+		this.logger.log(`DOU scrape done — ${jobs.length} jobs collected`)
 		return jobs
 	}
 
 	// ─── List page ───────────────────────────────────────────────────────────────
 
+	/**
+	 * DOU search URL:
+	 *   /vacancies/?search=<keyword>
+	 *
+	 * Each keyword gets its own focused request — combining all tags into one
+	 * query degrades result relevance significantly.
+	 */
 	private async fetchCardsByKeyword(keyword: string): Promise<CardPreview[]> {
-		const path = `/jobs/?search=${encodeURIComponent(keyword)}`
+		const path = `/vacancies/?search=${encodeURIComponent(keyword)}`
 		this.logger.debug(`GET ${path}`)
 
 		const html = await this.get(path)
@@ -122,75 +117,50 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 	}
 
 	/**
-	 * Actual work.ua card markup (from live HTML):
+	 * Actual DOU card markup (confirmed from live HTML):
 	 *
-	 *   <div class="card card-hover card-visited wordwrap job-link mt-sm sm:mt-lg">
-	 *     <div>                                          <!-- badges -->
-	 *     <div class="mb-lg">
-	 *       <img ...logo...>
-	 *       <h2><a href="/jobs/12345/">Title</a></h2>
+	 *   <li class="l-vacancy __hot?">
+	 *     <div class="date">18 травня</div>
+	 *     <div class="title">
+	 *       <a class="vt" href="https://jobs.dou.ua/...">Job Title</a>
+	 *       <strong>в <a class="company" href="..."><img>Company</a></strong>
+	 *       <span class="salary">$4000–6000</span>          <!-- optional -->
+	 *       <span class="cities bi bi-geo-alt-fill"> Київ</span>
 	 *     </div>
-	 *     <div>
-	 *       <span class="strong-600">45 000 – 50 000 грн</span>   <!-- salary -->
-	 *     </div>
-	 *     <div class="mt-xs">
-	 *       <span class="strong-600">Company Name</span>
-	 *       [badge spans with classes]
-	 *       <span class="">Ужгород</span>               <!-- location: empty class -->
-	 *     </div>
-	 *   </div>
+	 *     <div class="sh-info">Short description snippet...</div>
+	 *   </li>
 	 */
 	private parseCards($: cheerio.CheerioAPI): CardPreview[] {
 		const results: CardPreview[] = []
 
-		$('.card.job-link').each((_i, el) => {
+		$('li.l-vacancy').each((_i, el) => {
 			const $card = $(el)
 
 			// ── Title & URL ──────────────────────────────────────────────────────
-			const $titleLink = $card.find('h2 a').first()
+			const $titleLink = $card.find('a.vt').first()
 			const title = $titleLink.text().trim()
-			const href = $titleLink.attr('href') ?? $card.attr('href') ?? ''
+			const sourceUrl = $titleLink.attr('href') ?? ''
 
-			if (!title || !href) return
+			if (!title || !sourceUrl) return
 
-			const sourceUrl = href.startsWith('http')
-				? href
-				: `https://www.work.ua${href}`
+			// ── Company ──────────────────────────────────────────────────────────
+			// <a class="company" href="..."><img> Company Name</a>
+			// img alt is empty so .text() gives just the company name
+			const company =
+				$card.find('a.company').first().text().trim() || undefined
 
 			// ── Salary ───────────────────────────────────────────────────────────
-			// The div immediately after .mb-lg contains a .strong-600 with digits.
-			const $titleContainer = $card.find('.mb-lg').first()
+			// <span class="salary">$4000–6000</span>  — absent when not specified
 			const salaryRaw =
-				$titleContainer
-					.next('div')
-					.find('.strong-600')
-					.filter((_i, el) => /\d/.test($(el).text()))
-					.first()
-					.text()
-					.trim() || undefined
-
+				$card.find('span.salary').first().text().trim() || undefined
 			const { salary, salaryValueFrom, salaryValueTo } =
 				this.parseSalary(salaryRaw)
 
-			// ── Company & Location ───────────────────────────────────────────────
-			// Both live in <div class="mt-xs">:
-			//   <span class="strong-600">Company</span>  [badge spans]  <span class="">City</span>
-			const $metaRow = $card.find('.mt-xs').first()
-
-			const company =
-				$metaRow.find('.strong-600').first().text().trim() || undefined
-
-			// Location: last <span> whose class attribute is exactly "" (empty).
-			// Badge spans all carry real classes (label-circle, etc.) so this is safe.
+			// ── Location ─────────────────────────────────────────────────────────
+			// <span class="cities bi bi-geo-alt-fill"> Київ</span>
+			// Leading space is part of the text node — trim handles it
 			const location =
-				$metaRow
-					.find('span')
-					.filter(
-						(_i, el) => ($(el).attr('class') ?? '').trim() === ''
-					)
-					.last()
-					.text()
-					.trim() || undefined
+				$card.find('span.cities').first().text().trim() || undefined
 
 			results.push({
 				title,
@@ -210,69 +180,33 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 	// ─── Detail page ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Extracts structured fields from the vacancy detail page.
-	 * Paste the detail page HTML here if selectors need tuning.
+	 * DOU vacancy detail page — full description lives in .vacancy-section.b-typo
+	 * If you need salary/location overrides from the detail page too,
+	 * paste the detail page HTML and this method can be extended.
 	 */
 	private async fetchDetail(url: string): Promise<DetailEnrichment> {
 		this.logger.debug(`Fetching detail: ${url}`)
 
-		const path = url.replace('https://www.work.ua', '')
-		const html = await this.get(path)
+		// DOU vacancy URLs are absolute (https://jobs.dou.ua/...)
+		const html = await this.getAbsolute(url)
 		const $ = cheerio.load(html)
 
-		// ── Description ──────────────────────────────────────────────────────────
 		const description = (
-			$('#job-description').text() ||
-			$('[id*="description"]').first().text()
+			$('.vacancy-section.b-typo').text() || $('.b-typo').first().text()
 		)
 			.replace(/\s+/g, ' ')
 			.trim()
 
-		// ── Salary ───────────────────────────────────────────────────────────────
-		// On the detail page salary is again inside a .strong-600 containing digits,
-		// typically in the info sidebar / header block above the description.
-		const salaryRaw =
-			$('body')
-				.find('.strong-600')
-				.filter((_i, el) => /\d/.test($(el).text()))
-				.first()
-				.text()
-				.trim() || undefined
-
-		const { salary, salaryValueFrom, salaryValueTo } =
-			this.parseSalary(salaryRaw)
-
-		// ── Location ─────────────────────────────────────────────────────────────
-		// work.ua detail pages use a <span class=""> pattern for location too,
-		// typically inside a .card or info row near the top.
-		// We also try an explicit city link pattern as fallback.
-		const location =
-			$('a[href*="/jobs-in-"]').first().text().trim() ||
-			$('[class*="location"]').first().text().trim() ||
-			undefined
-
-		// ── Company ──────────────────────────────────────────────────────────────
-		const company =
-			$('a[href*="/company/"]').first().text().trim() ||
-			$('[class*="company"]').first().text().trim() ||
-			undefined
-
-		return {
-			description,
-			salary,
-			salaryValueFrom,
-			salaryValueTo,
-			location,
-			company
-		}
+		return { description }
 	}
 
 	// ─── Salary parsing ───────────────────────────────────────────────────────────
 
 	/**
-	 *   "45 000 – 50 000 грн"   -> { from: 45000, to: 50000 }
-	 *   "від 30 000 грн"        -> { from: 30000 }
-	 *   "до 50 000 грн"         -> { to: 50000 }
+	 *   "$4000–6000"      -> { from: 4000, to: 6000 }
+	 *   "від $3000"       -> { from: 3000 }
+	 *   "до $5000"        -> { to: 5000 }
+	 *   "$3000"           -> { from: 3000 }
 	 */
 	private parseSalary(raw: string | undefined): {
 		salary?: string
@@ -282,6 +216,7 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 		if (!raw) return {}
 
 		const salary = raw.trim()
+		// Strip everything except digits and range separators (–, -)
 		const normalized = salary.replace(/\s/g, '').replace(/[^\d–\-]/g, '')
 		const parts = normalized
 			.split(/[–\-]/)
@@ -311,10 +246,11 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 	/** Enable with SCRAPPER_DEBUG=true */
 	private debugSelectors($: cheerio.CheerioAPI): void {
 		const probes: Record<string, number> = {
-			'.card.job-link': $('.card.job-link').length,
-			'.mb-lg + div .strong-600': $('.mb-lg + div .strong-600').length,
-			'.mt-xs': $('.mt-xs').length,
-			'.strong-600': $('.strong-600').length
+			'li.l-vacancy': $('li.l-vacancy').length,
+			'a.vt': $('a.vt').length,
+			'span.salary': $('span.salary').length,
+			'span.cities': $('span.cities').length,
+			'a.company': $('a.company').length
 		}
 
 		this.logger.debug(
@@ -323,19 +259,26 @@ export class WorkUaScrapperStrategy extends ScrapperStrategy {
 				.join('\n')}`
 		)
 
-		const firstCard = $('.card.job-link').first().html()
+		const firstCard = $('li.l-vacancy').first().html()
 		if (firstCard) {
 			this.logger.debug(`First card HTML:\n${firstCard.slice(0, 1500)}`)
 		} else {
-			this.logger.warn('No .card.job-link found — dumping <main>:')
-			this.logger.debug($('main').html()?.slice(0, 2000) ?? '')
+			this.logger.warn('No li.l-vacancy found — dumping <body> fragment:')
+			this.logger.debug($('body').html()?.slice(0, 2000) ?? '')
 		}
 	}
 
 	// ─── HTTP ─────────────────────────────────────────────────────────────────────
 
+	/** Relative path against baseURL */
 	private async get(path: string): Promise<string> {
 		const { data } = await this.http.get<string>(path)
+		return data
+	}
+
+	/** Absolute URL — used for detail pages whose href is already full */
+	private async getAbsolute(url: string): Promise<string> {
+		const { data } = await this.http.get<string>(url, { baseURL: '' })
 		return data
 	}
 

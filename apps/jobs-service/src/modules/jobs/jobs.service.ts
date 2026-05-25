@@ -71,17 +71,21 @@ export class JobsService {
 		accountId: string,
 		scrappedJobs: ScrappedJob[]
 	): Promise<void> {
-		const bulkedJobs = await this.prisma.vacancy.createManyAndReturn({
-			data: scrappedJobs
-		})
-		await this.prisma.userVacancy.createMany({
-			data: bulkedJobs.map(j => {
-				return {
-					accountId,
-					vacancyId: j.id
-				}
+		try {
+			const bulkedJobs = await this.prisma.vacancy.createManyAndReturn({
+				data: scrappedJobs
 			})
-		})
+			await this.prisma.userVacancy.createMany({
+				data: bulkedJobs.map(j => {
+					return {
+						accountId,
+						vacancyId: j.id
+					}
+				})
+			})
+		} catch (error) {
+			console.log(error)
+		}
 	}
 
 	public async getJobById(request: GetJobByIdRequest): Promise<Job> {
@@ -96,29 +100,6 @@ export class JobsService {
 
 		return foundJob as Job
 	}
-
-	// public async getJobs(
-	// 	request: GetJobsRequest
-	// ): Promise<JobPaginationResponse> {
-	// 	const page = request.chunk?.page ?? 1
-	// 	const limit = request.chunk?.limit ?? 10
-	// 	const paginate = createPaginator({ page, limit })
-
-	// 	const chunk = await paginate<Job, VacancyFindManyArgs>(
-	// 		this.prisma.vacancy,
-	// 		{
-	// 			where: {
-	// 				userVacancies: {
-	// 					some: { accountId: request.accountId }
-	// 				}
-	// 			},
-	// 			orderBy: { createdAt: 'desc' },
-	// 			select: this.vacancySelection
-	// 		},
-	// 		{ page, limit }
-	// 	)
-	// 	return chunk as JobPaginationResponse
-	// }
 
 	public async getJobs(
 		request: GetJobsRequest
@@ -150,29 +131,6 @@ export class JobsService {
 				sourceUrl: { contains: service }
 			}))
 		}
-
-		// if (
-		// 	request.salaryFrom !== undefined ||
-		// 	request.salaryTo !== undefined
-		// ) {
-		// 	const salaryConditions: any[] = []
-
-		// 	if (request.salaryFrom !== undefined) {
-		// 		salaryConditions.push({
-		// 			salaryValueFrom: { gte: request.salaryFrom }
-		// 		})
-		// 	}
-
-		// 	if (request.salaryTo !== undefined) {
-		// 		salaryConditions.push({
-		// 			salaryValueTo: { lte: request.salaryTo }
-		// 		})
-		// 	}
-
-		// 	if (salaryConditions.length > 0) {
-		// 		where.AND = salaryConditions
-		// 	}
-		// }
 
 		if (
 			request.salaryFrom !== undefined ||
@@ -257,6 +215,7 @@ export class JobsService {
 				vacancies.map(v => {
 					const url = v.sourceUrl.toLowerCase()
 					if (url.includes('work.ua')) return 'work.ua'
+					if (url.includes('dou.ua')) return 'dou.ua'
 					return 'other'
 				})
 			)
@@ -266,8 +225,8 @@ export class JobsService {
 			positions,
 			locations,
 			services,
-			salaryFrom: salaryBounds._min.salaryValueFrom ?? 0,
-			salaryTo: salaryBounds._max.salaryValueTo ?? 0
+			salaryFrom: salaryBounds._min.salaryValueFrom ?? 1000,
+			salaryTo: salaryBounds._max.salaryValueTo ?? 100000
 		}
 	}
 }

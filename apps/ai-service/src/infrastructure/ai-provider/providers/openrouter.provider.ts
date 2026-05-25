@@ -123,7 +123,7 @@ export class OpenrouterProvider implements AiProvider, OnModuleInit {
 		if (ownRule) {
 			return ownRule.trim()
 		}
-		return paidTier.toLowerCase().includes('free')
+		return paidTier.toLowerCase() === 'free'
 			? FREE_TIER_RULES.trim()
 			: PAID_TIER_RULES.trim()
 	}

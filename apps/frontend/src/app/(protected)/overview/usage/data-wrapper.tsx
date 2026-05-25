@@ -1,13 +1,17 @@
 /** biome-ignore-all lint/complexity/noUselessFragments: <explanation> */
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook';
+import { useCancelSubscription } from '@/api/hooks/useCancelSubscription.hook';
 import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
+import { useResumeSubscription } from '@/api/hooks/useResumeSubscription.hook';
 import { buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants';
+import { billingSubscriptionCacheKey, RemoveCache, SetCache } from '@/lib/cache';
 import { cn } from '@/lib/utils';
 
 interface PricingTier {
@@ -19,7 +23,7 @@ interface PricingTier {
 }
 
 function Section({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('rounded-xl border border-border bg-white p-6', className)}>{children}</div>;
+  return <div className={cn('rounded-xl border border-border bg-white p-6 relative', className)}>{children}</div>;
 }
 
 function TierCard({ label, name, price, current }: PricingTier) {
@@ -91,9 +95,10 @@ export function ColoredProgress({ value, className }: ColoredProgressProps) {
   const clamped = Math.min(100, Math.max(0, value));
 
   const indicatorColor = clamped >= 90 ? 'bg-red-500' : clamped >= 80 ? 'bg-orange-500' : 'bg-primary';
+  const indicatorSecondaryColor = clamped >= 90 ? 'bg-red-500/20' : clamped >= 80 ? 'bg-orange-500/20' : 'bg-primary/20';
 
   return (
-    <div className={cn('relative h-2 w-full overflow-hidden rounded-full bg-blue-500/20', className)}>
+    <div className={cn('relative h-2 w-full overflow-hidden rounded-full', indicatorSecondaryColor, className)}>
       <div
         className={cn('h-full rounded-full transition-all', indicatorColor)}
         style={{ width: `${clamped}%` }}
@@ -104,8 +109,25 @@ export function ColoredProgress({ value, className }: ColoredProgressProps) {
 
 export default function UsageDataWrapper() {
   const [mounted, setMounted] = useState(false);
-  const { data: sub, isLoading } = useCurrentSubscription();
+  const queryClient = useQueryClient();
+  const { data: sub, isLoading, isError } = useCurrentSubscription();
   const { data: plans } = useBillingPlans();
+  const { mutateAsync: cancelSubAsync } = useCancelSubscription({
+    async onSuccess(data) {
+      SetCache(billingSubscriptionCacheKey, data);
+      queryClient.invalidateQueries({ queryKey: ['billing-subscription'] });
+      const { toast } = await import('sonner');
+      toast.success(`Subscription is canceled. Plan is gone after ${new Date(data.currentPeriodEnd).toDateString()}`);
+    },
+  });
+  const { mutateAsync: resumeSubAsync } = useResumeSubscription({
+    async onSuccess(data) {
+      SetCache(billingSubscriptionCacheKey, data);
+      queryClient.invalidateQueries({ queryKey: ['billing-subscription'] });
+      const { toast } = await import('sonner');
+      toast.success(`Subscription is resumed.`);
+    },
+  });
 
   function getUsage(a: number, b: number): number {
     if (b === 0) {
@@ -122,7 +144,7 @@ export default function UsageDataWrapper() {
     setMounted(true);
   }, []);
 
-  if (!mounted || isLoading || !sub) {
+  if (!mounted || isLoading) {
     return (
       <>
         <div className='mx-auto max-w-4xl space-y-6'>
@@ -133,9 +155,37 @@ export default function UsageDataWrapper() {
     );
   }
 
+  if (isError || !sub) {
+    return (
+      <>
+        <Section>
+          <div className='flex items-start justify-between'>
+            <div>
+              <p className='text-sm text-muted-foreground mb-1'>BIlling not found</p>
+              <div className='flex items-baseline gap-1'>
+                <span className={cn('text-2xl font-bold tabular-nums relative text-black')}>Please, report to support</span>
+              </div>
+            </div>
+          </div>
+        </Section>
+      </>
+    );
+  }
+
   return (
     <>
+      <div>
+        <>
+          <h1 className='text-3xl font-bold tracking-tight'>Usage</h1>
+          {sub.status === 'TRIALING' ? (
+            <p className='text-sm text-muted-foreground mt-1'>Trial ends in {new Date(sub.currentPeriodEnd).toDateString()}</p>
+          ) : (
+            <p className='text-sm text-muted-foreground mt-1'>Resets on the {new Date(sub.currentPeriodEnd).toDateString()}</p>
+          )}
+        </>
+      </div>
       <Section>
+        <div className='flex items-start justify-between'></div>
         <div className='flex items-start justify-between mb-4'>
           <div>
             <p className='text-sm text-muted-foreground mb-1'>Credits remaining</p>
@@ -166,18 +216,42 @@ export default function UsageDataWrapper() {
         <div className='flex justify-between mt-1.5 text-xs text-muted-foreground'>
           <span className='font-medium'>{getUsage(sub.credits, sub.plan.grantedCredits)}% used</span>
           <span>
-            {sub?.plan.grantedCredits},00 / {sub.plan.name === 'Free' ? 'all' : 'month'}
+            {sub.plan.grantedCredits},00{' '}
+            <span className='text-blue-600'>
+              {sub.credits > sub.plan.grantedCredits ? `+ ${sub.credits - sub.plan.grantedCredits},00 ` : ''}
+            </span>
+            / {sub.plan.name === 'Free' ? 'all' : 'month'}
           </span>
         </div>
       </Section>
 
       <Section>
         <div className='flex items-center justify-between mb-5'>
-          <div>
-            <p className='text-xs text-muted-foreground uppercase tracking-wider mb-0.5'>Current plan</p>
+          <div className='relative group'>
+            <div className='text-xs text-muted-foreground uppercase tracking-wider mb-0.5'>
+              <span>Current plan</span>
+              {sub.cancelAtPeriodEnd ? (
+                <button
+                  className='group-hover:opacity-100 ml-3 opacity-0 transition-all text-green-500 cursor-pointer'
+                  onClick={async () => {
+                    await resumeSubAsync();
+                  }}>
+                  Resume
+                </button>
+              ) : (
+                <button
+                  className='group-hover:opacity-100 ml-3 opacity-0 transition-all text-red-500 cursor-pointer'
+                  onClick={async () => {
+                    await cancelSubAsync();
+                  }}>
+                  Cancel
+                </button>
+              )}
+            </div>
             <p className='text-xl font-bold'>
               {sub.plan.name} — ${sub.plan.monthlyPrice},00/month
             </p>
+            {sub.cancelAtPeriodEnd && <p className='text-sm text-zinc-500'>Ends in {new Date(sub.currentPeriodEnd).toDateString()}</p>}
           </div>
           {sub.plan.name.toLocaleLowerCase() !== 'ultimate' && (
             <Link
@@ -199,7 +273,7 @@ export default function UsageDataWrapper() {
             <TierCard
               key={plan.id}
               current={plan.name === sub.plan.name}
-              price={`${plan.monthlyPrice} / mo`}
+              price={`$${plan.monthlyPrice} / mo`}
               tier={i + 1}
               label={`Tier ${i + 2}`}
               name={plan.name}

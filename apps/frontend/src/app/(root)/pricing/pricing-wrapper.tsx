@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { SubscriptionModelResponse } from '@/api/generated';
-import { useBillingBundles } from '@/api/hooks/useBillingBundles.hook';
 import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook';
 import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
 import { useSubscribe } from '@/api/hooks/useSubscribe.hook';
@@ -15,7 +14,6 @@ export default function PricingWrapper() {
   const [mounted, setMounted] = useState(false);
   const [billingCycle, setBillingCycle] = useState('monthly');
   const { data: plans } = useBillingPlans();
-  const { data: bundles } = useBillingBundles();
   const { data: sub } = useCurrentSubscription();
 
   const router = useRouter();

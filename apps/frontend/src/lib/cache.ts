@@ -120,6 +120,8 @@ export function DisposeCache() {
     jobsCacheKey,
     jobsFilterCacheKey,
     billingSubscriptionCacheKey,
+    bundleCacheKey,
+    plansCacheKey,
   ];
   cache_to_remove.forEach((key) => {
     RemoveCache(key);

@@ -212,9 +212,9 @@ export interface PaymentServiceClient {
 
   getSubscription(request: AccountRequest): Observable<DisplayedSubscriptionResponse>;
 
-  cancelSubscription(request: AccountRequest): Observable<SubscriptionResponse>;
+  cancelSubscription(request: AccountRequest): Observable<DisplayedSubscriptionResponse>;
 
-  resumeSubscription(request: AccountRequest): Observable<SubscriptionResponse>;
+  resumeSubscription(request: AccountRequest): Observable<DisplayedSubscriptionResponse>;
 
   retryFailedPayment(request: AccountRequest): Observable<RetryPaymentResponse>;
 
@@ -260,11 +260,11 @@ export interface PaymentServiceController {
 
   cancelSubscription(
     request: AccountRequest,
-  ): Promise<SubscriptionResponse> | Observable<SubscriptionResponse> | SubscriptionResponse;
+  ): Promise<DisplayedSubscriptionResponse> | Observable<DisplayedSubscriptionResponse> | DisplayedSubscriptionResponse;
 
   resumeSubscription(
     request: AccountRequest,
-  ): Promise<SubscriptionResponse> | Observable<SubscriptionResponse> | SubscriptionResponse;
+  ): Promise<DisplayedSubscriptionResponse> | Observable<DisplayedSubscriptionResponse> | DisplayedSubscriptionResponse;
 
   retryFailedPayment(
     request: AccountRequest,

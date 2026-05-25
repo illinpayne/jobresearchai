@@ -14,6 +14,7 @@ import { FormInputError } from '@/components/ui/formInputError';
 import { Input } from '@/components/ui/input';
 import { otpCodeDurationSeconds, ROUTES } from '@/constants';
 import { useOtpTrigger } from '@/hooks';
+import { billingSubscriptionCacheKey, RemoveCache } from '@/lib/cache';
 import { persistSession } from '@/lib/client/session-persist';
 import { cn } from '@/lib/utils';
 import { AuthWrapper } from './auth-wrapper';
@@ -42,7 +43,8 @@ export function LoginForm() {
       const { accessToken, account } = data;
       if (accessToken && typeof accessToken === 'string') {
         persistSession({ accessToken, account, queryClient });
-
+        RemoveCache(billingSubscriptionCacheKey);
+        queryClient.refetchQueries({ queryKey: ['billing-subscription'] });
         const { toast } = await import('sonner');
         toast.success('Logged in successfully');
 

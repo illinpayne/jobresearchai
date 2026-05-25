@@ -126,6 +126,7 @@ export class ResumeService {
 		payload: AiResumeUploadEventType
 	): Promise<IProviderPromptResponse | null> {
 		const { jobId } = payload
+
 		try {
 			return await this.aiProvider.waitablePrompt({
 				extractedText: payload.extractedText,

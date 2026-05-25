@@ -1,24 +1,24 @@
 /** biome-ignore-all lint/complexity/noUselessFragments: <explanation> */
 'use client';
 
-import { Bell, Pyramid, Sparkles } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import type { AccountResponse } from '@/api/generated';
-import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import type { AccountResponse } from '@/api/generated'
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ROUTES } from '@/constants';
-import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
-import { getImage } from '@/lib/utils';
-import { AvatarFallback } from '../overview-sidebar/avatar-fallback';
-import LogoutButton from '../overview-sidebar/logout.button';
+} from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ROUTES } from '@/constants'
+import { useBillingDialog } from '@/hooks/useBillingDialog.hook'
+import { getImage } from '@/lib/utils'
+import { Pyramid, Sparkles } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { AvatarFallback } from '../overview-sidebar/avatar-fallback'
+import LogoutButton from '../overview-sidebar/logout.button'
 
 export default function ProfileContentDropdown(user: AccountResponse | undefined) {
   const router = useRouter();
@@ -52,21 +52,22 @@ export default function ProfileContentDropdown(user: AccountResponse | undefined
             <span className='truncate font-medium'>
               {user?.firstName} {user?.secondName}
             </span>
-            <span className='truncate text-xs'>{user?.email}</span>
+            <span className='truncate text-xs'>
+              {user?.email} • {sub?.plan.name !== 'Free' && sub?.plan.name}
+            </span>
           </div>
         </div>
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        {sub !== 'not-found' ? (
+        {sub ? (
           <>
-            {sub?.plan.name === 'Free' && (
+            {sub.plan.name === 'Free' && (
               <DropdownMenuItem onClick={() => onOpen()}>
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
             )}
-
             <DropdownMenuItem onClick={() => router.push(ROUTES.OVERVIEW.USAGE)}>
               <Pyramid />
               {sub?.credits ?? 0} tokens
@@ -78,28 +79,15 @@ export default function ProfileContentDropdown(user: AccountResponse | undefined
             Upgrade to Pro
           </DropdownMenuItem>
         )}
-        {/* {sub !== 'not-found' && sub?.plan.name === 'Free' ? (
-          <DropdownMenuItem onClick={() => onOpen()}>
-            <Sparkles />
-            Upgrade to Pro
-          </DropdownMenuItem>
-        ) : (
-          sub?.plan && (
-            <div className='px-2 py-1 border rounded text-sm bg-linear-to-r from-blue-600/20 to-white'>
-              <p className='text-xs font-semibold'>Plan</p>
-              {sub?.plan?.name}
-            </div>
-          )
-        )} */}
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
-      <DropdownMenuGroup>
+      {/* <DropdownMenuGroup>
         <DropdownMenuItem>
           <Bell />
           Notifications
         </DropdownMenuItem>
       </DropdownMenuGroup>
-      <DropdownMenuSeparator />
+      <DropdownMenuSeparator /> */}
       <DropdownMenuItem>
         <LogoutButton />
       </DropdownMenuItem>

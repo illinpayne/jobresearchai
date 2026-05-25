@@ -119,7 +119,6 @@ export default function UpdateAvatarForm() {
               'flex flex-col size-50 rounded-full overflow-hidden relative bg-neutral-200 hover:bg-neutral-300 transition-all cursor-pointer',
               errors.avatar?.message && 'outline-4 outline-red-500/50',
             )}>
-            ff
             {user.avatar ? (
               <Avatar className='size-full absolute'>
                 <AvatarImage

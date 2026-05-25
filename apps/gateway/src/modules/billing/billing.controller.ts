@@ -121,4 +121,40 @@ export class BillingController {
 			bundleId: dto.bundleId
 		})
 	}
+
+	@ApiOperation({
+		summary: 'Cancels the current subscription',
+		description: 'Cancels the current subscription'
+	})
+	@ApiOkResponse({
+		description: 'Returns subscription',
+		type: SubscriptionModelResponse
+	})
+	@Post('cancel-subscription')
+	@ApiBearerAuth()
+	@Protected()
+	@HttpCode(HttpStatus.OK)
+	public async cancelSubscription(@CurrentUser() account: JwtPayload) {
+		return await this.billingClient.call('cancelSubscription', {
+			accountId: account.id
+		})
+	}
+
+	@ApiOperation({
+		summary: 'Resume the current subscription',
+		description: 'Resume the current subscription'
+	})
+	@ApiOkResponse({
+		description: 'Returns subscription',
+		type: SubscriptionModelResponse
+	})
+	@Post('resume-subscription')
+	@ApiBearerAuth()
+	@Protected()
+	@HttpCode(HttpStatus.OK)
+	public async resumeSubscription(@CurrentUser() account: JwtPayload) {
+		return await this.billingClient.call('resumeSubscription', {
+			accountId: account.id
+		})
+	}
 }

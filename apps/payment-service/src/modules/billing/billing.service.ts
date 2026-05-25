@@ -99,6 +99,8 @@ export class BillingService {
 					{ expand: ['latest_invoice'] }
 				)
 
+			const status = this.mapSubscriptionStatus(stripeSubscription.status)
+
 			const subscription = await this.prisma.subscription.upsert({
 				where: { stripeSubscriptionId: stripeSubscription.id },
 				create: {
@@ -106,9 +108,7 @@ export class BillingService {
 					planId,
 					stripeSubscriptionId: stripeSubscription.id,
 					stripeCustomerId: session.customer as string,
-					status: this.mapSubscriptionStatus(
-						stripeSubscription.status
-					),
+					status: status,
 					interval:
 						interval === 'ANNUAL'
 							? BillingInterval.ANNUAL
@@ -124,9 +124,7 @@ export class BillingService {
 					cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end
 				},
 				update: {
-					status: this.mapSubscriptionStatus(
-						stripeSubscription.status
-					),
+					status: status,
 					currentPeriodStart: new Date(
 						stripeSubscription.items.data[0].current_period_start *
 							1000
@@ -206,10 +204,12 @@ export class BillingService {
 
 		if (!subscription) return
 
+		const status = this.mapSubscriptionStatus(stripeSubscription.status)
+
 		await this.prisma.subscription.update({
 			where: { id: subscription.id },
 			data: {
-				status: SubscriptionStatus.ACTIVE,
+				status: status,
 				currentPeriodStart: new Date(
 					stripeSubscription.items.data[0].current_period_start * 1000
 				),
@@ -269,10 +269,11 @@ export class BillingService {
 	private async onSubscriptionUpdated(
 		stripeSubscription: Stripe.Subscription
 	) {
+		const status = this.mapSubscriptionStatus(stripeSubscription.status)
 		await this.prisma.subscription.updateMany({
 			where: { stripeSubscriptionId: stripeSubscription.id },
 			data: {
-				status: this.mapSubscriptionStatus(stripeSubscription.status),
+				status: status,
 				cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
 				currentPeriodStart: new Date(
 					stripeSubscription.items.data[0].current_period_start * 1000

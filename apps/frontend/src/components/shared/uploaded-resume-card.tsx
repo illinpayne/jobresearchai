@@ -48,7 +48,7 @@ export default function UploadedResumeCard({ ...props }: Props) {
       )}>
       <div className='w-full flex justify-between items-center max-sm:flex-col max-sm:items-start'>
         <h2 className='text-2xl font-semibold'>
-          {profile.currentPosition === 'Not specified' || profile.currentPosition.includes('N/A') ? (
+          {profile.currentPosition === 'Not specified' || profile.currentPosition.includes('N/A') || profile.currentPosition === '' ? (
             <span className='flex gap-1'>
               {profile.predicatedPosition} <Brain className='size-4 text-emerald-500' />
             </span>

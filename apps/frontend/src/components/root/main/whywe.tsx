@@ -2,14 +2,17 @@
 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRouter } from 'next/navigation';
 import { useLayoutEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function WhyweSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const box1Ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -54,7 +57,10 @@ export default function WhyweSection() {
         </h1>
         <Button
           variant={'outline'}
-          className='border-2 rounded-2xl text-lg p-5 mt-5 font-nunito-sans font-medium'>
+          className='border-2 rounded-2xl text-lg p-5 mt-5 font-nunito-sans font-medium'
+          onClick={() => {
+            router.push(ROUTES.OVERVIEW.NEW_RESUME);
+          }}>
           Upload first resume
         </Button>
       </div>

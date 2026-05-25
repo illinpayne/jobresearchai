@@ -20,6 +20,19 @@ export default function JobCard({ ...props }: JobResponse) {
         </div>
       );
     }
+    if (url.includes('dou.ua')) {
+      return (
+        <div className='flex items-start max-sm:hidden'>
+          <Image
+            src='https://happymonday.ua/wp-content/uploads/2019/05/dou-logo-new-1.png'
+            alt='source-workua'
+            className='rounded-sm aspect-square object-cover'
+            width={70}
+            height={70}
+          />
+        </div>
+      );
+    }
     return undefined;
   }
 

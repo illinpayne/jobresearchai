@@ -11,7 +11,10 @@ export function TanstackQueryProvider({ children }: { children: ReactNode }) {
         defaultOptions: {
           queries: {
             staleTime: Infinity,
-            retry: 3,
+            retry: (failureCount, error: any) => {
+              if (error?.status === 404 || error?.status === 401) return false;
+              return failureCount < 2;
+            },
             refetchInterval: false,
             refetchOnWindowFocus: false,
             refetchOnReconnect: false,

@@ -77,6 +77,9 @@ export class StripePaymentProvider
 	}): Promise<Stripe.Checkout.Session> {
 		return this._stripe.checkout.sessions.create({
 			mode: 'payment',
+			payment_intent_data: {
+				description: `Bundle Purchase`
+			},
 			customer_email: params.customerEmail,
 			line_items: [{ price: params.priceId, quantity: 1 }],
 			success_url: this.successUrl,

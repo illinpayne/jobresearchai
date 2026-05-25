@@ -11,7 +11,7 @@ import { getPlans } from "../requests/billing.req";
 export const useBillingPlans = () => {
   return useQuery({
     queryKey: ["billing-plans"],
-    queryFn: async (): Promise<PlansResponse | null> => {
+    queryFn: async (): Promise<PlansResponse> => {
       const rawCache = localStorage.getItem(plansCacheKey);
 
       if (rawCache) {
@@ -28,15 +28,9 @@ export const useBillingPlans = () => {
         }
       }
 
-      try {
-        const data = await getPlans();
-        SetCache(plansCacheKey, data);
-        return data;
-      } catch (error) {
-        SetCache(plansCacheKey, { plans: [] });
-      }
-
-      return null;
+      const data = await getPlans();
+      SetCache(plansCacheKey, data);
+      return data;
     },
     staleTime: plansCacheStaleTime,
     retry: 0,

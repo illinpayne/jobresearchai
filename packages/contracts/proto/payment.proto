@@ -22,8 +22,8 @@ service PaymentService {
   // Subscriptions
   rpc Subscribe (SubscribeRequest) returns (CheckoutResponse);
   rpc GetSubscription (AccountRequest) returns (DisplayedSubscriptionResponse);
-  rpc CancelSubscription (AccountRequest) returns (SubscriptionResponse);
-  rpc ResumeSubscription (AccountRequest) returns (SubscriptionResponse);
+  rpc CancelSubscription (AccountRequest) returns (DisplayedSubscriptionResponse);
+  rpc ResumeSubscription (AccountRequest) returns (DisplayedSubscriptionResponse);
   rpc RetryFailedPayment (AccountRequest) returns (RetryPaymentResponse);
 
   // Transactions

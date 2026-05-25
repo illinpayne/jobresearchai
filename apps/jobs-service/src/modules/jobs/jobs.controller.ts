@@ -20,6 +20,7 @@ import {
 import { ScrapperStrategy } from '@/common/abstracts/scrapper-strategy.abstract'
 import { RmqService } from '@/infrastructure/rmq/rmq.service'
 
+import { DOUUA_STRATEGY_TOKEN } from '../scrapper/strategies/douua-scrapper.strategy'
 import { WORKUA_STRATEGY_TOKEN } from '../scrapper/strategies/workua-scrapper.strategy'
 
 import { JobsService } from './jobs.service'
@@ -30,7 +31,9 @@ export class JobsController {
 		private readonly jobsService: JobsService,
 		private readonly rmqService: RmqService,
 		@Inject(WORKUA_STRATEGY_TOKEN)
-		private readonly workUaScrapper: ScrapperStrategy
+		private readonly workUaScrapper: ScrapperStrategy,
+		@Inject(DOUUA_STRATEGY_TOKEN)
+		private readonly douUaScrapper: ScrapperStrategy
 	) {}
 
 	@EventPattern('job.create')
@@ -39,16 +42,20 @@ export class JobsController {
 		@Ctx() ctx: RmqContext
 	) {
 		try {
-			const scrappedJobs = await this.workUaScrapper.scrape({
+			const scrappedWorkUaJobs = await this.workUaScrapper.scrape({
 				...data,
-				tags: [data.tags[0]],
+				tags: data.tags,
 				limit: data.limit
 			})
-			console.log(scrappedJobs.length)
-			await this.jobsService.bulkNewJobToUser(
-				data.accountId,
-				scrappedJobs
-			)
+			const scrappedDouUaJobs = await this.douUaScrapper.scrape({
+				...data,
+				tags: data.tags,
+				limit: data.limit
+			})
+			await this.jobsService.bulkNewJobToUser(data.accountId, [
+				...scrappedWorkUaJobs,
+				...scrappedDouUaJobs
+			])
 			this.rmqService.ack(ctx)
 		} catch (error) {
 			this.rmqService.nack(ctx)

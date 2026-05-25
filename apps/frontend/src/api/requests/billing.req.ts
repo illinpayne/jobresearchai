@@ -14,6 +14,8 @@ export enum BillingEndpoints {
   SUBSCRIPTION = "/billing/subscription",
   SUBSCRIBE = "/billing/subscribe",
   BUYBUNDLE = "/billing/buy-bundle",
+  CANCEL = "/billing/cancel-subscription",
+  RESUME = "/billing/resume-subscription",
 }
 
 export const getPlans = async () => {
@@ -43,5 +45,17 @@ export const subscribeToPlan = async (dto: CreateSubscription) => {
 export const buyBundle = async (dto: BuyBundleDto) => {
   return await instance
     .post<PaymentLinkResponse>(BillingEndpoints.BUYBUNDLE, dto)
+    .then((response) => response.data);
+};
+
+export const cancelSubscription = async () => {
+  return await instance
+    .post<SubscriptionModelResponse>(BillingEndpoints.CANCEL)
+    .then((response) => response.data);
+};
+
+export const resumeSubscription = async () => {
+  return await instance
+    .post<SubscriptionModelResponse>(BillingEndpoints.RESUME)
     .then((response) => response.data);
 };
