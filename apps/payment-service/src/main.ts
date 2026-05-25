@@ -19,7 +19,11 @@ async function bootstrap() {
 	try {
 		await app.startAllMicroservices()
 		await app.listen(5001)
-		logger.log('🚀 Payment microservice successfully configured')
+
+		const mode = config.get('app.node_env', { infer: true })
+		logger.log(
+			`🚀 Payment microservice successfully configured in ${mode} mode`
+		)
 	} catch (error) {
 		logger.error(
 			`❌ Failed to start microservice: ${error.message ?? 'unknows issue'}`,

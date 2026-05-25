@@ -10,7 +10,8 @@ import { ServiceModule } from './modules/serivice.module'
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			load: [appEnv, jwtEnv, redisEnv, rmqEnv]
+			load: [appEnv, jwtEnv, redisEnv, rmqEnv],
+			envFilePath: `.env.${process.env.NODE_ENV || 'development'}`
 		}),
 		ServiceModule,
 		InfrastructureModule

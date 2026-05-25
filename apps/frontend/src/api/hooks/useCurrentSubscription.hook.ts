@@ -1,14 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import {
-  billingSubscriptionCacheKey,
-  billingSubscriptionCacheStaleTime,
-  RemoveCache,
-  SetCache,
-} from "@/lib/cache";
-import { getSessionToken } from "@/lib/cookies";
-import type { AiPresetResponse, SubscriptionModelResponse } from "../generated";
-import { getSubscription } from "../requests/billing.req";
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { billingSubscriptionCacheKey, billingSubscriptionCacheStaleTime, RemoveCache, SetCache } from '@/lib/cache';
+import { getSessionToken } from '@/lib/cookies';
+import type { AiPresetResponse, SubscriptionModelResponse } from '../generated';
+import { getSubscription } from '../requests/billing.req';
 
 export interface PresetsData {
   available: AiPresetResponse[];
@@ -24,7 +19,7 @@ export const useCurrentSubscription = (enabled?: boolean) => {
 
   const hasToken = !!getSessionToken();
   return useQuery({
-    queryKey: ["billing-subscription"],
+    queryKey: ['billing-subscription'],
     queryFn: async (): Promise<SubscriptionModelResponse> => {
       const rawCache = localStorage.getItem(billingSubscriptionCacheKey);
 

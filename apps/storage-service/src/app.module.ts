@@ -11,7 +11,8 @@ import { ApplicationModule } from './modules/modules.module'
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			load: [appEnv, rmqEnv, awsEnv]
+			load: [appEnv, rmqEnv, awsEnv],
+			envFilePath: `.env.${process.env.NODE_ENV || 'development'}`
 		}),
 		InfrastructureModule,
 		ApplicationModule

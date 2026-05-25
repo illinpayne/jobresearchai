@@ -1,16 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  plansCacheKey,
-  plansCacheStaleTime,
-  RemoveCache,
-  SetCache,
-} from "@/lib/cache";
-import type { PlansResponse } from "../generated";
-import { getPlans } from "../requests/billing.req";
+import { useQuery } from '@tanstack/react-query';
+import { plansCacheKey, plansCacheStaleTime, RemoveCache, SetCache } from '@/lib/cache';
+import type { PlansResponse } from '../generated';
+import { getPlans } from '../requests/billing.req';
 
 export const useBillingPlans = () => {
   return useQuery({
-    queryKey: ["billing-plans"],
+    queryKey: ['billing-plans'],
     queryFn: async (): Promise<PlansResponse> => {
       const rawCache = localStorage.getItem(plansCacheKey);
 

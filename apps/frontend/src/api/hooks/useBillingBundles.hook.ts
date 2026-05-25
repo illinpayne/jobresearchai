@@ -1,16 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  bundleCacheKey,
-  bundleCacheStaleTime,
-  RemoveCache,
-  SetCache,
-} from "@/lib/cache";
-import type { BundlesResponse } from "../generated";
-import { getBundles } from "../requests/billing.req";
+import { useQuery } from '@tanstack/react-query';
+import { bundleCacheKey, bundleCacheStaleTime, RemoveCache, SetCache } from '@/lib/cache';
+import type { BundlesResponse } from '../generated';
+import { getBundles } from '../requests/billing.req';
 
 export const useBillingBundles = () => {
   return useQuery({
-    queryKey: ["billing-bundles"],
+    queryKey: ['billing-bundles'],
     queryFn: async (): Promise<BundlesResponse> => {
       const rawCache = localStorage.getItem(bundleCacheKey);
 

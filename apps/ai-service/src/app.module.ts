@@ -9,7 +9,8 @@ import { ModulesModule } from './modules/modules.module'
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			load: [appEnv, rmqEnv, aiEnv]
+			load: [appEnv, rmqEnv, aiEnv],
+			envFilePath: `.env.${process.env.NODE_ENV || 'development'}`
 		}),
 		InfrastructureModule,
 		ModulesModule

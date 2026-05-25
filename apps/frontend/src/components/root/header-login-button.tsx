@@ -1,13 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
-import { useMe } from '@/api/hooks/useMe.hook';
-import { ROUTES } from '@/constants';
-import ProfileDropdown from '../protected/profile-dropdown/profile-dropdown';
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook'
+import { useMe } from '@/api/hooks/useMe.hook'
+import { ROUTES } from '@/constants'
+import { useRouter } from 'next/navigation'
+import ProfileDropdown from '../protected/profile-dropdown/profile-dropdown'
 // import ProfilePopover from '../protected/profile-popover';
-import { Button } from '../ui/button';
-import { Skeleton } from '../ui/skeleton';
+import { Button } from '../ui/button'
+import { Skeleton } from '../ui/skeleton'
 
 export default function HeaderLoginButton() {
   const { data: user, isLoading } = useMe();
@@ -21,7 +21,7 @@ export default function HeaderLoginButton() {
   if (user) {
     return (
       <div className='flex gap-6 items-center'>
-        {sub && sub === 'not-found' && (
+        {sub && (
           <Button
             variant={'outline'}
             className='border-secondary text-secondary rounded-xs hover:bg-secondary hover:text-white'

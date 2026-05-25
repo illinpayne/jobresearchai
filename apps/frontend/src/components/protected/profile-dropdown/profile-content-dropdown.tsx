@@ -1,24 +1,24 @@
 /** biome-ignore-all lint/complexity/noUselessFragments: <explanation> */
 'use client';
 
-import type { AccountResponse } from '@/api/generated'
-import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import type { AccountResponse } from '@/api/generated';
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
-import { Skeleton } from '@/components/ui/skeleton'
-import { ROUTES } from '@/constants'
-import { useBillingDialog } from '@/hooks/useBillingDialog.hook'
-import { getImage } from '@/lib/utils'
-import { Pyramid, Sparkles } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { AvatarFallback } from '../overview-sidebar/avatar-fallback'
-import LogoutButton from '../overview-sidebar/logout.button'
+} from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ROUTES } from '@/constants';
+import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
+import { getImage } from '@/lib/utils';
+import { Pyramid, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { AvatarFallback } from '../overview-sidebar/avatar-fallback';
+import LogoutButton from '../overview-sidebar/logout.button';
 
 export default function ProfileContentDropdown(user: AccountResponse | undefined) {
   const router = useRouter();

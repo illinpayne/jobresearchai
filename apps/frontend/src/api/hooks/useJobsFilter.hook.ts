@@ -1,16 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  jobsFilterCacheKey,
-  jobsFilterCacheStaleTime,
-  RemoveCache,
-  SetCache,
-} from "@/lib/cache";
-import type { JobFilterDtoResponse } from "../generated";
-import { getJobFilter } from "../requests/job.req";
+import { useQuery } from '@tanstack/react-query';
+import { jobsFilterCacheKey, jobsFilterCacheStaleTime, RemoveCache, SetCache } from '@/lib/cache';
+import type { JobFilterDtoResponse } from '../generated';
+import { getJobFilter } from '../requests/job.req';
 
 export const useJobsFilter = () => {
   return useQuery({
-    queryKey: ["jobs-filter"],
+    queryKey: ['jobs-filter'],
     queryFn: async (): Promise<JobFilterDtoResponse> => {
       const rawCache = localStorage.getItem(jobsFilterCacheKey);
 
@@ -22,10 +17,7 @@ export const useJobsFilter = () => {
         const age = Date.now() - cacheObject.createdAt;
 
         if (age <= jobsFilterCacheStaleTime) {
-          if (
-            typeof cacheObject.data === "string" ||
-            !Object.keys(cacheObject.data).includes("positions")
-          ) {
+          if (typeof cacheObject.data === 'string' || !Object.keys(cacheObject.data).includes('positions')) {
             return {
               positions: [],
               locations: [],
@@ -45,7 +37,7 @@ export const useJobsFilter = () => {
         SetCache(jobsFilterCacheKey, data);
         return data;
       } catch (error) {
-        SetCache(jobsFilterCacheKey, "not-found");
+        SetCache(jobsFilterCacheKey, 'not-found');
       }
 
       return {

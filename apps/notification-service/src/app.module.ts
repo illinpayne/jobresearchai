@@ -10,7 +10,8 @@ import { ApplicationModule } from './modules/application.module'
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			load: [appEnv, redisEnv, smtpEnv]
+			load: [appEnv, redisEnv, smtpEnv],
+			envFilePath: `.env.${process.env.NODE_ENV || 'development'}`
 		}),
 		InfrastructureModule,
 		ApplicationModule

@@ -13,7 +13,8 @@ import { WebsocketsModule } from './websockets/websockets.module'
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			load: [appEnv, jwtEnv, oauthEnv, rmqEnv, redisEnv]
+			load: [appEnv, jwtEnv, oauthEnv, rmqEnv, redisEnv],
+			envFilePath: `.env.${process.env.NODE_ENV || 'development'}`
 		}),
 		InfrastructureModule,
 		AppsModule,
