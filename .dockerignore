@@ -1,0 +1,36 @@
+# dependencies
+node_modules
+**/node_modules
+
+# build outputs
+dist
+**/dist
+.next
+**/.next
+
+# turbo cache
+.turbo
+**/.turbo
+
+# env files
+.env
+.env.*
+**/.env
+**/.env.*
+!apps/frontend/.env.production
+
+# git
+.git
+.gitignore
+
+# logs
+*.log
+**/*.log
+
+# local docker files
+docker/docker-compose-local.yml
+docker/docker-compose.override.yml
+
+# misc
+**/*.md
+.DS_Store

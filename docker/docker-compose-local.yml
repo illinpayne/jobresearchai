@@ -1,0 +1,125 @@
+name: jrai-local
+
+services:
+  gateway:
+    build:
+      context: ..
+      dockerfile: apps/gateway/Dockerfile
+    container_name: gateway
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - ../apps/gateway/.env.production
+    networks:
+      - jrai
+
+  auth-service:
+    build:
+      context: ..
+      dockerfile: apps/auth-service/Dockerfile
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      - "50051:50051"
+    env_file:
+      - ../apps/auth-service/.env.production
+    networks:
+      - jrai
+
+  notification-service:
+    build:
+      context: ..
+      dockerfile: apps/notification-service/Dockerfile
+    container_name: notification-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    env_file:
+      - ../apps/notification-service/.env.production
+    networks:
+      - jrai
+
+  ai-core-service:
+    build:
+      context: ..
+      dockerfile: apps/ai-core-service/Dockerfile
+    container_name: ai-core-service
+    restart: unless-stopped
+    ports:
+      - "50053:50053"
+    env_file:
+      - ../apps/ai-core-service/.env.production
+    networks:
+      - jrai
+
+  ai-service:
+    build:
+      context: ..
+      dockerfile: apps/ai-service/Dockerfile
+    container_name: ai-service
+    restart: unless-stopped
+    env_file:
+      - ../apps/ai-service/.env.production
+    networks:
+      - jrai
+
+  payment-service:
+    build:
+      context: ..
+      dockerfile: apps/payment-service/Dockerfile
+    container_name: payment-service
+    restart: unless-stopped
+    ports:
+      - "50055:50055"
+      - "5001:5001"
+    env_file:
+      - ../apps/payment-service/.env.production
+    networks:
+      - jrai
+
+  storage-service:
+    build:
+      context: ..
+      dockerfile: apps/storage-service/Dockerfile
+    container_name: storage-service
+    restart: unless-stopped
+    ports:
+      - "50052:50052"
+    env_file:
+      - ../apps/storage-service/.env.production
+    networks:
+      - jrai
+
+  jobs-service:
+    build:
+      context: ..
+      dockerfile: apps/jobs-service/Dockerfile
+    container_name: jobs-service
+    restart: unless-stopped
+    ports:
+      - "50054:50054"
+    env_file:
+      - ../apps/jobs-service/.env.production
+    networks:
+      - jrai
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: apps/frontend/Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ../apps/frontend/.env.production
+    networks:
+      - jrai
+    depends_on:
+      - gateway
+
+networks:
+  jrai:
+    external: true
+    name: jrai-infrastructure_jrai

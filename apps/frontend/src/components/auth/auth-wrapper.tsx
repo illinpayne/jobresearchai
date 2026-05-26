@@ -1,10 +1,10 @@
 'use client';
-import Link from 'next/link';
-import type { ReactNode } from 'react';
-import { buttonVariants } from '@/components/ui/button';
-import { Watermark } from '@/components/ui/watermark';
-import { APP_CONFIG, OAUTH_CONFIG } from '@/constants';
-import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button'
+import { Watermark } from '@/components/ui/watermark'
+import { OAUTH_CONFIG } from '@/constants'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
+import type { ReactNode } from 'react'
 
 interface AuthWrapperProps {
   children: ReactNode[] | ReactNode;
@@ -17,7 +17,7 @@ export function AuthWrapper({ children, heading, className, isSocialAuth = true 
   function getOAuthURL() {
     const rootUrl = OAUTH_CONFIG.rootUrl;
     const options = {
-      redirect_uri: `${APP_CONFIG.apiUrl}${OAUTH_CONFIG.redirectPath}`,
+      redirect_uri: `${OAUTH_CONFIG.apiUrl}${OAUTH_CONFIG.redirectPath}`,
       client_id: OAUTH_CONFIG.clientId as string,
       access_type: 'offline',
       response_type: 'code',

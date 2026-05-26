@@ -58,6 +58,7 @@ export class JobsController {
 			])
 			this.rmqService.ack(ctx)
 		} catch (error) {
+			console.log(error)
 			this.rmqService.nack(ctx)
 		}
 	}

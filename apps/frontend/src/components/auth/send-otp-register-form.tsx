@@ -13,6 +13,7 @@ import { FormInputError } from '@/components/ui/formInputError';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { ROUTES } from '@/constants';
 import { useOtpTrigger } from '@/hooks';
+import { billingSubscriptionCacheKey, RemoveCache } from '@/lib/cache';
 import { persistSession } from '@/lib/client/session-persist';
 import { OtpTimer } from '../shared/otp-timer';
 import { AuthWrapper } from './auth-wrapper';
@@ -43,6 +44,9 @@ export function SendOtpRegisterForm({ email, duration }: IProps) {
       if (accessToken && typeof accessToken === 'string') {
         persistSession({ accessToken, account, queryClient });
         clearTimer();
+
+        RemoveCache(billingSubscriptionCacheKey);
+        queryClient.refetchQueries({ queryKey: ['billing-subscription'] });
 
         const { toast } = await import('sonner');
         toast.success('Account verified, go ahead :)');

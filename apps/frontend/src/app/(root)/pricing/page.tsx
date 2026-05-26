@@ -16,7 +16,7 @@ export default async function PricingPage() {
         </section>
         <PricingWrapper />
       </div>
-      <div className='px-20'>
+      <div className='px-20 max-xl:px-2'>
         <div className='w-full px-4 py-20 bg-blue-800 [clip-path:polygon(3%_2%,100%_0,98%_99%,0_100%)]'>
           <section className='mx-auto mb-5 max-w-xl text-center'>
             <h1 className='text-4xl font-bold tracking-tight text-zinc-100'>Bundles & Extras</h1>

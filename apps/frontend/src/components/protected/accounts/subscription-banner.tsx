@@ -1,10 +1,16 @@
 'use client';
 
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
 import { Button } from '@/components/ui/button';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 
 export default function SubscriptionBanner() {
   const { onOpen } = useBillingDialog();
+  const { data: sub } = useCurrentSubscription();
+
+  if (sub && sub.plan.name !== 'Free') {
+    return <></>;
+  }
 
   return (
     <div className='rounded-sm bg-linear-90 from-primary to-blue-900 p-6 grid grid-cols-3 relative'>

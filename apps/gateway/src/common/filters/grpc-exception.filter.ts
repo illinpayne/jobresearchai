@@ -15,6 +15,7 @@ export class GrpcExceptionFilter implements ExceptionFilter {
 	public catch(exception: any, host: ArgumentsHost) {
 		const ctx = host.switchToHttp()
 		const response = ctx.getResponse<Response>()
+		console.log(exception)
 		if (this.isGrpcError(exception)) {
 			const status = grpcToHttpStatus[exception.code] || 500
 

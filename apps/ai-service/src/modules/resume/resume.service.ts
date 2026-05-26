@@ -138,6 +138,7 @@ export class ResumeService {
 				ownRule: payload.preset.ownRule
 			} as PromptModel)
 		} catch (error) {
+			console.log(error)
 			this.queue.sendAnalysisProgress({
 				lastMessage: 'Failed to process the resume',
 				jobId,

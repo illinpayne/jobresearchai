@@ -86,25 +86,35 @@ export class AiController {
 			throw new NotFoundException('Preset not found')
 		}
 
-		const billingInfo = await this.billingClient.call('getSubscription', {
-			accountId: id
-		})
-
-		if (!billingInfo.plan) {
-			throw new BadRequestException('Billing plan not found.')
-		}
-
-		const featureTier = findPreset.preset.paidTier as string
-		const userTier = billingInfo.plan.name as string
-
-		const featureRank = TIER_ORDER.indexOf(featureTier)
-		const userRank = TIER_ORDER.indexOf(userTier)
-
-		if (featureRank === -1 || userRank === -1 || userRank < featureRank) {
-			throw new BadRequestException(
-				`You don't have access to this model.`
+		if (findPreset.preset.paidTier !== 'Free') {
+			const billingInfo = await this.billingClient.call(
+				'getSubscription',
+				{
+					accountId: id
+				}
 			)
+
+			if (!billingInfo.plan) {
+				throw new BadRequestException('Billing plan not found.')
+			}
+
+			const featureTier = findPreset.preset.paidTier as string
+			const userTier = billingInfo.plan.name as string
+
+			const featureRank = TIER_ORDER.indexOf(featureTier)
+			const userRank = TIER_ORDER.indexOf(userTier)
+
+			if (
+				featureRank === -1 ||
+				userRank === -1 ||
+				userRank < featureRank
+			) {
+				throw new BadRequestException(
+					`You don't have access to this model.`
+				)
+			}
 		}
+
 		const response = await this.aiClient.call('assignPresetToUser', {
 			userId: id,
 			presetId: findPreset.preset.id

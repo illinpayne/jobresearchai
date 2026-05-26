@@ -1,6 +1,19 @@
 name: jrai-infrastructure
 
 services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123123123
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jrai
   redis:
     container_name: redis
     image: redis:6.2
@@ -47,6 +60,7 @@ volumes:
   redis_data:
   rabbitmq_data:
   storage_minio_data:
+  postgres_data:
 
 networks:
   jrai:

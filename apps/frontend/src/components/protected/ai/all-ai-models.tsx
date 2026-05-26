@@ -31,7 +31,6 @@ export default function AllAiModels({ ...props }: Props) {
       toast.success(`Model ${variables.name} added to your library`);
     },
     onError: async (error, variables) => {
-      console.log(error);
       const { toast } = await import('sonner');
       toast.success(`Upgrade to ${variables.paidTier} to get this model`);
     },
@@ -56,13 +55,17 @@ export default function AllAiModels({ ...props }: Props) {
             isLoading={isAddingModel && model?.id === f.id}
             usageCredits={f.usageCredits}
             onAdd={async (model) => {
-              const userTier = (sub as SubscriptionModelResponse).plan.name as string;
+              if (sub) {
+                const userTier = (sub as SubscriptionModelResponse).plan.name as string;
 
-              const featureRank = TIER_ORDER.indexOf(model.paidTier);
-              const userRank = TIER_ORDER.indexOf(userTier);
+                const featureRank = TIER_ORDER.indexOf(model.paidTier);
+                const userRank = TIER_ORDER.indexOf(userTier);
 
-              if (featureRank === -1 || userRank === -1 || userRank < featureRank) {
-                billing.onOpen();
+                if (featureRank === -1 || userRank === -1 || userRank < featureRank) {
+                  billing.onOpen();
+                  return;
+                }
+                await getModelAsync(model);
                 return;
               }
               await getModelAsync(model);

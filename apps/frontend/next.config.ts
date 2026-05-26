@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**',
+        protocol: "https",
+        hostname: "**",
       },
     ],
     dangerouslyAllowSVG: false,
@@ -16,16 +16,16 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/s3-storage/:path*',
-        destination: 'http://localhost:9000/jrai-storage/:path*',
+        source: "/s3-storage/:path*",
+        destination: "http://storage-minio:9000/jrai-storage/:path*",
       },
     ];
   },
   typedRoutes: false,
   experimental: {
-    optimizePackageImports: ['tailwindcss'],
+    optimizePackageImports: ["tailwindcss"],
     serverActions: {
-      bodySizeLimit: '1mb',
+      bodySizeLimit: "1mb",
     },
     mdxRs: false,
   },

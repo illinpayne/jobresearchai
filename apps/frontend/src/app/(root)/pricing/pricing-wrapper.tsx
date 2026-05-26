@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { SubscriptionModelResponse } from '@/api/generated';
 import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook';
 import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
+import { useMe } from '@/api/hooks/useMe.hook';
 import { useSubscribe } from '@/api/hooks/useSubscribe.hook';
 import { BillingPlanCard } from '@/components/shared/billing-card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,6 +16,7 @@ export default function PricingWrapper() {
   const [billingCycle, setBillingCycle] = useState('monthly');
   const { data: plans } = useBillingPlans();
   const { data: sub } = useCurrentSubscription();
+  const { data: me } = useMe();
 
   const router = useRouter();
   const { mutateAsync: subscribeAsync } = useSubscribe({
@@ -28,7 +30,7 @@ export default function PricingWrapper() {
     setMounted(true);
   }, []);
 
-  if (!mounted || !sub || !plans) {
+  if (!mounted || !plans) {
     return (
       <div className='flex items-center justify-center gap-20'>
         <div className='grid grid-cols-3 gap-5 max-sm:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-1 max-xl:grid-cols-2 max-2xl:grid-cols-3'>
@@ -71,7 +73,7 @@ export default function PricingWrapper() {
           <span className='text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full'>Save 20%</span>
         </label>
       </div>
-      <div className='mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+      <div className='mx-auto grid max-w-5xl grid-cols-1 gap-6 max-lg:grid-cols-1 lg:grid-cols-3'>
         {plans?.plans.map((plan) => (
           <BillingPlanCard
             key={plan.id}
@@ -86,6 +88,10 @@ export default function PricingWrapper() {
               priceWithoutDiscount: billingCycle === 'annual' ? `${plan.monthlyPrice * 12}` : undefined,
             }}
             onPaymentAction={async (dto) => {
+              if (!me) {
+                router.push(ROUTES.AUTH.SIGNIN());
+                return;
+              }
               if (!sub || (sub as SubscriptionModelResponse).plan.name === 'Free') {
                 await subscribeAsync(dto);
               } else {

@@ -1,6 +1,8 @@
 /** biome-ignore-all lint/complexity/noUselessFragments: <explanation> */
 'use client';
 
+import { Pyramid, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import type { AccountResponse } from '@/api/generated';
 import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -15,8 +17,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants';
 import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
 import { getImage } from '@/lib/utils';
-import { Pyramid, Sparkles } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { AvatarFallback } from '../overview-sidebar/avatar-fallback';
 import LogoutButton from '../overview-sidebar/logout.button';
 
@@ -53,7 +53,7 @@ export default function ProfileContentDropdown(user: AccountResponse | undefined
               {user?.firstName} {user?.secondName}
             </span>
             <span className='truncate text-xs'>
-              {user?.email} • {sub?.plan.name !== 'Free' && sub?.plan.name}
+              {user?.email} {sub && sub.plan.name !== 'Free' && `• ${sub?.plan.name}`}
             </span>
           </div>
         </div>

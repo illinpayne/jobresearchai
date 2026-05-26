@@ -85,12 +85,14 @@ export const BillingModalProvider = () => {
         </div>
         <div className='flex items-center justify-between w-full p-0'>
           <p className='text-sm text-neutral-500'>Cancel anytime. We'll remind you three days before your trial ends.</p>
-          <Link
-            href={ROUTES.PRICING}
+          <button
             className={cn('px-0', buttonVariants({ variant: 'link' }))}
-            onClick={() => onClose()}>
+            onClick={() => {
+              onClose();
+              router.push(ROUTES.PRICING);
+            }}>
             See all features
-          </Link>
+          </button>
         </div>
       </DialogContent>
     </Dialog>
