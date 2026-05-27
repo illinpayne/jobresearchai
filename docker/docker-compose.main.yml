@@ -213,7 +213,7 @@ services:
       - NEXT_PUBLIC_OAUTH_API_URL=${NEXT_PUBLIC_OAUTH_API_URL}
       - NEXT_PUBLIC_STORAGE_URL=${NEXT_PUBLIC_STORAGE_URL}
     ports:
-      - "3000:3000"
+      - "3001:3000"
     networks:
       - jrai
     depends_on:
