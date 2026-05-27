@@ -1,19 +1,16 @@
+# ─── Base ─────────────────────────────────────────────────────────────────────
 FROM node:22-alpine AS base
-RUN npm install -g pnpm@9.0.0
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 # ─── Install all dependencies ─────────────────────────────────────────────────
 FROM base AS installer
 WORKDIR /app
 
-COPY pnpm-workspace.yaml .
-COPY pnpm-lock.yaml .
-COPY package.json .
-
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY apps/ai-service/package.json ./apps/ai-service/
 COPY packages/contracts/package.json ./packages/contracts/
-COPY packages/linters/package.json ./packages/linters/
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile && pnpm store prune
 
 # ─── Build ────────────────────────────────────────────────────────────────────
 FROM installer AS builder
@@ -21,46 +18,29 @@ WORKDIR /app
 
 COPY apps/ai-service ./apps/ai-service
 COPY packages/contracts ./packages/contracts
-COPY packages/linters ./packages/linters
 
 RUN pnpm --filter @jrai/contracts build
 RUN pnpm --filter ai-service build
 
-# ─── Production deps ──────────────────────────────────────────────────────────
-FROM base AS prod-deps
-WORKDIR /app
-
-COPY pnpm-workspace.yaml .
-COPY pnpm-lock.yaml .
-COPY package.json .
-
-COPY apps/ai-service/package.json ./apps/ai-service/
-COPY packages/contracts/package.json ./packages/contracts/
-COPY packages/linters/package.json ./packages/linters/
-
-RUN pnpm install --frozen-lockfile --prod
-
 # ─── Production ───────────────────────────────────────────────────────────────
-FROM node:22-alpine AS production
+FROM base AS production
 WORKDIR /app
 
-RUN npm install -g pnpm@9.0.0
+ENV NODE_ENV=production
 
-COPY pnpm-workspace.yaml .
-COPY package.json .
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY apps/ai-service/package.json ./apps/ai-service/
 COPY packages/contracts/package.json ./packages/contracts/
-COPY packages/linters/package.json ./packages/linters/
 
-COPY --from=prod-deps /app/node_modules ./node_modules
-COPY --from=prod-deps /app/apps/ai-service/node_modules ./apps/ai-service/node_modules
-COPY --from=prod-deps /app/packages/contracts/node_modules ./packages/contracts/node_modules
+RUN pnpm install --frozen-lockfile --prod && pnpm store prune
 
 COPY --from=builder /app/apps/ai-service/dist ./apps/ai-service/dist
 COPY --from=builder /app/packages/contracts/dist ./packages/contracts/dist
 COPY --from=builder /app/packages/contracts/proto ./packages/contracts/proto
 
-ENV NODE_ENV=production
+RUN chown -R appuser:appgroup /app
+USER appuser
 
 CMD ["node", "apps/ai-service/dist/src/main"]

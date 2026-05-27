@@ -21,7 +21,7 @@ export default function HeaderLoginButton() {
   if (user) {
     return (
       <div className='flex gap-6 items-center'>
-        {sub && (
+        {sub && sub.plan.name === 'Free' && (
           <Button
             variant={'outline'}
             className='border-secondary text-secondary rounded-xs hover:bg-secondary hover:text-white'

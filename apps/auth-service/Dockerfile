@@ -1,21 +1,19 @@
+# ─── Base ─────────────────────────────────────────────────────────────────────
 FROM node:22-alpine AS base
-RUN npm install -g pnpm@9.0.0
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 # ─── Install all dependencies ─────────────────────────────────────────────────
 FROM base AS installer
 WORKDIR /app
-# argon2 needs build tools — only in installer/builder stages
+
+# argon2 needs build tools to compile its native addon
 RUN apk add --no-cache python3 make g++
 
-COPY pnpm-workspace.yaml .
-COPY pnpm-lock.yaml .
-COPY package.json .
-
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY apps/auth-service/package.json ./apps/auth-service/
 COPY packages/contracts/package.json ./packages/contracts/
-COPY packages/linters/package.json ./packages/linters/
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile && pnpm store prune
 
 # ─── Build ────────────────────────────────────────────────────────────────────
 FROM installer AS builder
@@ -23,52 +21,48 @@ WORKDIR /app
 
 COPY apps/auth-service ./apps/auth-service
 COPY packages/contracts ./packages/contracts
-COPY packages/linters ./packages/linters
 
 RUN pnpm --filter @jrai/contracts build
 RUN pnpm --filter auth-service exec prisma generate
 RUN pnpm --filter auth-service build
 
-# ─── Production deps only ─────────────────────────────────────────────────────
+# ─── Production deps (needs build tools for argon2) ───────────────────────────
 FROM base AS prod-deps
 WORKDIR /app
-# argon2 needs build tools to compile even for prod install
+
 RUN apk add --no-cache python3 make g++
 
-COPY pnpm-workspace.yaml .
-COPY pnpm-lock.yaml .
-COPY package.json .
-
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY apps/auth-service/package.json ./apps/auth-service/
 COPY packages/contracts/package.json ./packages/contracts/
-COPY packages/linters/package.json ./packages/linters/
 
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile --prod && pnpm store prune
 
 # ─── Production image — no build tools ───────────────────────────────────────
 FROM node:22-alpine AS production
 WORKDIR /app
 
-RUN npm install -g pnpm@9.0.0
+ENV NODE_ENV=production
 
-# copy only prod node_modules — no python/make/g++
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate \
+ && addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY pnpm-workspace.yaml package.json ./
+COPY apps/auth-service/package.json ./apps/auth-service/
+COPY packages/contracts/package.json ./packages/contracts/
+
+# Compiled node_modules with argon2 native binary — no build tools needed
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=prod-deps /app/apps/auth-service/node_modules ./apps/auth-service/node_modules
 COPY --from=prod-deps /app/packages/contracts/node_modules ./packages/contracts/node_modules
 
-# copy manifests
-COPY pnpm-workspace.yaml .
-COPY package.json .
-COPY apps/auth-service/package.json ./apps/auth-service/
-COPY packages/contracts/package.json ./packages/contracts/
-
-# built outputs
 COPY --from=builder /app/apps/auth-service/dist ./apps/auth-service/dist
 COPY --from=builder /app/apps/auth-service/prisma ./apps/auth-service/prisma
 COPY --from=builder /app/packages/contracts/dist ./packages/contracts/dist
 COPY --from=builder /app/packages/contracts/proto ./packages/contracts/proto
 
-ENV NODE_ENV=production
+RUN chown -R appuser:appgroup /app
+USER appuser
 
 EXPOSE 50051
 CMD ["node", "apps/auth-service/dist/src/main"]

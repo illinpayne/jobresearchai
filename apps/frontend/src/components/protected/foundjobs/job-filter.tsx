@@ -1,16 +1,16 @@
 'use client';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import z from 'zod';
-import type { JobFilterDto } from '@/api/dtos/job-filter.dto';
-import type { JobFilterDtoResponse } from '@/api/generated';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
-import ExpectedSalarySlider from './expected-salary-slider';
+import type { JobFilterDto } from '@/api/dtos/job-filter.dto'
+import type { JobFilterDtoResponse } from '@/api/generated'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { cn } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import z from 'zod'
+import ExpectedSalarySlider from './expected-salary-slider'
 
 export const positions = ['IT', 'Media Buyer', 'Agronomic', 'Air Forces', 'Software Development'];
 export const locations = ['Remote', 'Kyiv', 'Rivne', 'Lviv'];
@@ -70,7 +70,6 @@ export default function JobFilter({ filter, defaultFilters }: Props) {
       expectedSalary: data.expectedSalary,
     });
 
-    console.log('push');
     router.push(`${pathname}?${params.toString()}`);
   };
 
