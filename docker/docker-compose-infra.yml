@@ -64,3 +64,5 @@ volumes:
 
 networks:
   jrai:
+    name: jrai-infrastructure_jrai
+    driver: bridge
