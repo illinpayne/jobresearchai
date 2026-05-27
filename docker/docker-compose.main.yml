@@ -9,16 +9,99 @@ services:
     restart: unless-stopped
     ports:
       - "5000:5000"
-    env_file:
-      - .env
-    environment:
-      NODE_ENV: production
     networks:
       - jrai
-      - jrai-main
+
+  auth-service:
+    build:
+      context: ..
+      dockerfile: apps/auth-service/Dockerfile
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      - "50051:50051"
+    networks:
+      - jrai
+
+  notification-service:
+    build:
+      context: ..
+      dockerfile: apps/notification-service/Dockerfile
+    container_name: notification-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    networks:
+      - jrai
+
+  ai-core-service:
+    build:
+      context: ..
+      dockerfile: apps/ai-core-service/Dockerfile
+    container_name: ai-core-service
+    restart: unless-stopped
+    ports:
+      - "50053:50053"
+    networks:
+      - jrai
+
+  ai-service:
+    build:
+      context: ..
+      dockerfile: apps/ai-service/Dockerfile
+    container_name: ai-service
+    restart: unless-stopped
+    networks:
+      - jrai
+
+  payment-service:
+    build:
+      context: ..
+      dockerfile: apps/payment-service/Dockerfile
+    container_name: payment-service
+    restart: unless-stopped
+    ports:
+      - "50055:50055"
+      - "5001:5001"
+    networks:
+      - jrai
+
+  storage-service:
+    build:
+      context: ..
+      dockerfile: apps/storage-service/Dockerfile
+    container_name: storage-service
+    restart: unless-stopped
+    ports:
+      - "50052:50052"
+    networks:
+      - jrai
+
+  jobs-service:
+    build:
+      context: ..
+      dockerfile: apps/jobs-service/Dockerfile
+    container_name: jobs-service
+    restart: unless-stopped
+    ports:
+      - "50054:50054"
+    networks:
+      - jrai
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: apps/frontend/Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - jrai
+    depends_on:
+      - gateway
 
 networks:
   jrai:
     external: true
-  jrai-main:
-    driver: bridge
+    name: jrai-infrastructure_jrai
