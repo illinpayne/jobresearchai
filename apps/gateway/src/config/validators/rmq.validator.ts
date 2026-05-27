@@ -4,13 +4,13 @@ export class RmqValidator {
 	@IsString()
 	@IsNotEmpty()
 	@Matches(/^amqp:\/\/[^:]+:[^@]+@[^:]+:\d+$/)
-	public RMQ_URL: string
+	public GATEWAY_RMQ_URL: string
 
 	@IsString()
 	@IsNotEmpty()
-	public RMQ_AI_RESUME_QUEUE: string
+	public GATEWAY_RMQ_AI_RESUME_QUEUE: string
 
 	@IsString()
 	@IsNotEmpty()
-	public RMQ_AI_EXCHANGE_QUEUE: string
+	public GATEWAY_RMQ_AI_EXCHANGE_QUEUE: string
 }

@@ -10,19 +10,19 @@ import {
 export class RedisValidator {
 	@IsString()
 	@IsNotEmpty()
-	public REDIS_HOST: string
+	public AUTH_REDIS_HOST: string
 
 	@IsInt()
 	@Min(0)
 	@Max(65535)
 	@IsOptional()
-	public REDIS_PORT: number
+	public AUTH_REDIS_PORT: number
 
 	@IsString()
 	@IsNotEmpty()
-	public REDIS_USER: string
+	public AUTH_REDIS_USER: string
 
 	@IsString()
 	@IsNotEmpty()
-	public REDIS_PASSWORD: string
+	public AUTH_REDIS_PASSWORD: string
 }

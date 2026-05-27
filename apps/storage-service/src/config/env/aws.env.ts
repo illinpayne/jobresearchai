@@ -8,11 +8,11 @@ export const awsEnv = registerAs<AwsConfig>('aws', () => {
 	validateEnv(process.env, AwsValidator)
 
 	return {
-		region: process.env.AWS_REGION as string,
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-		bucketName: process.env.AWS_BUCKET_NAME as string,
-		endpoint: process.env.AWS_ENDPOINT,
-		forcePathStyle: process.env.AWS_FORCE_PATH_STYLE === 'true'
+		region: process.env.STORAGE_AWS_REGION as string,
+		accessKeyId: process.env.STORAGE_AWS_ACCESS_KEY_ID as string,
+		secretAccessKey: process.env.STORAGE_AWS_SECRET_ACCESS_KEY as string,
+		bucketName: process.env.STORAGE_AWS_BUCKET_NAME as string,
+		endpoint: process.env.STORAGE_AWS_ENDPOINT,
+		forcePathStyle: process.env.STORAGE_AWS_FORCE_PATH_STYLE === 'true'
 	} as AwsConfig
 })

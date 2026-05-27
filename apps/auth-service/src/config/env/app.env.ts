@@ -8,8 +8,8 @@ export const appEnv = registerAs<AppConfig>('app', () => {
 	validateEnv(process.env, AppValidator)
 
 	return {
-		port: parseInt(process.env.GRPC_PORT as string, 10),
-		host: process.env.GRPC_HOST,
-		node_env: process.env.NODE_ENV
+		port: parseInt(process.env.AUTH_GRPC_PORT as string, 10),
+		host: process.env.AUTH_GRPC_HOST,
+		node_env: process.env.AUTH_NODE_ENV
 	} as AppConfig
 })

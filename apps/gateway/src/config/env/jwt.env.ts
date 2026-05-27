@@ -8,6 +8,6 @@ export const jwtEnv = registerAs<JwtConfig>('jwt', () => {
 	validateEnv(process.env, JwtValidator)
 
 	return {
-		secret: process.env.JWT_SECRET
+		secret: process.env.GATEWAY_JWT_SECRET
 	} as JwtConfig
 })

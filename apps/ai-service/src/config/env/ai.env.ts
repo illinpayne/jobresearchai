@@ -8,7 +8,7 @@ export const aiEnv = registerAs<AiConfig>('ai', () => {
 	validateEnv(process.env, AiValidator)
 
 	return {
-		url: process.env.AI_SERVER_URL as string,
-		apiKey: process.env.AI_API_KEY as string
+		url: process.env.AIS_AI_SERVER_URL as string,
+		apiKey: process.env.AIS_AI_API_KEY as string
 	} as AiConfig
 })

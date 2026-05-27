@@ -4,9 +4,9 @@ export class RmqValidator {
 	@IsString()
 	@IsNotEmpty()
 	@Matches(/^amqp:\/\/[^:]+:[^@]+@[^:]+:\d+$/)
-	public RMQ_URL: string
+	public AUTH_RMQ_URL: string
 
 	@IsString()
 	@IsNotEmpty()
-	public RMQ_QUEUE: string
+	public AUTH_RMQ_QUEUE: string
 }

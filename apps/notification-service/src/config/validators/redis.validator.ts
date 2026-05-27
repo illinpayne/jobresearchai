@@ -10,23 +10,23 @@ import {
 export class RedisValidator {
 	@IsString()
 	@IsNotEmpty()
-	public REDIS_HOST: string
+	public NOTIFICATION_REDIS_HOST: string
 
 	@IsInt()
 	@Min(0)
 	@Max(65535)
 	@IsOptional()
-	public REDIS_PORT: number
+	public NOTIFICATION_REDIS_PORT: number
 
 	@IsString()
 	@IsNotEmpty()
-	public REDIS_USER: string
+	public NOTIFICATION_REDIS_USER: string
 
 	@IsString()
 	@IsNotEmpty()
-	public REDIS_PASSWORD: string
+	public NOTIFICATION_REDIS_PASSWORD: string
 
 	@IsString()
 	@IsNotEmpty()
-	public REDIS_BULLMQ_PREFIX: string
+	public NOTIFICATION_REDIS_BULLMQ_PREFIX: string
 }

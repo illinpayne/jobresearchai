@@ -8,8 +8,8 @@ export const jwtEnv = registerAs<JwtConfig>('jwt', () => {
 	validateEnv(process.env, JwtValidator)
 
 	return {
-		jwtSecret: process.env.JWT_SECRET,
-		accessTokenTTL: process.env.ACCESS_TOKEN_TTL,
-		refreshTokenTTL: process.env.REFRESH_TOKEN_TTL
+		jwtSecret: process.env.AUTH_JWT_SECRET,
+		accessTokenTTL: process.env.AUTH_ACCESS_TOKEN_TTL,
+		refreshTokenTTL: process.env.AUTH_REFRESH_TOKEN_TTL
 	} as JwtConfig
 })

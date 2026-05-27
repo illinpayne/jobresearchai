@@ -18,12 +18,12 @@ export class AppValidator {
 	@Min(0)
 	@Max(65535)
 	@IsOptional()
-	public GRPC_PORT: number
+	public AUTH_GRPC_PORT: number
 
 	@IsString()
 	@IsNotEmpty()
-	public GRPC_HOST: string
+	public AUTH_GRPC_HOST: string
 
 	@IsEnum(Environment)
-	public NODE_ENV: string
+	public AUTH_NODE_ENV: string
 }

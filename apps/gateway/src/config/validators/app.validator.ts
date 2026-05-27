@@ -18,27 +18,27 @@ export class AppValidator {
 	@Min(0)
 	@Max(65535)
 	@IsOptional()
-	public PORT: number
+	public GATEWAY_PORT: number
 
 	@IsString()
 	@IsNotEmpty()
-	public HOST: string
+	public GATEWAY_HOST: string
 
 	@IsString()
-	public ALLOWED_ORIGINS: string
+	public GATEWAY_ALLOWED_ORIGINS: string
 
 	@IsEnum(Environment)
-	public NODE_ENV: string
+	public GATEWAY_NODE_ENV: string
 
 	@IsString()
 	@IsNotEmpty()
-	public COOKIE_SECRET: string
+	public GATEWAY_COOKIE_SECRET: string
 
 	@IsInt()
 	@Min(0)
-	public COOKIE_EXPIRE_TTL: number
+	public GATEWAY_COOKIE_EXPIRE_TTL: number
 
 	@IsString()
 	@IsNotEmpty()
-	public COOKIE_DOMAIN: string
+	public GATEWAY_COOKIE_DOMAIN: string
 }

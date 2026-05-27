@@ -8,8 +8,8 @@ export const rmqEnv = registerAs<RmqConfig>('rmq', () => {
 	validateEnv(process.env, RmqValidator)
 
 	return {
-		urls: [process.env.RMQ_URL as string],
-		queue: process.env.RMQ_QUEUE as string,
-		exchange_queue: process.env.RMQ_EXCHANGE_QUEUE as string
+		urls: [process.env.AIS_RMQ_URL as string],
+		queue: process.env.AIS_RMQ_QUEUE as string,
+		exchange_queue: process.env.AIS_RMQ_EXCHANGE_QUEUE as string
 	} as RmqConfig
 })

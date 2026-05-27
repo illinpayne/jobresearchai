@@ -18,16 +18,16 @@ export class AppValidator {
 	@Min(0)
 	@Max(65535)
 	@IsOptional()
-	public GRPC_PORT: number
+	public PAYMENT_GRPC_PORT: number
 
 	@IsString()
 	@IsNotEmpty()
-	public GRPC_HOST: string
+	public PAYMENT_GRPC_HOST: string
 
 	@IsString()
 	@IsNotEmpty()
-	public APP_URL: string
+	public PAYMENT_APP_URL: string
 
 	@IsEnum(Environment)
-	public NODE_ENV: string
+	public PAYMENT_NODE_ENV: string
 }

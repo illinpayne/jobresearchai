@@ -18,12 +18,12 @@ export class AppValidator {
 	@Min(0)
 	@Max(65535)
 	@IsOptional()
-	public GRPC_PORT: number
+	public AICORE_GRPC_PORT: number
 
 	@IsString()
 	@IsNotEmpty()
-	public GRPC_HOST: string
+	public AICORE_GRPC_HOST: string
 
 	@IsEnum(Environment)
-	public NODE_ENV: string
+	public AICORE_NODE_ENV: string
 }

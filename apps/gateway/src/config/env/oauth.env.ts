@@ -8,10 +8,10 @@ export const oauthEnv = registerAs<OAuthConfig>('oauth', () => {
 	validateEnv(process.env, OAuthValidator)
 
 	return {
-		clientId: process.env.OAUTH_ID,
-		secret: process.env.OAUTH_SECRET,
-		callbackUrl: process.env.OAUTH_CALLBACK_URL,
-		redirectUrl: process.env.OAUTH_REDIRECT_URL,
-		tokenKey: process.env.OAUTH_TOKEN_KEY
+		clientId: process.env.GATEWAY_OAUTH_ID,
+		secret: process.env.GATEWAY_OAUTH_SECRET,
+		callbackUrl: process.env.GATEWAY_OAUTH_CALLBACK_URL,
+		redirectUrl: process.env.GATEWAY_OAUTH_REDIRECT_URL,
+		tokenKey: process.env.GATEWAY_OAUTH_TOKEN_KEY
 	} as OAuthConfig
 })

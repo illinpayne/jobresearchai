@@ -8,7 +8,7 @@ export const stripeEnv = registerAs<StripeConfig>('stripe', () => {
 	validateEnv(process.env, StripeValidator)
 
 	return {
-		secretKey: process.env.STRIPE_SECRET_KEY as string,
-		webhookSecret: process.env.STRIPE_WEBHOOK_SECRET as string
+		secretKey: process.env.PAYMENT_STRIPE_SECRET_KEY as string,
+		webhookSecret: process.env.PAYMENT_STRIPE_WEBHOOK_SECRET as string
 	} as StripeConfig
 })

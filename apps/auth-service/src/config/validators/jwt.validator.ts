@@ -3,11 +3,11 @@ import { IsNotEmpty, IsString } from 'class-validator'
 export class JwtValidator {
 	@IsString()
 	@IsNotEmpty()
-	public JWT_SECRET: string
+	public AUTH_JWT_SECRET: string
 	@IsString()
 	@IsNotEmpty()
-	public ACCESS_TOKEN_TTL: string
+	public AUTH_ACCESS_TOKEN_TTL: string
 	@IsString()
 	@IsNotEmpty()
-	public REFRESH_TOKEN_TTL: string
+	public AUTH_REFRESH_TOKEN_TTL: string
 }
