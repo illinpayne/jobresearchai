@@ -174,7 +174,13 @@ export function RegisterForm() {
             <Button
               type='submit'
               disabled={isPending || !formState.isValid}>
-              {isPending ? <LoaderCircle className='animate-spin size-6' /> : 'Send code'}
+              {isPending ? (
+                <div className='animate-spin'>
+                  <LoaderCircle className='size-6' />
+                </div>
+              ) : (
+                'Send code'
+              )}
             </Button>
           </form>
           <p className='text-sm text-center'>

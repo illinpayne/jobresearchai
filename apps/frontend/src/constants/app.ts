@@ -5,6 +5,7 @@ export const APP_CONFIG = {
   wssUrl:
     process.env["NEXT_PUBLIC_WEBSOCKET_URL"] ??
     "http://localhost:5000/progress",
+  storageUrl: process.env["NEXT_PUBLIC_STORAGE_URL"],
 } as const;
 
 export const OAUTH_CONFIG = {

@@ -132,7 +132,13 @@ export function SendOtpRegisterForm({ email, duration }: IProps) {
         <Button
           type='submit'
           disabled={isPending || !formState.isValid}>
-          {isPending ? <LoaderCircle className='animate-spin size-6' /> : 'Verify'}
+          {isPending ? (
+            <div className='animate-spin'>
+              <LoaderCircle className='size-6' />
+            </div>
+          ) : (
+            'Verify'
+          )}
         </Button>
         <OtpTimer
           storageKey='register-otp'

@@ -10,16 +10,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "play-lh.googleusercontent.com",
+      },
     ],
     dangerouslyAllowSVG: false,
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/s3-storage/:path*",
-        destination: "http://192.168.31.245:9000/jrai-storage/:path*",
-      },
-    ];
   },
   typedRoutes: false,
   experimental: {

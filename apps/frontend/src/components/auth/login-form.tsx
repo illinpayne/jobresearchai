@@ -141,7 +141,13 @@ export function LoginForm() {
             <Button
               type='submit'
               disabled={isPending || !formState.isValid}>
-              {isPending ? <LoaderCircle className='animate-spin size-6' /> : 'Sign in'}
+              {isPending ? (
+                <div className='animate-spin'>
+                  <LoaderCircle className=' size-6' />
+                </div>
+              ) : (
+                'Sign in'
+              )}
             </Button>
           </form>
           <p className='text-center text-sm'>

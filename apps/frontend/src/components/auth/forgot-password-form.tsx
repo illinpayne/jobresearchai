@@ -80,7 +80,13 @@ export function ForgotPasswordForm() {
             <Button
               type='submit'
               disabled={isPending || !formState.isValid}>
-              {isPending ? <LoaderCircle className='animate-spin size-6' /> : 'Send code'}
+              {isPending ? (
+                <div className='animate-spin'>
+                  <LoaderCircle className='size-6' />
+                </div>
+              ) : (
+                'Send code'
+              )}
             </Button>
             <p className='text-center text-sm'>
               Want to sign in?{' '}
