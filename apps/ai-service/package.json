@@ -27,6 +27,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^11.1.12",
     "@nestjs/platform-express": "^11.1.12",
+    "@openrouter/sdk": "^0.12.35",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^0.10.9",
     "bullmq": "^5.70.1",
