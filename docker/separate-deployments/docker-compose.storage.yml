@@ -3,7 +3,7 @@ name: jrai-storage-service
 services:
   storage-service:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/storage-service/Dockerfile
     container_name: storage-service
     restart: unless-stopped

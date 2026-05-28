@@ -3,7 +3,7 @@ name: jrai-payment-service
 services:
   payment-service:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/payment-service/Dockerfile
     container_name: payment-service
     restart: unless-stopped

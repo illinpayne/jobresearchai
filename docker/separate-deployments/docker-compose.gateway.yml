@@ -3,7 +3,7 @@ name: jrai-gateway
 services:
   gateway:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/gateway/Dockerfile
     container_name: gateway
     restart: unless-stopped

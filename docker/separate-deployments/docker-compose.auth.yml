@@ -3,7 +3,7 @@ name: jrai-auth-service
 services:
   auth-service:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/auth-service/Dockerfile
     container_name: auth-service
     restart: unless-stopped

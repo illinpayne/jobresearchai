@@ -3,7 +3,7 @@ name: jrai-notification-service
 services:
   notification-service:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/notification-service/Dockerfile
     container_name: notification-service
     restart: unless-stopped

@@ -3,7 +3,7 @@ name: jrai-ai-core-service
 services:
   ai-core-service:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/ai-core-service/Dockerfile
     container_name: ai-core-service
     restart: unless-stopped

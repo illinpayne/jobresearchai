@@ -3,7 +3,7 @@ name: jrai-frontend
 services:
   frontend:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/frontend/Dockerfile
       args:
         - NEXT_PUBLIC_APP_URL=${FRONTEND_NEXT_PUBLIC_APP_URL}

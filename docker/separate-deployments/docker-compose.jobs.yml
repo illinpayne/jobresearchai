@@ -3,7 +3,7 @@ name: jrai-jobs-service
 services:
   jobs-service:
     build:
-      context: ..
+      context: ../..
       dockerfile: apps/jobs-service/Dockerfile
     container_name: jobs-service
     restart: unless-stopped
