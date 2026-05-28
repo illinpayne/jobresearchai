@@ -28,6 +28,10 @@ export class AppValidator {
 	@IsNotEmpty()
 	public PAYMENT_APP_URL: string
 
+	@IsString()
+	@IsNotEmpty()
+	public PAYMENT_REDIRECT_URL: string
+
 	@IsEnum(Environment)
 	public PAYMENT_NODE_ENV: string
 }

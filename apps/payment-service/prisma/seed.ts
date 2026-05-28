@@ -4,7 +4,9 @@ import { Pool } from 'pg'
 import { PrismaClient } from './generated/client'
 import { BundleCreateInput, PlanCreateInput } from './generated/models'
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+const url = process.env.DATABASE_URL
+console.log('Connection: ', url)
+const pool = new Pool({ connectionString: url })
 const adapter = new PrismaPg(pool)
 
 const prisma = new PrismaClient({ adapter })

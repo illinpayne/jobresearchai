@@ -8,13 +8,19 @@ import {
 	Req,
 	Res
 } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import type { Request, Response } from 'express'
+
+import { AllConfigs } from '@/config/interfaces'
 
 import { BillingService } from './billing.service'
 
 @Controller('billing')
 export class BillingController {
-	public constructor(private readonly billingService: BillingService) {}
+	public constructor(
+		private readonly config: ConfigService<AllConfigs>,
+		private readonly billingService: BillingService
+	) {}
 
 	@Post('webhook')
 	@HttpCode(HttpStatus.OK)
@@ -28,11 +34,13 @@ export class BillingController {
 
 	@Get('success')
 	public success(@Res({ passthrough: true }) res: Response) {
-		res.redirect(`http://localhost:3000/getting-subscription`)
+		const url = this.config.get('app.redirect_url', { infer: true })
+		res.redirect(`${url}/getting-subscription`)
 	}
 
 	@Get('cancel')
 	public cancel(@Res({ passthrough: true }) res: Response) {
-		res.redirect(`http://localhost:3000/overview`)
+		const url = this.config.get('app.redirect_url', { infer: true })
+		res.redirect(`${url}/overview`)
 	}
 }
