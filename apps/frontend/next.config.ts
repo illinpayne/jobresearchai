@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/s3-storage/:path*",
-        destination: "http://storage-minio:9000/jrai-storage/:path*",
+        destination: "http://192.168.31.245:9000/jrai-storage/:path*",
       },
     ];
   },
