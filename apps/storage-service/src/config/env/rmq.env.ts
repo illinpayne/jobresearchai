@@ -8,7 +8,7 @@ export const rmqEnv = registerAs<RmqConfig>('rmq', () => {
 	validateEnv(process.env, RmqValidator)
 
 	return {
-		url: process.env.STORAGE_RMQ_URL,
+		url: process.env.RMQ_URL,
 		queue: process.env.STORAGE_RMQ_QUEUE
 	} as RmqConfig
 })

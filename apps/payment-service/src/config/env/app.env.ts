@@ -9,9 +9,9 @@ export const appEnv = registerAs<AppConfig>('app', () => {
 
 	return {
 		port: parseInt(process.env.PAYMENT_GRPC_PORT as string, 10),
-		host: process.env.PAYMENT_GRPC_HOST,
+		host: process.env.GRPC_HOST,
 		app_url: process.env.PAYMENT_APP_URL,
 		redirect_url: process.env.PAYMENT_REDIRECT_URL,
-		node_env: process.env.PAYMENT_NODE_ENV
+		node_env: process.env.NODE_ENV
 	} as AppConfig
 })

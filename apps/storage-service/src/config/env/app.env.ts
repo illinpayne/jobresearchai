@@ -9,9 +9,9 @@ export const appEnv = registerAs<AppConfig>('app', () => {
 
 	return {
 		port: parseInt(process.env.STORAGE_GRPC_PORT as string, 10),
-		host: process.env.STORAGE_GRPC_HOST,
+		host: process.env.GRPC_HOST,
 		url: process.env.STORAGE_RMQ_URL,
 		queue: process.env.STORAGE_RMQ_QUEUE,
-		node_env: process.env.STORAGE_NODE_ENV
+		node_env: process.env.NODE_ENV
 	} as AppConfig
 })

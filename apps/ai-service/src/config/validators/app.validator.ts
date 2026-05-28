@@ -8,12 +8,12 @@ export enum Environment {
 export class AppValidator {
 	@IsString()
 	@IsNotEmpty()
-	public AIS_RMQ_URL: string
+	public RMQ_URL: string
 
 	@IsString()
 	@IsNotEmpty()
 	public AIS_RMQ_QUEUE: string
 
 	@IsEnum(Environment)
-	public AIS_NODE_ENV: string
+	public NODE_ENV: string
 }

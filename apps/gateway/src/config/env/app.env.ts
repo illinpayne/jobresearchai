@@ -9,14 +9,14 @@ export const appEnv = registerAs<AppConfig>('app', () => {
 
 	return {
 		port: parseInt(process.env.GATEWAY_PORT as string, 10),
-		host: process.env.GATEWAY_HOST,
+		host: process.env.HOST,
 		allowed_origins: process.env.GATEWAY_ALLOWED_ORIGINS,
-		node_env: process.env.GATEWAY_NODE_ENV,
+		node_env: process.env.NODE_ENV,
 		cookie_secret: process.env.GATEWAY_COOKIE_SECRET,
 		cookie_expire_ttl: parseInt(
 			process.env.GATEWAY_COOKIE_EXPIRE_TTL as string,
 			10
 		),
-		cookie_domain: process.env.COOKIE_DOMAIN
+		cookie_domain: process.env.GATEWAY_COOKIE_DOMAIN
 	} as AppConfig
 })

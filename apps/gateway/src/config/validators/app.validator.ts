@@ -22,13 +22,13 @@ export class AppValidator {
 
 	@IsString()
 	@IsNotEmpty()
-	public GATEWAY_HOST: string
+	public HOST: string
 
 	@IsString()
 	public GATEWAY_ALLOWED_ORIGINS: string
 
 	@IsEnum(Environment)
-	public GATEWAY_NODE_ENV: string
+	public NODE_ENV: string
 
 	@IsString()
 	@IsNotEmpty()

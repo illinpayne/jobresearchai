@@ -8,8 +8,8 @@ export const appEnv = registerAs<AppConfig>('app', () => {
 	validateEnv(process.env, AppValidator)
 
 	return {
-		url: process.env.NOTIFICATION_RMQ_URL,
+		url: process.env.RMQ_URL,
 		queue: process.env.NOTIFICATION_RMQ_QUEUE,
-		node_env: process.env.NOTIFICATION_NODE_ENV
+		node_env: process.env.NODE_ENV
 	} as AppConfig
 })

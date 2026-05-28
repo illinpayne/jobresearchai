@@ -8,7 +8,7 @@ export const rmqEnv = registerAs<RmqConfig>('rmq', () => {
 	validateEnv(process.env, RmqValidator)
 
 	return {
-		urls: [process.env.AICORE_RMQ_URL as string],
+		urls: [process.env.RMQ_URL as string],
 		jobQueue: process.env.AICORE_RMQ_JOB_QUEUE as string
 	} as RmqConfig
 })

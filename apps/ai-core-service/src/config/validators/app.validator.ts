@@ -22,8 +22,8 @@ export class AppValidator {
 
 	@IsString()
 	@IsNotEmpty()
-	public AICORE_GRPC_HOST: string
+	public GRPC_HOST: string
 
 	@IsEnum(Environment)
-	public AICORE_NODE_ENV: string
+	public NODE_ENV: string
 }

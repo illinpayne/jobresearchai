@@ -9,7 +9,7 @@ export const appEnv = registerAs<AppConfig>('app', () => {
 
 	return {
 		port: parseInt(process.env.AUTH_GRPC_PORT as string, 10),
-		host: process.env.AUTH_GRPC_HOST,
-		node_env: process.env.AUTH_NODE_ENV
+		host: process.env.GRPC_HOST,
+		node_env: process.env.NODE_ENV
 	} as AppConfig
 })

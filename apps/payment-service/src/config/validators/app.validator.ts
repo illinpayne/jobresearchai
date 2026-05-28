@@ -22,7 +22,7 @@ export class AppValidator {
 
 	@IsString()
 	@IsNotEmpty()
-	public PAYMENT_GRPC_HOST: string
+	public GRPC_HOST: string
 
 	@IsString()
 	@IsNotEmpty()
@@ -33,5 +33,5 @@ export class AppValidator {
 	public PAYMENT_REDIRECT_URL: string
 
 	@IsEnum(Environment)
-	public PAYMENT_NODE_ENV: string
+	public NODE_ENV: string
 }

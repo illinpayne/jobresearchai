@@ -22,8 +22,8 @@ export class AppValidator {
 
 	@IsString()
 	@IsNotEmpty()
-	public JOBS_GRPC_HOST: string
+	public GRPC_HOST: string
 
 	@IsEnum(Environment)
-	public JOBS_NODE_ENV: string
+	public NODE_ENV: string
 }
