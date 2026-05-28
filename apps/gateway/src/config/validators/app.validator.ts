@@ -22,7 +22,7 @@ export class AppValidator {
 
 	@IsString()
 	@IsNotEmpty()
-	public HOST: string
+	public GATEWAY_HOST: string
 
 	@IsString()
 	public GATEWAY_ALLOWED_ORIGINS: string
