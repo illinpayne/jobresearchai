@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import type { JobResponse } from '@/api/generated';
-import { cn } from '@/lib/utils';
+import type { JobResponse } from '@/api/generated'
+import { cn } from '@/lib/utils'
+import Image from 'next/image'
+import Link from 'next/link'
 
 export default function JobCard({ ...props }: JobResponse) {
   function renderImageOfSourceUrl(url: string) {
@@ -16,6 +16,7 @@ export default function JobCard({ ...props }: JobResponse) {
             className='rounded-sm aspect-square object-cover'
             width={70}
             height={70}
+            unoptimized
           />
         </div>
       );
@@ -29,6 +30,7 @@ export default function JobCard({ ...props }: JobResponse) {
             className='rounded-sm aspect-square object-cover'
             width={70}
             height={70}
+            unoptimized
           />
         </div>
       );
