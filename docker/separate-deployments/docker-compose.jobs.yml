@@ -1,0 +1,25 @@
+name: jrai-jobs-service
+
+services:
+  jobs-service:
+    build:
+      context: ..
+      dockerfile: apps/jobs-service/Dockerfile
+    container_name: jobs-service
+    restart: unless-stopped
+    environment:
+      - JOBS_GRPC_PORT=${JOBS_GRPC_PORT}
+      - GRPC_HOST=${GRPC_HOST}
+      - NODE_ENV=${NODE_ENV}
+      - JOBS_DATABASE_URL=${JOBS_DATABASE_URL}
+      - RMQ_URL=${RMQ_URL}
+      - JOBS_RMQ_QUEUE=${JOBS_RMQ_QUEUE}
+    ports:
+      - "50054:50054"
+    networks:
+      - jrai
+
+networks:
+  jrai:
+    external: true
+    name: jrai-infrastructure_jrai

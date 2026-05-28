@@ -1,0 +1,45 @@
+name: jrai-gateway
+
+services:
+  gateway:
+    build:
+      context: ..
+      dockerfile: apps/gateway/Dockerfile
+    container_name: gateway
+    restart: unless-stopped
+    environment:
+      - GATEWAY_PORT=${GATEWAY_PORT}
+      - GATEWAY_HOST=${GATEWAY_HOST}
+      - GATEWAY_ALLOWED_ORIGINS=${GATEWAY_ALLOWED_ORIGINS}
+      - NODE_ENV=${NODE_ENV}
+      - GATEWAY_COOKIE_DOMAIN=${GATEWAY_COOKIE_DOMAIN}
+      - GATEWAY_COOKIE_SECRET=${GATEWAY_COOKIE_SECRET}
+      - GATEWAY_COOKIE_EXPIRE_TTL=${GATEWAY_COOKIE_EXPIRE_TTL}
+      - AUTH_GRPC_URL=${AUTH_GRPC_URL}
+      - ACCOUNT_GRPC_URL=${ACCOUNT_GRPC_URL}
+      - STORAGE_GRPC_URL=${STORAGE_GRPC_URL}
+      - AICORE_GRPC_URL=${AICORE_GRPC_URL}
+      - JOB_GRPC_URL=${JOB_GRPC_URL}
+      - PAYMENT_GRPC_URL=${PAYMENT_GRPC_URL}
+      - GATEWAY_JWT_SECRET=${GATEWAY_JWT_SECRET}
+      - GATEWAY_OAUTH_ID=${GATEWAY_OAUTH_ID}
+      - GATEWAY_OAUTH_SECRET=${GATEWAY_OAUTH_SECRET}
+      - GATEWAY_OAUTH_CALLBACK_URL=${GATEWAY_OAUTH_CALLBACK_URL}
+      - GATEWAY_OAUTH_REDIRECT_URL=${GATEWAY_OAUTH_REDIRECT_URL}
+      - GATEWAY_OAUTH_TOKEN_KEY=${GATEWAY_OAUTH_TOKEN_KEY}
+      - RMQ_URL=${RMQ_URL}
+      - GATEWAY_RMQ_AI_RESUME_QUEUE=${GATEWAY_RMQ_AI_RESUME_QUEUE}
+      - GATEWAY_RMQ_AI_EXCHANGE_QUEUE=${GATEWAY_RMQ_AI_EXCHANGE_QUEUE}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+    ports:
+      - "5000:5000"
+    networks:
+      - jrai
+
+networks:
+  jrai:
+    external: true
+    name: jrai-infrastructure_jrai

@@ -1,0 +1,30 @@
+name: jrai-payment-service
+
+services:
+  payment-service:
+    build:
+      context: ..
+      dockerfile: apps/payment-service/Dockerfile
+    container_name: payment-service
+    restart: unless-stopped
+    environment:
+      - PAYMENT_GRPC_PORT=${PAYMENT_GRPC_PORT}
+      - GRPC_HOST=${GRPC_HOST}
+      - NODE_ENV=${NODE_ENV}
+      - PAYMENT_DATABASE_URL=${PAYMENT_DATABASE_URL}
+      - RMQ_URL=${RMQ_URL}
+      - PAYMENT_RMQ_QUEUE=${PAYMENT_RMQ_QUEUE}
+      - PAYMENT_STRIPE_SECRET_KEY=${PAYMENT_STRIPE_SECRET_KEY}
+      - PAYMENT_STRIPE_WEBHOOK_SECRET=${PAYMENT_STRIPE_WEBHOOK_SECRET}
+      - PAYMENT_APP_URL=${PAYMENT_APP_URL}
+      - PAYMENT_REDIRECT_URL=${PAYMENT_REDIRECT_URL}
+    ports:
+      - "50055:50055"
+      - "5001:5001"
+    networks:
+      - jrai
+
+networks:
+  jrai:
+    external: true
+    name: jrai-infrastructure_jrai

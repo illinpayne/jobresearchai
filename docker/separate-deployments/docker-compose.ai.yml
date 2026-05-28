@@ -1,0 +1,25 @@
+name: jrai-ai-service
+
+services:
+  ai-service:
+    build:
+      context: ..
+      dockerfile: apps/ai-service/Dockerfile
+    container_name: ai-service
+    restart: unless-stopped
+    environment:
+      - RMQ_URL=${RMQ_URL}
+      - AIS_RMQ_QUEUE=${AIS_RMQ_QUEUE}
+      - AIS_RMQ_EXCHANGE_QUEUE=${AIS_RMQ_EXCHANGE_QUEUE}
+      - NODE_ENV=${NODE_ENV}
+      - AICORE_GRPC_URL=${AICORE_GRPC_URL}
+      - PAYMENT_GRPC_URL=${PAYMENT_GRPC_URL}
+      - AIS_AI_SERVER_URL=${AIS_AI_SERVER_URL}
+      - AIS_AI_API_KEY=${AIS_AI_API_KEY}
+    networks:
+      - jrai
+
+networks:
+  jrai:
+    external: true
+    name: jrai-infrastructure_jrai

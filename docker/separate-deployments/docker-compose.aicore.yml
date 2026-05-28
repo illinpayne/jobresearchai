@@ -1,0 +1,25 @@
+name: jrai-ai-core-service
+
+services:
+  ai-core-service:
+    build:
+      context: ..
+      dockerfile: apps/ai-core-service/Dockerfile
+    container_name: ai-core-service
+    restart: unless-stopped
+    environment:
+      - AICORE_GRPC_PORT=${AICORE_GRPC_PORT}
+      - GRPC_HOST=${GRPC_HOST}
+      - NODE_ENV=${NODE_ENV}
+      - AICORE_DATABASE_URL=${AICORE_DATABASE_URL}
+      - RMQ_URL=${RMQ_URL}
+      - AICORE_RMQ_JOB_QUEUE=${AICORE_RMQ_JOB_QUEUE}
+    ports:
+      - "50053:50053"
+    networks:
+      - jrai
+
+networks:
+  jrai:
+    external: true
+    name: jrai-infrastructure_jrai

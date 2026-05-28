@@ -1,0 +1,33 @@
+name: jrai-auth-service
+
+services:
+  auth-service:
+    build:
+      context: ..
+      dockerfile: apps/auth-service/Dockerfile
+    container_name: auth-service
+    restart: unless-stopped
+    environment:
+      - AUTH_GRPC_PORT=${AUTH_GRPC_PORT}
+      - GRPC_HOST=${GRPC_HOST}
+      - NODE_ENV=${NODE_ENV}
+      - AUTH_JWT_SECRET=${AUTH_JWT_SECRET}
+      - AUTH_ACCESS_TOKEN_TTL=${AUTH_ACCESS_TOKEN_TTL}
+      - AUTH_REFRESH_TOKEN_TTL=${AUTH_REFRESH_TOKEN_TTL}
+      - AUTH_DATABASE_URL=${AUTH_DATABASE_URL}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - RMQ_URL=${RMQ_URL}
+      - AUTH_RMQ_QUEUE=${AUTH_RMQ_QUEUE}
+      - PAYMENT_GRPC_URL=${PAYMENT_GRPC_URL}
+    ports:
+      - "50051:50051"
+    networks:
+      - jrai
+
+networks:
+  jrai:
+    external: true
+    name: jrai-infrastructure_jrai
