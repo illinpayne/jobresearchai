@@ -1,13 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useBillingBundles } from '@/api/hooks/useBillingBundles.hook';
-import { useBuyBundle } from '@/api/hooks/useBuyBundle.hook';
-import { useMe } from '@/api/hooks/useMe.hook';
-import { BundleCard } from '@/components/shared/bundle-card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ROUTES } from '@/constants';
+import { useBillingBundles } from '@/api/hooks/useBillingBundles.hook'
+import { useBuyBundle } from '@/api/hooks/useBuyBundle.hook'
+import { useMe } from '@/api/hooks/useMe.hook'
+import { BundleCard } from '@/components/shared/bundle-card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ROUTES } from '@/constants'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function BundleWrapper() {
   const [mounted, setMounted] = useState(false);
@@ -26,7 +26,7 @@ export default function BundleWrapper() {
     setMounted(true);
   }, []);
 
-  if (!mounted || !bundles) {
+  if (!mounted || !bundles || !bundles.bundles) {
     return (
       <div className='flex items-center justify-center gap-20'>
         <div className='grid grid-cols-3 gap-5 max-sm:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-1 max-xl:grid-cols-2 max-2xl:grid-cols-3'>
@@ -41,7 +41,7 @@ export default function BundleWrapper() {
   return (
     <div className='flex flex-col gap-10'>
       <div className='mx-auto grid max-w-5xl grid-cols-1 gap-6 max-lg:grid-cols-1 lg:grid-cols-3'>
-        {bundles.bundles.map((bundle) => (
+        {bundles.bundles?.map((bundle) => (
           <BundleCard
             key={bundle.id}
             bundle={bundle}

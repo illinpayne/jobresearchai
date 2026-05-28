@@ -1,20 +1,19 @@
 'use client';
 
-import { X } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import type { SubscriptionModelResponse } from '@/api/generated';
-import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook';
-import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
-import { useSubscribe } from '@/api/hooks/useSubscribe.hook';
-import { BillingPlanCard } from '@/components/shared/billing-card';
-import { buttonVariants } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ApplicationName, ROUTES } from '@/constants';
-import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
-import { cn } from '@/lib/utils';
+import type { SubscriptionModelResponse } from '@/api/generated'
+import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook'
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook'
+import { useSubscribe } from '@/api/hooks/useSubscribe.hook'
+import { BillingPlanCard } from '@/components/shared/billing-card'
+import { buttonVariants } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { ApplicationName, ROUTES } from '@/constants'
+import { useBillingDialog } from '@/hooks/useBillingDialog.hook'
+import { cn } from '@/lib/utils'
+import { X } from 'lucide-react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export const BillingModalProvider = () => {
   const { onOpen, onClose, isOpen } = useBillingDialog();
@@ -60,7 +59,7 @@ export const BillingModalProvider = () => {
           </DialogDescription>
         </DialogHeader>
         <div className='mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 py-10'>
-          {plans?.plans.map((plan, i) => (
+          {plans?.plans?.map((plan, i) => (
             <BillingPlanCard
               key={plan.id}
               plan={{

@@ -1,15 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import type { SubscriptionModelResponse } from '@/api/generated';
-import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook';
-import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
-import { useMe } from '@/api/hooks/useMe.hook';
-import { useSubscribe } from '@/api/hooks/useSubscribe.hook';
-import { BillingPlanCard } from '@/components/shared/billing-card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ROUTES } from '@/constants';
+import type { SubscriptionModelResponse } from '@/api/generated'
+import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook'
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook'
+import { useMe } from '@/api/hooks/useMe.hook'
+import { useSubscribe } from '@/api/hooks/useSubscribe.hook'
+import { BillingPlanCard } from '@/components/shared/billing-card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ROUTES } from '@/constants'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function PricingWrapper() {
   const [mounted, setMounted] = useState(false);
@@ -30,7 +30,7 @@ export default function PricingWrapper() {
     setMounted(true);
   }, []);
 
-  if (!mounted || !plans) {
+  if (!mounted || !plans || !plans.plans) {
     return (
       <div className='flex items-center justify-center gap-20'>
         <div className='grid grid-cols-3 gap-5 max-sm:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-1 max-xl:grid-cols-2 max-2xl:grid-cols-3'>
@@ -74,7 +74,7 @@ export default function PricingWrapper() {
         </label>
       </div>
       <div className='mx-auto grid max-w-5xl grid-cols-1 gap-6 max-lg:grid-cols-1 lg:grid-cols-3'>
-        {plans?.plans.map((plan) => (
+        {plans?.plans?.map((plan) => (
           <BillingPlanCard
             key={plan.id}
             plan={{
