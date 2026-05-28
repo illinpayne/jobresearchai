@@ -59,7 +59,7 @@ services:
       - AUTH_REDIS_PORT=${AUTH_REDIS_PORT}
       - AUTH_RMQ_URL=${AUTH_RMQ_URL}
       - AUTH_RMQ_QUEUE=${AUTH_RMQ_QUEUE}
-      - AUTH_PAYMENT_GRPC_URL=${AUTH_PAYMENT_GRPC_URL}
+      - PAYMENT_GRPC_URL=${PAYMENT_GRPC_URL}
     ports:
       - "50051:50051"
     networks:
