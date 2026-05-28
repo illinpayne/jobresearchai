@@ -25,8 +25,8 @@ export default function JobCard({ ...props }: JobResponse) {
       return (
         <div className='flex items-start max-sm:hidden'>
           <Image
-            src='https://happymonday.ua/wp-content/uploads/2019/05/dou-logo-new-1.png'
-            alt='source-workua'
+            src='https://s.dou.ua/files/dou-200x200.png'
+            alt='source-douua'
             className='rounded-sm aspect-square object-cover'
             width={70}
             height={70}
