@@ -16,7 +16,7 @@ export class PrismaService
 
 	constructor() {
 		const adapter = new PrismaPg({
-			connectionString: process.env.DATABASE_URL as string
+			connectionString: process.env.AICORE_DATABASE_URL as string
 		})
 		super({ adapter })
 	}
