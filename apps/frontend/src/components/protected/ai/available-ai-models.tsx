@@ -1,8 +1,8 @@
 'use client';
 
-import type { AiPresetResponse } from '@/api/generated';
-import AiModelCard from '@/components/shared/ai-model-card';
-import { useAIStore } from '@/states/useAiStorage.hook';
+import type { AiPresetResponse } from '@/api/generated'
+import AiModelCard from '@/components/shared/ai-model-card'
+import { useAIStore } from '@/states/useAiStorage.hook'
 
 interface Props {
   availableModels: AiPresetResponse[];
@@ -25,7 +25,7 @@ export default function AvailableAiModels({ ...props }: Props) {
     <div className='flex flex-col gap-3'>
       {!props.hideTitle && <h2 className='text-2xl font-semibold'>Available models</h2>}
       <div className='grid grid-cols-3 gap-5 max-sm:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-1 max-xl:grid-cols-2 max-2xl:grid-cols-3'>
-        {props.availableModels.map((f) => (
+        {props?.availableModels?.map((f) => (
           <AiModelCard
             key={f.id}
             id={f.id}

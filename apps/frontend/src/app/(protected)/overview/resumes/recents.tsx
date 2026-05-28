@@ -1,9 +1,9 @@
 'use client';
-import { useQueryClient } from '@tanstack/react-query';
-import { useJobsInProgress } from '@/api/hooks/useJobsInProgress.hook';
-import { useMe } from '@/api/hooks/useMe.hook';
-import UploadedResumeInProgressCard from '@/components/shared/uploaded-resume-inprogress-card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useJobsInProgress } from '@/api/hooks/useJobsInProgress.hook'
+import { useMe } from '@/api/hooks/useMe.hook'
+import UploadedResumeInProgressCard from '@/components/shared/uploaded-resume-inprogress-card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function RecentResumeUploads() {
   const { data, isLoading } = useJobsInProgress();
@@ -30,7 +30,7 @@ export default function RecentResumeUploads() {
     <div className='flex flex-col gap-4'>
       <h2 className='text-2xl font-semibold'>Recently uploads</h2>
       <div className='grid grid-cols-3 gap-4 max-lg:grid-cols-1 max-3xl:grid-cols-2'>
-        {data?.jobs.map((f, i) => (
+        {data?.jobs?.map((f, i) => (
           <UploadedResumeInProgressCard
             key={f.id}
             workId={++i}

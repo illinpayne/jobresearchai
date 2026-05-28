@@ -1,18 +1,18 @@
 /** biome-ignore-all lint/complexity/noUselessFragments: <explanation> */
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook';
-import { useCancelSubscription } from '@/api/hooks/useCancelSubscription.hook';
-import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
-import { useResumeSubscription } from '@/api/hooks/useResumeSubscription.hook';
-import { buttonVariants } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ROUTES } from '@/constants';
-import { billingSubscriptionCacheKey, RemoveCache, SetCache } from '@/lib/cache';
-import { cn } from '@/lib/utils';
+import { useBillingPlans } from '@/api/hooks/useBillingPlans.hook'
+import { useCancelSubscription } from '@/api/hooks/useCancelSubscription.hook'
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook'
+import { useResumeSubscription } from '@/api/hooks/useResumeSubscription.hook'
+import { buttonVariants } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ROUTES } from '@/constants'
+import { billingSubscriptionCacheKey, SetCache } from '@/lib/cache'
+import { cn } from '@/lib/utils'
+import { useQueryClient } from '@tanstack/react-query'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 interface PricingTier {
   tier: number;
@@ -263,7 +263,7 @@ export default function UsageDataWrapper() {
         </div>
         <div className='flex gap-3'>
           <TierCard
-            current={sub.plan.name === 'Free'}
+            current={sub?.plan?.name === 'Free'}
             price={`$0 / mo`}
             tier={1}
             label={'Tier 1'}
@@ -272,7 +272,7 @@ export default function UsageDataWrapper() {
           {plans?.plans.map((plan, i) => (
             <TierCard
               key={plan.id}
-              current={plan.name === sub.plan.name}
+              current={plan?.name === sub?.plan?.name}
               price={`$${plan.monthlyPrice} / mo`}
               tier={i + 1}
               label={`Tier ${i + 2}`}

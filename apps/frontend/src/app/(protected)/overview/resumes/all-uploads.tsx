@@ -1,12 +1,12 @@
 'use client';
 
-import Link from 'next/link';
-import { useProfiles } from '@/api/hooks/useProfiles.hook';
-import UploadedResumeCard from '@/components/shared/uploaded-resume-card';
-import { buttonVariants } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ROUTES } from '@/constants';
-import { cn } from '@/lib/utils';
+import { useProfiles } from '@/api/hooks/useProfiles.hook'
+import UploadedResumeCard from '@/components/shared/uploaded-resume-card'
+import { buttonVariants } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ROUTES } from '@/constants'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 export default function AllResumeUploads() {
   const { data: profiles, isLoading } = useProfiles();
@@ -46,15 +46,12 @@ export default function AllResumeUploads() {
     <div className='flex flex-col gap-3'>
       <h2 className='text-2xl font-semibold'>All uploads</h2>
       <div className='grid grid-cols-1 gap-5 max-xl:grid-cols-1'>
-        {profiles.data.map((f) => (
+        {profiles?.data?.map((f) => (
           <UploadedResumeCard
             key={f.profile.id}
             {...f}
           />
         ))}
-        {/* <div className='col-span-full text-center'>
-          <button className='text-sm text-neutral-600 cursor-pointer hover:text-primary transition-all'>See more</button>
-        </div> */}
       </div>
     </div>
   );

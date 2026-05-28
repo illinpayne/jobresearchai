@@ -1,12 +1,12 @@
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query';
-import type { AiPresetResponse, SubscriptionModelResponse } from '@/api/generated';
-import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook';
-import { useGetModel } from '@/api/hooks/useGetModel.hook';
-import AiModelCard from '@/components/shared/ai-model-card';
-import { useBillingDialog } from '@/hooks/useBillingDialog.hook';
-import { presetsCacheKey, RemoveCache } from '@/lib/cache';
+import type { AiPresetResponse, SubscriptionModelResponse } from '@/api/generated'
+import { useCurrentSubscription } from '@/api/hooks/useCurrentSubscription.hook'
+import { useGetModel } from '@/api/hooks/useGetModel.hook'
+import AiModelCard from '@/components/shared/ai-model-card'
+import { useBillingDialog } from '@/hooks/useBillingDialog.hook'
+import { presetsCacheKey, RemoveCache } from '@/lib/cache'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface Props {
   models: AiPresetResponse[];
@@ -44,7 +44,7 @@ export default function AllAiModels({ ...props }: Props) {
       <h2 className='text-2xl font-semibold'>Other models</h2>
 
       <div className='grid grid-cols-3 gap-5 max-sm:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-1 max-xl:grid-cols-2 max-2xl:grid-cols-3'>
-        {props.models.map((f) => (
+        {props?.models?.map((f) => (
           <AiModelCard
             key={f.id}
             name={f.name}

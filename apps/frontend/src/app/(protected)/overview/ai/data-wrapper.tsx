@@ -1,9 +1,9 @@
 'use client';
 
-import { usePresets } from '@/api/hooks/usePresets.hook';
-import AllAiModels from '@/components/protected/ai/all-ai-models';
-import AvailableAiModels from '@/components/protected/ai/available-ai-models';
-import { Skeleton } from '@/components/ui/skeleton';
+import { usePresets } from '@/api/hooks/usePresets.hook'
+import AllAiModels from '@/components/protected/ai/all-ai-models'
+import AvailableAiModels from '@/components/protected/ai/available-ai-models'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function AiDataWrapper() {
   const { data: presets, isLoading, isError } = usePresets();
@@ -25,7 +25,7 @@ export default function AiDataWrapper() {
     );
   }
 
-  if (isError || !presets) {
+  if (isError || !presets || !presets.available) {
     return (
       <div>
         <h1 className='text-3xl font-bold mb-5'>Cannot get models</h1>
